@@ -15,6 +15,10 @@ import { QuickLinkEntity } from './quick-link/entities/quick-link.entity';
 import { ArticleModule } from './article/article.module';
 import { CategoryModule } from './category/category.module';
 import { BannerModule } from './banner/banner.module';
+import { SpecialModule } from './special/special.module';
+import { LinkModule } from './link/link.module';
+import { PageModule } from './page/page.module';
+import { QuickLinkModule } from './quick-link/quick-link.module';
 
 @Module({
   imports: [
@@ -31,7 +35,11 @@ import { BannerModule } from './banner/banner.module';
     ArticleModule,
     CategoryModule,
     BannerModule,
+    SpecialModule,
+    LinkModule,
+    PageModule,
+    QuickLinkModule,
   ],
-  exports: [ArticleModule, CategoryModule, BannerModule],
+  exports: [ArticleModule, CategoryModule, BannerModule, SpecialModule, LinkModule, PageModule, QuickLinkModule],
 })
 export class CmsModule {}

@@ -8,6 +8,7 @@ import {
   Query,
   Param,
   Request,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CategoryService } from './category.service';
@@ -20,6 +21,27 @@ import { CategoryEntity } from './entities/category.entity';
 @Controller('cms/category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
+
+  @ApiOperation({ summary: '获取分类列表' })
+  @ApiDataResponse(CategoryEntity, true)
+  @Get('/list')
+  findList(@Query() query: CategoryListDto) {
+    return this.categoryService.findList(query);
+  }
+
+  @ApiOperation({ summary: '获取所有启用分类' })
+  @ApiDataResponse(CategoryEntity, true)
+  @Get('/all')
+  findAll() {
+    return this.categoryService.findAll();
+  }
+
+  @ApiOperation({ summary: '获取分类详情' })
+  @ApiDataResponse(CategoryEntity)
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.findOne(id);
+  }
 
   @ApiOperation({ summary: '新增分类' })
   @ApiDataResponse()
@@ -38,28 +60,7 @@ export class CategoryController {
   @ApiOperation({ summary: '删除分类' })
   @ApiDataResponse()
   @Delete(':id')
-  delete(@Param('id') id: number, @Request() req) {
+  delete(@Param('id', ParseIntPipe) id: number, @Request() req) {
     return this.categoryService.delete(id, req.user?.userName || 'admin');
-  }
-
-  @ApiOperation({ summary: '获取分类详情' })
-  @ApiDataResponse(CategoryEntity)
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.categoryService.findOne(id);
-  }
-
-  @ApiOperation({ summary: '获取分类列表' })
-  @ApiDataResponse(CategoryEntity, true)
-  @Get('/list')
-  findList(@Query() query: CategoryListDto) {
-    return this.categoryService.findList(query);
-  }
-
-  @ApiOperation({ summary: '获取所有启用分类' })
-  @ApiDataResponse(CategoryEntity, true)
-  @Get('/all')
-  findAll() {
-    return this.categoryService.findAll();
   }
 }

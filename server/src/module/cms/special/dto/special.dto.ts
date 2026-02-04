@@ -2,22 +2,21 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsNumber, IsOptional, IsIn, Length, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateCategoryDto {
-  @ApiProperty({ description: '分类名称' })
+export class CreateSpecialDto {
+  @ApiProperty({ description: '专题标题' })
   @IsString()
-  @Length(1, 50)
-  categoryName: string;
+  @Length(1, 200)
+  title: string;
 
-  @ApiProperty({ description: '分类编码' })
-  @IsString()
-  @Length(1, 50)
-  categoryCode: string;
-
-  @ApiPropertyOptional({ description: '父分类ID', default: 0 })
+  @ApiPropertyOptional({ description: '专题描述' })
   @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  parentId?: number;
+  @IsString()
+  description?: string;
+
+  @ApiPropertyOptional({ description: '封面图' })
+  @IsOptional()
+  @IsString()
+  coverImage?: string;
 
   @ApiPropertyOptional({ description: '排序', default: 0 })
   @IsOptional()
@@ -29,21 +28,16 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsIn(['0', '1'])
   status?: string;
-
-  @ApiPropertyOptional({ description: '图标' })
-  @IsOptional()
-  @IsString()
-  icon?: string;
 }
 
-export class UpdateCategoryDto extends CreateCategoryDto {
-  @ApiProperty({ description: '分类ID' })
+export class UpdateSpecialDto extends CreateSpecialDto {
+  @ApiProperty({ description: '专题ID' })
   @Type(() => Number)
   @IsNumber()
-  categoryId: number;
+  specialId: number;
 }
 
-export class CategoryListDto {
+export class SpecialListDto {
   @ApiPropertyOptional({ description: '页码', default: 1 })
   @IsOptional()
   @Type(() => Number)
@@ -58,10 +52,10 @@ export class CategoryListDto {
   @Min(1)
   pageSize?: number = 10;
 
-  @ApiPropertyOptional({ description: '分类名称' })
+  @ApiPropertyOptional({ description: '专题标题' })
   @IsOptional()
   @IsString()
-  categoryName?: string;
+  title?: string;
 
   @ApiPropertyOptional({ description: '状态：0禁用 1启用' })
   @IsOptional()

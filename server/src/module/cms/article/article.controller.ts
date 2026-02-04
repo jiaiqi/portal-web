@@ -8,6 +8,7 @@ import {
   Query,
   Param,
   Request,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ArticleService } from './article.service';
@@ -20,6 +21,20 @@ import { ArticleEntity } from './entities/article.entity';
 @Controller('cms/article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
+
+  @ApiOperation({ summary: '获取文章列表' })
+  @ApiDataResponse(ArticleEntity, true, true)
+  @Get('/list')
+  findList(@Query() query: ArticleListDto) {
+    return this.articleService.findList(query);
+  }
+
+  @ApiOperation({ summary: '获取文章详情' })
+  @ApiDataResponse(ArticleEntity)
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.articleService.findOne(id);
+  }
 
   @ApiOperation({ summary: '新增文章' })
   @ApiDataResponse()
@@ -38,22 +53,8 @@ export class ArticleController {
   @ApiOperation({ summary: '删除文章' })
   @ApiDataResponse()
   @Delete(':id')
-  delete(@Param('id') id: number, @Request() req) {
+  delete(@Param('id', ParseIntPipe) id: number, @Request() req) {
     return this.articleService.delete(id, req.user?.userName || 'admin');
-  }
-
-  @ApiOperation({ summary: '获取文章详情' })
-  @ApiDataResponse(ArticleEntity)
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.articleService.findOne(id);
-  }
-
-  @ApiOperation({ summary: '获取文章列表' })
-  @ApiDataResponse(ArticleEntity, true, true)
-  @Get('/list')
-  findList(@Query() query: ArticleListDto) {
-    return this.articleService.findList(query);
   }
 
   @ApiOperation({ summary: '修改文章状态' })

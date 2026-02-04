@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNumber, IsOptional, IsIn, Length, MaxLength } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsIn, Length, MaxLength, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateArticleDto {
   @ApiProperty({ description: '文章标题' })
@@ -8,6 +9,7 @@ export class CreateArticleDto {
   title: string;
 
   @ApiProperty({ description: '分类ID' })
+  @Type(() => Number)
   @IsNumber()
   categoryId: number;
 
@@ -75,6 +77,7 @@ export class CreateArticleDto {
 
 export class UpdateArticleDto extends CreateArticleDto {
   @ApiProperty({ description: '文章ID' })
+  @Type(() => Number)
   @IsNumber()
   articleId: number;
 }
@@ -82,14 +85,22 @@ export class UpdateArticleDto extends CreateArticleDto {
 export class ArticleListDto {
   @ApiPropertyOptional({ description: '页码', default: 1 })
   @IsOptional()
-  pageNum?: number;
+  @Type(() => Number)
+  @IsNumber()
+  @Min(1)
+  pageNum?: number = 1;
 
   @ApiPropertyOptional({ description: '每页条数', default: 10 })
   @IsOptional()
-  pageSize?: number;
+  @Type(() => Number)
+  @IsNumber()
+  @Min(1)
+  pageSize?: number = 10;
 
   @ApiPropertyOptional({ description: '分类ID' })
   @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
   categoryId?: number;
 
   @ApiPropertyOptional({ description: '文章标题' })
@@ -105,6 +116,7 @@ export class ArticleListDto {
 
 export class ArticleStatusDto {
   @ApiProperty({ description: '文章ID' })
+  @Type(() => Number)
   @IsNumber()
   articleId: number;
 
