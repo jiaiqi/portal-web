@@ -41,6 +41,10 @@ export default defineConfig(({ mode, command }) => {
         }
       }
     },
+    optimizeDeps: {
+      include: ['@umoteam/editor'],
+      exclude: ['onnxruntime-web']
+    },
     build: {
       assetsDir: 'static',
       // build时规定触发警告的 chunk 大小。（以 kbs 为单位）
@@ -68,7 +72,7 @@ export default defineConfig(({ mode, command }) => {
       },
       // 混淆器 boolean | 'terser' | 'esbuild'
       minify: 'esbuild',
-      target: 'es2015',
+      target: 'es2020',
       sourcemap: false
     },
     //fix:error:stdin>:7356:1: warning: "@charset" must be the first rule in the file

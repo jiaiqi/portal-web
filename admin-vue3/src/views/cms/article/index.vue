@@ -75,8 +75,8 @@
     <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
 
     <!-- 添加或修改文章对话框 -->
-    <el-dialog :title="title" v-model="open" width="900px" append-to-body>
-      <el-form ref="articleRef" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :title="title" v-model="open" width="1000px" append-to-body>
+      <el-form ref="articleRef" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="16">
             <el-form-item label="文章标题" prop="title">
@@ -125,6 +125,14 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="内容类型">
+              <el-radio-group v-model="form.contentType" @change="handleContentTypeChange">
+                <el-radio label="rich">富文本</el-radio>
+                <el-radio label="link">公众号链接</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-form-item label="封面图">
           <el-input v-model="form.coverImage" placeholder="请输入封面图URL" />
@@ -132,9 +140,22 @@
         <el-form-item label="摘要">
           <el-input v-model="form.summary" type="textarea" :rows="3" placeholder="请输入摘要" />
         </el-form-item>
-        <el-form-item label="内容" prop="content">
-          <el-input v-model="form.content" type="textarea" :rows="10" placeholder="请输入内容（支持HTML）" />
-        </el-form-item>
+        
+        <!-- 富文本内容编辑 -->
+        <template v-if="form.contentType === 'rich'">
+          <el-form-item label="文章内容" prop="content">
+            <TiptapEditor v-model="form.content" placeholder="请输入文章内容，支持富文本编辑、粘贴图片..." />
+          </el-form-item>
+        </template>
+        
+        <!-- 公众号文章链接 -->
+        <template v-else>
+          <el-form-item label="公众号链接" prop="content">
+            <el-input v-model="form.content" placeholder="请输入公众号文章链接，如：https://mp.weixin.qq.com/s/..." />
+            <div class="form-tip">用户点击文章将跳转到该链接</div>
+          </el-form-item>
+        </template>
+
         <el-form-item label="SEO标题">
           <el-input v-model="form.seoTitle" placeholder="请输入SEO标题" />
         </el-form-item>
@@ -158,6 +179,7 @@
 <script setup>
 import { listArticle, getArticle, addArticle, updateArticle, delArticle } from '@/api/cms/article'
 import { listCategory } from '@/api/cms/category'
+import TiptapEditor from '@/components/TiptapEditor/index.vue'
 
 const { proxy } = getCurrentInstance()
 
@@ -173,7 +195,9 @@ const total = ref(0)
 const title = ref('')
 
 const data = reactive({
-  form: {},
+  form: {
+    contentType: 'rich'  // 默认富文本类型
+  },
   queryParams: {
     pageNum: 1,
     pageSize: 10,
@@ -226,6 +250,12 @@ function handleSelectionChange(selection) {
   multiple.value = !selection.length
 }
 
+/** 内容类型切换 */
+function handleContentTypeChange(val) {
+  // 切换时清空内容，避免混淆
+  form.value.content = ''
+}
+
 /** 新增按钮操作 */
 function handleAdd() {
   reset()
@@ -239,6 +269,15 @@ function handleUpdate(row) {
   const articleId = row.articleId || ids.value[0]
   getArticle(articleId).then(res => {
     form.value = res
+    // 如果没有contentType，根据content判断
+    if (!form.value.contentType) {
+      // 如果content是URL链接，则认为是公众号链接类型
+      if (form.value.content && form.value.content.startsWith('http')) {
+        form.value.contentType = 'link'
+      } else {
+        form.value.contentType = 'rich'
+      }
+    }
     open.value = true
     title.value = '修改文章'
   })
@@ -290,7 +329,8 @@ function reset() {
     categoryId: undefined,
     summary: undefined,
     coverImage: undefined,
-    content: undefined,
+    content: '',
+    contentType: 'rich',  // 默认富文本
     source: undefined,
     author: undefined,
     publishTime: new Date(),
@@ -306,3 +346,11 @@ function reset() {
 getList()
 getCategoryList()
 </script>
+
+<style scoped>
+.form-tip {
+  font-size: 12px;
+  color: #909399;
+  margin-top: 4px;
+}
+</style>
