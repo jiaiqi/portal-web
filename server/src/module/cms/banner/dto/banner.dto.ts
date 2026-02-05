@@ -19,6 +19,11 @@ export class CreateBannerDto {
   @IsString()
   linkUrl?: string;
 
+  @ApiPropertyOptional({ description: '位置：home首页 focus首页焦点 right_top右侧顶部 right_platform右侧平台', default: 'home' })
+  @IsOptional()
+  @IsIn(['home', 'focus', 'right_top', 'right_platform'])
+  position?: string;
+
   @ApiPropertyOptional({ description: '排序', default: 0 })
   @IsOptional()
   @Type(() => Number)

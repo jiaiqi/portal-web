@@ -97,7 +97,53 @@ CREATE TABLE `cms_special_article` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='专题文章关联表';
 
 -- ----------------------------
--- 5. 轮播图表
+-- 4. 焦点图表
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_focus`;
+CREATE TABLE `cms_focus` (
+  `focus_id` int NOT NULL AUTO_INCREMENT COMMENT '焦点图ID',
+  `title` varchar(200) DEFAULT NULL COMMENT '焦点图标题',
+  `image_url` varchar(500) NOT NULL COMMENT '图片URL',
+  `image_type` varchar(20) NOT NULL DEFAULT 'big' COMMENT '图片类型：big大图 small小图',
+  `link_url` varchar(500) DEFAULT NULL COMMENT '跳转链接',
+  `sort_order` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '状态：0正常 1停用',
+  `create_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建者',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `update_by` varchar(64) NOT NULL DEFAULT '' COMMENT '更新者',
+  `update_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
+  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标志',
+  PRIMARY KEY (`focus_id`),
+  KEY `idx_image_type` (`image_type`),
+  KEY `idx_status` (`status`),
+  KEY `idx_sort_order` (`sort_order`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='焦点图表';
+
+-- ----------------------------
+-- 5. 公告表
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_notice`;
+CREATE TABLE `cms_notice` (
+  `notice_id` int NOT NULL AUTO_INCREMENT COMMENT '公告ID',
+  `title` varchar(200) NOT NULL COMMENT '公告标题',
+  `content` text DEFAULT NULL COMMENT '公告内容',
+  `notice_type` varchar(20) NOT NULL DEFAULT 'notice' COMMENT '公告类型：notice公告 announcement公示',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '状态：0正常 1关闭',
+  `is_top` char(1) NOT NULL DEFAULT '0' COMMENT '是否置顶：0否 1是',
+  `sort_order` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `create_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建者',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `update_by` varchar(64) NOT NULL DEFAULT '' COMMENT '更新者',
+  `update_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
+  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标志',
+  PRIMARY KEY (`notice_id`),
+  KEY `idx_notice_type` (`notice_type`),
+  KEY `idx_status` (`status`),
+  KEY `idx_sort_order` (`sort_order`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='公告表';
+
+-- ----------------------------
+-- 6. 轮播图表
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_banner`;
 CREATE TABLE `cms_banner` (
@@ -105,6 +151,7 @@ CREATE TABLE `cms_banner` (
   `title` varchar(200) DEFAULT NULL COMMENT '标题',
   `image` varchar(255) NOT NULL COMMENT '图片',
   `link_url` varchar(255) DEFAULT NULL COMMENT '链接地址',
+  `position` varchar(50) NOT NULL DEFAULT 'home' COMMENT '位置：home首页 focus首页焦点 right_top右侧顶部 right_platform右侧平台',
   `sort_order` int NOT NULL DEFAULT '0' COMMENT '排序',
   `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态：0禁用 1启用',
   `create_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建者',
@@ -114,6 +161,7 @@ CREATE TABLE `cms_banner` (
   `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标志',
   PRIMARY KEY (`banner_id`),
   KEY `idx_status` (`status`),
+  KEY `idx_position` (`position`),
   KEY `idx_sort_order` (`sort_order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='轮播图表';
 

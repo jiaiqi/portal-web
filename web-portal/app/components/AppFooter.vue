@@ -32,11 +32,11 @@ const bottomLinks = [
 <template>
   <footer class="text-white bg-[#c31f1f]">
     <!-- Links Section -->
-    <div class="mx-auto px-4 py-8 max-w-7xl lg:px-8 sm:px-6  w-[1200px]">
+    <div class="mx-auto px-4 py-[30px] max-w-7xl lg:px-8 sm:px-6  w-[1200px]">
       <div class="flex flex-col gap-8 justify-between md:flex-row">
         <!-- Left Links -->
         <div class="flex-1">
-          <h3 class="text-lg font-bold mb-4">链接</h3>
+          <h2 class="text-lg font-bold mb-6 pb-[20px]">链接</h2>
           <div class="space-y-3">
             <div class="text-sm flex flex-wrap gap-x-1 items-center">
               <template v-for="(link, index) in linksRow1" :key="link.name">

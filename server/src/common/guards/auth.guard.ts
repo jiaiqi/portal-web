@@ -20,8 +20,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
-    const notRequireAuth = this.reflector.getAllAndOverride('notRequireAuth', [ctx.getClass(), ctx.getHandler()]);
+    const isPublic = this.reflector.getAllAndOverride('isPublic', [ctx.getClass(), ctx.getHandler()]);
+    if (isPublic) {
+      return true;
+    }
 
+    const notRequireAuth = this.reflector.getAllAndOverride('notRequireAuth', [ctx.getClass(), ctx.getHandler()]);
     if (notRequireAuth) {
       await this.jumpActivate(ctx);
       return true;

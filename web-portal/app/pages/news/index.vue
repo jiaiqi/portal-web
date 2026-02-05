@@ -1,36 +1,54 @@
 <script setup lang="ts">
-const newsItems = [
-  {
-    id: 1,
-    title: '习近平总书记在中国文联十一大、中国作协十大开幕式上的重要讲话',
-    date: '2024-01-15 09:30:00',
-    link: '/news/1',
-  },
-  {
-    id: 2,
-    title: '中国文艺志愿者协会组织开展"送欢乐下基层"慰问演出活动',
-    date: '2024-01-14 14:20:00',
-    link: '/news/2',
-  },
-  {
-    id: 3,
-    title: '文艺志愿者走进乡村振兴一线，用艺术助力乡村文化建设',
-    date: '2024-01-13 16:45:00',
-    link: '/news/3',
-  },
-  {
-    id: 4,
-    title: '"我们的中国梦"文化进万家活动在全国各地蓬勃开展',
-    date: '2024-01-12 10:15:00',
-    link: '/news/4',
-  },
-  {
-    id: 5,
-    title: '新时代文明实践文艺志愿服务项目模式试点工作推进会召开',
-    date: '2024-01-11 11:30:00',
-    link: '/news/5',
-  },
-]
+import { useArticle } from '~/composables/useArticle'
+
+const { getArticleList } = useArticle()
+
+const newsItems = ref<any[]>([])
+const loading = ref(true)
+const error = ref<string | null>(null)
+const pageNum = ref(1)
+const pageSize = ref(10)
+const total = ref(0)
+
+const fetchNewsList = async () => {
+  try {
+    loading.value = true
+    const response = await getArticleList({
+      pageNum: pageNum.value,
+      pageSize: pageSize.value,
+      status: '1',
+    })
+    newsItems.value = response.list.map(item => ({
+      id: item.articleId,
+      title: item.title,
+      date: formatDate(item.publishTime),
+      link: `/news/${item.articleId}`,
+      openType: item.openType || 'current',
+    }))
+    total.value = response.total
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : '获取新闻列表失败'
+    console.error('获取新闻列表失败:', err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const formatDate = (date: Date): string => {
+  if (!date) return ''
+  const d = new Date(date)
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  const hours = String(d.getHours()).padStart(2, '0')
+  const minutes = String(d.getMinutes()).padStart(2, '0')
+  const seconds = String(d.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
+onMounted(() => {
+  fetchNewsList()
+})
 </script>
 
 <template>
@@ -38,7 +56,15 @@ const newsItems = [
     <Breadcrumb :items="[{ name: '要闻动态', path: '/news' }, { name: '列表页' }]" />
 
     <div class="mx-auto px-4 py-8 max-w-7xl lg:px-8 sm:px-6">
-      <ContentList :items="newsItems" />
+      <div v-if="loading" class="flex items-center justify-center min-h-[500px]">
+        <div class="text-gray-500">加载中...</div>
+      </div>
+
+      <div v-else-if="error" class="flex items-center justify-center min-h-[500px]">
+        <div class="text-red-500">{{ error }}</div>
+      </div>
+
+      <ContentList v-else :items="newsItems" />
     </div>
   </div>
 </template>

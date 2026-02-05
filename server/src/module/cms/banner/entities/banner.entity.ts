@@ -20,6 +20,9 @@ export class BannerEntity {
   @Column({ name: 'link_url', length: 255, nullable: true, comment: '链接地址' })
   linkUrl: string;
 
+  @Column({ name: 'position', length: 50, default: 'home', comment: '位置：home首页 focus首页焦点 right_top右侧顶部 right_platform右侧平台' })
+  position: string;
+
   @Column({ name: 'sort_order', default: 0, comment: '排序' })
   sortOrder: number;
 

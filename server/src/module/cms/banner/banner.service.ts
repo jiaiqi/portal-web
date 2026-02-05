@@ -40,4 +40,11 @@ export class BannerService {
   async findAll(): Promise<BannerEntity[]> {
     return this.bannerRepository.find({ where: { delFlag: '0', status: '1' }, order: { sortOrder: 'ASC' } });
   }
+
+  async findByPosition(position: string): Promise<BannerEntity[]> {
+    return this.bannerRepository.find({
+      where: { delFlag: '0', status: '1', position },
+      order: { sortOrder: 'ASC' },
+    });
+  }
 }

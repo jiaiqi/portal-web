@@ -11,6 +11,11 @@ export default defineNuxtConfig({
     "@vite-pwa/nuxt",
     "@nuxt/eslint",
   ],
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8080',
+    },
+  },
 
   devtools: {
     enabled: true,

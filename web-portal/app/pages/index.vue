@@ -1,94 +1,36 @@
 <script setup lang="ts">
-const focusImages = {
-  big: "https://www.wyzyz.org/claav-api/profile/upload/2025/01/27/640_20250127152953A190.jpg",
-  small1:
-    "https://www.wyzyz.org/claav-api/profile/upload/2024/03/26/换届_20240326194203A028.png",
-  small2:
-    "https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20240103100743A007_20240103145744A044.png",
-  small3:
-    "https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20240103100333A006_20240103145721A043.png",
-};
+import { usePortal } from '~/composables/usePortal'
 
-const focusBanner =
-  "https://www.wyzyz.org/claav-api/profile/upload/2025/12/30/mmexport1767076004004_20251230142654A441.jpg";
+const { getHomeData } = usePortal()
 
-const newsItems = [
-  {
-    id: 1,
-    title: "习近平致中国志愿服务联合会第三届会员代表大会的贺信",
-    date: "2025-11-29 12:00",
-    image:
-      "https://www.wyzyz.org/claav-api/profile/upload/2025/11/29/要闻_20251129210255A439.png",
-  },
-  {
-    id: 2,
-    title:
-      "习近平总书记致中国志愿服务联合会第三届会员代表大会的贺信引发热烈反响",
-    date: "2025-11-29 12:00",
-    image:
-      "https://www.wyzyz.org/claav-api/profile/upload/2025/11/29/要闻_20251129210446A440.png",
-  },
-  {
-    id: 3,
-    title:
-      "第12个中国文艺志愿者服务日｜“强基工程”——“与人民同行”新时代文明实践中国文艺志愿者小分队走进辽宁沈阳",
-    date: "2025-05-27 12:00",
-    image:
-      "https://www.wyzyz.org/claav-api/profile/upload/2025/05/27/微信截图_20250527095142_20250527095153A373.png",
-  },
-  {
-    id: 4,
-    title: "", // This item in HTML was just an image? "微信截图..."
-    isImageParams: true,
-    image:
-      "https://www.wyzyz.org/claav-api/profile/upload/2024/08/30/微信截图_20240830100412_20240830100426A104.png",
-  },
-  {
-    id: 5,
-    title:
-      "中央宣传思想文化工作领导小组关于认定命名第七届全国文明城市、文明村镇、文明单位和第三届全国文明家庭、文明校园的决定",
-    date: "2025-05-27 12:00",
-    image:
-      "https://www.wyzyz.org/claav-api/profile/upload/2025/05/27/微信截图_20250527095422_20250527095430A374.png",
-  },
-  {
-    id: 6,
-    title: "第12个中国文艺志愿者服务日｜文艺志愿者们在行动",
-    date: "2025-05-27 12:00",
-    image:
-      "https://www.wyzyz.org/claav-api/profile/upload/2025/05/27/微信截图_20250527094917_20250527094929A372.png",
-  },
-  {
-    id: 7,
-    title:
-      "共唱团圆家 百花再出发｜“百花迎春——中国文学艺术界2025春节大联欢”报道",
-    date: "2025-01-27 15:20",
-    image:
-      "https://www.wyzyz.org/claav-api/profile/upload/2025/01/27/微信截图_20250127152109_20250127152122A187.png",
-  },
-];
+const homeData = ref<any>(null)
+const loading = ref(true)
+const error = ref<string | null>(null)
 
-const rightBanners = {
-  top: "https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20240103100209A005_20240103145859A047.png",
-  platform:
-    "https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20240103100840A009 (1)_20240103145523A040.png",
-};
-
-const noticeList = [
-  "中国文联文艺志愿服务中心部门预算 （2025 年）",
-  "第三届“时代风尚”学雷锋文艺志愿服务先进典型名单公布",
-  "中国文联文艺志愿服务中心2023年度部门决算",
-  "中国文联文艺志愿服务中心部门决算（2022年度）",
-  "公示｜第三届宣传推选“时代风尚”学雷锋文艺志愿服务先进典型公示名单",
-  "中国文联文艺志愿服务中心部门预算（2024年）",
-];
-
-const overviewLinks = ["协会简介", "组织机构", "理事会", "制度建设"];
+onMounted(async () => {
+  try {
+    loading.value = true
+    homeData.value = await getHomeData()
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : '获取数据失败'
+    console.error('获取首页数据失败:', err)
+  } finally {
+    loading.value = false
+  }
+})
 </script>
 
 <template>
   <div class="bg-white min-h-screen font-sans">
-    <div class="mx-auto px-4 py-8 max-w-7xl lg:px-8 sm:px-6">
+    <div v-if="loading" class="flex items-center justify-center min-h-[500px]">
+      <div class="text-gray-500">加载中...</div>
+    </div>
+
+    <div v-else-if="error" class="flex items-center justify-center min-h-[500px]">
+      <div class="text-red-500">{{ error }}</div>
+    </div>
+
+    <div v-else-if="homeData" class="mx-auto px-4 py-8 max-w-7xl lg:px-8 sm:px-6">
       <div class="flex flex-col lg:flex-row gap-6">
         <!-- Left Column -->
         <div class="flex-1 w-full lg:w-[860px] lg:flex-shrink-0">
@@ -96,7 +38,7 @@ const overviewLinks = ["协会简介", "组织机构", "理事会", "制度建�
           <div class="flex flex-col sm:flex-row gap-4 mb-6 h-auto sm:h-[370px]">
             <!-- Big Image -->
             <div class="flex-1 relative h-[250px] sm:h-full">
-              <img :src="focusImages.big" class="w-full h-full object-cover" />
+              <img :src="homeData.focusImages.big" class="w-full h-full object-cover" />
             </div>
             <!-- Small Images Column -->
             <div
@@ -104,19 +46,19 @@ const overviewLinks = ["协会简介", "组织机构", "理事会", "制度建�
             >
               <div class="w-[180px] h-[110px] flex-shrink-0">
                 <img
-                  :src="focusImages.small1"
+                  :src="homeData.focusImages.small1"
                   class="w-full h-full object-cover"
                 />
               </div>
               <div class="w-[180px] h-[110px] flex-shrink-0">
                 <img
-                  :src="focusImages.small2"
+                  :src="homeData.focusImages.small2"
                   class="w-full h-full object-cover"
                 />
               </div>
               <div class="w-[180px] h-[110px] flex-shrink-0">
                 <img
-                  :src="focusImages.small3"
+                  :src="homeData.focusImages.small3"
                   class="w-full h-full object-cover"
                 />
               </div>
@@ -125,7 +67,7 @@ const overviewLinks = ["协会简介", "组织机构", "理事会", "制度建�
 
           <!-- Focus Mini Banner -->
           <div class="mb-8">
-            <img :src="focusBanner" class="w-full h-[95px] object-cover" />
+            <img :src="homeData.focusBanner" class="w-full h-[95px] object-cover" />
           </div>
 
           <!-- Tabs -->
@@ -152,19 +94,11 @@ const overviewLinks = ["协会简介", "组织机构", "理事会", "制度建�
           <!-- News List -->
           <div class="space-y-6">
             <div
-              v-for="item in newsItems"
+              v-for="item in homeData.newsItems"
               :key="item.id"
               class="flex gap-4 pb-6 border-b border-gray-100 last:border-0"
             >
-              <template v-if="item.isImageParams">
-                <div class="w-full">
-                  <img
-                    :src="item.image"
-                    class="w-full h-[95px] object-contain"
-                  />
-                </div>
-              </template>
-              <template v-else>
+              <template v-if="item.image">
                 <div class="w-[180px] h-[110px] flex-shrink-0">
                   <img :src="item.image" class="w-full h-full object-cover" />
                 </div>
@@ -187,7 +121,7 @@ const overviewLinks = ["协会简介", "组织机构", "理事会", "制度建�
         <div class="w-full lg:w-[320px] lg:flex-shrink-0 space-y-8">
           <!-- Link Box -->
           <div>
-            <img :src="rightBanners.top" class="w-full h-auto object-cover" />
+            <img :src="homeData.rightBanners.top" class="w-full h-auto object-cover" />
           </div>
 
           <!-- Hots / Notices -->
@@ -201,14 +135,14 @@ const overviewLinks = ["协会简介", "组织机构", "理事会", "制度建�
                 公告/公示
               </div>
               <a
-                href="#"
+                href="/announcements"
                 class="text-xs text-gray-500 mb-2 hover:text-[#c41e3a]"
                 >更多>></a
               >
             </div>
             <ul class="space-y-3">
               <li
-                v-for="(notice, index) in noticeList"
+                v-for="(notice, index) in homeData.noticeList"
                 :key="index"
                 class="flex items-start gap-2 text-sm text-gray-700 hover:text-[#c41e3a] cursor-pointer"
               >
@@ -232,9 +166,9 @@ const overviewLinks = ["协会简介", "组织机构", "理事会", "制度建�
             <div
               class="flex flex-wrap gap-2 text-sm text-gray-500 justify-center mb-4"
             >
-              <template v-for="(link, i) in overviewLinks" :key="link">
-                <a href="#" class="hover:text-[#c41e3a]">{{ link }}</a>
-                <span v-if="i < overviewLinks.length - 1">|</span>
+              <template v-for="(link, i) in ['协会简介', '组织机构', '理事会', '制度建设']" :key="link">
+                <a href="/about" class="hover:text-[#c41e3a]">{{ link }}</a>
+                <span v-if="i < 3">|</span>
               </template>
             </div>
             <div class="text-center">
@@ -250,7 +184,7 @@ const overviewLinks = ["协会简介", "组织机构", "理事会", "制度建�
           <!-- Platform Banner -->
           <div>
             <img
-              :src="rightBanners.platform"
+              :src="homeData.rightBanners.platform"
               class="w-full h-[100px] object-cover"
             />
           </div>
