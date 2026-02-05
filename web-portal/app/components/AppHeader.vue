@@ -44,66 +44,28 @@ watch(
           <!-- Logo -->
           <div class="flex gap-4 items-center">
             <!-- 中国文艺志愿者协会 LOGO - 彩色花瓣图案 -->
-            <div
-              class="flex-shrink-0 h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20"
-            >
-              <svg viewBox="0 0 100 100" class="h-full w-full">
-                <!-- 中心圆 -->
-                <circle cx="50" cy="50" r="12" fill="#e60012" />
-                <!-- 彩色花瓣 -->
-                <ellipse cx="50" cy="22" rx="10" ry="16" fill="#e60012" />
-                <ellipse cx="50" cy="78" rx="10" ry="16" fill="#f39800" />
-                <ellipse cx="22" cy="50" rx="16" ry="10" fill="#009944" />
-                <ellipse cx="78" cy="50" rx="16" ry="10" fill="#0068b7" />
-                <ellipse
-                  cx="30"
-                  cy="30"
-                  rx="12"
-                  ry="12"
-                  fill="#8fc31f"
-                  transform="rotate(-45 30 30)"
-                />
-                <ellipse
-                  cx="70"
-                  cy="30"
-                  rx="12"
-                  ry="12"
-                  fill="#00a0e9"
-                  transform="rotate(45 70 30)"
-                />
-                <ellipse
-                  cx="30"
-                  cy="70"
-                  rx="12"
-                  ry="12"
-                  fill="#920783"
-                  transform="rotate(45 30 70)"
-                />
-                <ellipse
-                  cx="70"
-                  cy="70"
-                  rx="12"
-                  ry="12"
-                  fill="#e4007f"
-                  transform="rotate(-45 70 70)"
-                />
-              </svg>
+            <div class="flex-shrink-0 h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20">
+              <img
+                src="~/assets/images/logo.png"
+                alt="中国文艺志愿者协会"
+                class="h-full w-full object-contain"
+              />
             </div>
             <div class="flex flex-col">
               <h1
                 class="text-xl sm:text-2xl md:text-3xl text-gray-900 tracking-wider font-bold"
               >
-                中国文艺志愿者
+                武汉市江夏区文艺志愿者协会
               </h1>
               <p
-                class="text-xs sm:text-sm text-gray-500 tracking-widest mt-1 hidden sm:block"
+                class="text-xs sm:text-sm text-gray-500 tracking-widest mt-1 hidden sm:block uppercase"
               >
-                CHINA LITERARY AND ART VOLUNTEERS
+                Wuhan Jiangxia District Arts Volunteer Association
               </p>
               <p
                 class="text-[10px] sm:text-xs text-gray-400 mt-0.5 hidden sm:block"
               >
-                中国文学艺术界联合会主管 中国文艺志愿者协会主办
+                江夏区社工部 江夏区文学艺术界联合会主管 江夏区文艺志愿者协会主办 普生创艺园 海移教育 协办
               </p>
             </div>
           </div>

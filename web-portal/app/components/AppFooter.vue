@@ -30,9 +30,9 @@ const bottomLinks = [
 </script>
 
 <template>
-  <footer class="text-white bg-[#c41e3a]">
+  <footer class="text-white bg-[#c31f1f]">
     <!-- Links Section -->
-    <div class="mx-auto px-4 py-8 max-w-7xl lg:px-8 sm:px-6">
+    <div class="mx-auto px-4 py-8 max-w-7xl lg:px-8 sm:px-6  w-[1200px]">
       <div class="flex flex-col gap-8 justify-between md:flex-row">
         <!-- Left Links -->
         <div class="flex-1">
@@ -74,41 +74,11 @@ const bottomLinks = [
               class="rounded bg-gray-100 flex h-full w-full items-center justify-center"
             >
               <!-- 简化的二维码图案 -->
-              <svg viewBox="0 0 100 100" class="h-20 w-20">
-                <rect x="10" y="10" width="25" height="25" fill="#333" />
-                <rect x="65" y="10" width="25" height="25" fill="#333" />
-                <rect x="10" y="65" width="25" height="25" fill="#333" />
-                <rect x="15" y="15" width="15" height="15" fill="white" />
-                <rect x="70" y="15" width="15" height="15" fill="white" />
-                <rect x="15" y="70" width="15" height="15" fill="white" />
-                <rect x="18" y="18" width="9" height="9" fill="#333" />
-                <rect x="73" y="18" width="9" height="9" fill="#333" />
-                <rect x="18" y="73" width="9" height="9" fill="#333" />
-                <!-- 中间的图案 -->
-                <rect x="40" y="10" width="5" height="5" fill="#333" />
-                <rect x="50" y="10" width="5" height="5" fill="#333" />
-                <rect x="40" y="20" width="5" height="5" fill="#333" />
-                <rect x="45" y="25" width="5" height="5" fill="#333" />
-                <rect x="55" y="20" width="5" height="5" fill="#333" />
-                <rect x="10" y="40" width="5" height="5" fill="#333" />
-                <rect x="20" y="45" width="5" height="5" fill="#333" />
-                <rect x="10" y="50" width="5" height="5" fill="#333" />
-                <rect x="25" y="50" width="5" height="5" fill="#333" />
-                <rect x="40" y="40" width="20" height="20" fill="#333" />
-                <rect x="45" y="45" width="10" height="10" fill="white" />
-                <rect x="48" y="48" width="4" height="4" fill="#333" />
-                <rect x="65" y="40" width="5" height="5" fill="#333" />
-                <rect x="75" y="45" width="5" height="5" fill="#333" />
-                <rect x="85" y="40" width="5" height="5" fill="#333" />
-                <rect x="80" y="50" width="5" height="5" fill="#333" />
-                <rect x="40" y="65" width="5" height="5" fill="#333" />
-                <rect x="50" y="70" width="5" height="5" fill="#333" />
-                <rect x="45" y="80" width="5" height="5" fill="#333" />
-                <rect x="55" y="85" width="5" height="5" fill="#333" />
-                <rect x="65" y="65" width="25" height="25" fill="#333" />
-                <rect x="70" y="70" width="15" height="15" fill="white" />
-                <rect x="73" y="73" width="9" height="9" fill="#333" />
-              </svg>
+              <img
+                src="~/assets/images/qrcode.png"
+                alt="中国文艺志愿者微信公众号"
+                class="h-full w-full object-contain"
+              />
             </div>
           </div>
           <p class="text-xs text-white/90 text-center">
@@ -119,7 +89,7 @@ const bottomLinks = [
     </div>
 
     <!-- Bottom Section -->
-    <div class="py-4 bg-[#a01830]">
+    <div class="py-4 bg-[rgba(0,0,0,.1)]">
       <div class="mx-auto px-4 max-w-7xl lg:px-8 sm:px-6">
         <div class="text-xs text-white/80 text-center space-y-2">
           <p>网站总访问量：103025</p>
