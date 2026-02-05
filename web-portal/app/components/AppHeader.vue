@@ -131,10 +131,15 @@ watch(
                 v-for="item in navItems"
                 :key="item.path"
                 :to="item.path"
-                class="text-sm text-white px-4 xl:px-6 py-3 transition-all duration-200 hover:bg-[#a01830]"
-                :class="{ 'bg-[#a01830]': isActive(item.path) }"
+                class="group text-sm text-white px-4 xl:px-6 py-3 transition-all duration-200"
               >
-                {{ item.name }}
+                <span class="relative">
+                  {{ item.name }}
+                  <span
+                    class="absolute -bottom-1 left-0 w-full h-[2px] bg-white transition-transform duration-300 ease-in-out origin-center scale-x-0 group-hover:scale-x-100"
+                    :class="{ 'scale-x-100': isActive(item.path) }"
+                  />
+                </span>
               </NuxtLink>
             </div>
 
