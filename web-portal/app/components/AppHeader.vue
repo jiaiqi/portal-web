@@ -38,7 +38,7 @@ watch(
 <template>
   <header class="w-full relative z-50">
     <!-- Top Logo Section -->
-    <div class="bg-white relative z-50">
+    <div class="bg-white relative z-50 h-[115px]">
       <div class="mx-auto px-4 max-w-7xl lg:px-8 sm:px-6">
         <div class="py-4 flex items-center justify-between">
           <!-- Logo -->
@@ -122,28 +122,26 @@ watch(
     </div>
 
     <!-- Navigation Bar - Desktop -->
-    <nav class="bg-[#c41e3a] hidden lg:block">
+    <nav class="bg-[#cc0000] hidden lg:block border-b border-gray-100">
       <div class="mx-auto px-4 max-w-7xl lg:px-8 sm:px-6">
-        <div class="flex h-12 items-center">
+        <div class="flex h-[65px] items-center">
           <div class="flex items-center w-full justify-between">
             <div class="flex items-center">
               <NuxtLink
                 v-for="item in navItems"
                 :key="item.path"
                 :to="item.path"
-                class="group text-sm text-white px-4 xl:px-6 py-3 transition-all duration-200"
+                class="group text-base text-white px-4 xl:px-6 py-3 transition-all duration-200 "
               >
                 <span class="relative">
                   {{ item.name }}
                   <span
-                    class="absolute -bottom-1 left-0 w-full h-[2px] bg-white transition-transform duration-300 ease-in-out origin-center scale-x-0 group-hover:scale-x-100"
+                    class="absolute -bottom-3 left-0 w-full h-[2px] bg-white transition-transform duration-300 ease-in-out origin-center scale-x-0 group-hover:scale-x-100"
                     :class="{ 'scale-x-100': isActive(item.path) }"
                   />
                 </span>
               </NuxtLink>
             </div>
-
-            <!-- Search/User icons could go here -->
           </div>
         </div>
       </div>

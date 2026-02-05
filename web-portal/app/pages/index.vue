@@ -1,398 +1,270 @@
 <script setup lang="ts">
-const carouselSlides = [
-  {
-    title: "深入学习贯彻习近平文化思想",
-    image: "https://picsum.photos/800/400?random=1",
-    link: "/news/1",
-  },
-  {
-    title: "中国文艺志愿者协会第三次全国代表大会",
-    image: "https://picsum.photos/800/400?random=2",
-    link: "/news/2",
-  },
-  {
-    title: "文艺志愿服务走进基层",
-    image: "https://picsum.photos/800/400?random=3",
-    link: "/news/3",
-  },
-];
+const focusImages = {
+  big: "https://www.wyzyz.org/claav-api/profile/upload/2025/01/27/640_20250127152953A190.jpg",
+  small1:
+    "https://www.wyzyz.org/claav-api/profile/upload/2024/03/26/换届_20240326194203A028.png",
+  small2:
+    "https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20240103100743A007_20240103145744A044.png",
+  small3:
+    "https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20240103100333A006_20240103145721A043.png",
+};
+
+const focusBanner =
+  "https://www.wyzyz.org/claav-api/profile/upload/2025/12/30/mmexport1767076004004_20251230142654A441.jpg";
 
 const newsItems = [
   {
     id: 1,
-    title: "习近平总书记在中国文联十一大、中国作协十大开幕式上的重要讲话",
-    date: "2024-01-15",
-    link: "/news/1",
-    image: "https://picsum.photos/200/120?random=4",
+    title: "习近平致中国志愿服务联合会第三届会员代表大会的贺信",
+    date: "2025-11-29 12:00",
+    image:
+      "https://www.wyzyz.org/claav-api/profile/upload/2025/11/29/要闻_20251129210255A439.png",
   },
   {
     id: 2,
-    title: '中国文艺志愿者协会组织开展"送欢乐下基层"慰问演出活动',
-    date: "2024-01-14",
-    link: "/news/2",
-    image: "https://picsum.photos/200/120?random=5",
+    title:
+      "习近平总书记致中国志愿服务联合会第三届会员代表大会的贺信引发热烈反响",
+    date: "2025-11-29 12:00",
+    image:
+      "https://www.wyzyz.org/claav-api/profile/upload/2025/11/29/要闻_20251129210446A440.png",
   },
   {
     id: 3,
-    title: "文艺志愿者走进乡村振兴一线，用艺术助力乡村文化建设",
-    date: "2024-01-13",
-    link: "/news/3",
-    image: "https://picsum.photos/200/120?random=6",
+    title:
+      "第12个中国文艺志愿者服务日｜“强基工程”——“与人民同行”新时代文明实践中国文艺志愿者小分队走进辽宁沈阳",
+    date: "2025-05-27 12:00",
+    image:
+      "https://www.wyzyz.org/claav-api/profile/upload/2025/05/27/微信截图_20250527095142_20250527095153A373.png",
   },
   {
     id: 4,
-    title: '"我们的中国梦"文化进万家活动在全国各地蓬勃开展',
-    date: "2024-01-12",
-    link: "/news/4",
-    image: "https://picsum.photos/200/120?random=7",
+    title: "", // This item in HTML was just an image? "微信截图..."
+    isImageParams: true,
+    image:
+      "https://www.wyzyz.org/claav-api/profile/upload/2024/08/30/微信截图_20240830100412_20240830100426A104.png",
   },
   {
     id: 5,
-    title: "新时代文明实践文艺志愿服务项目模式试点工作推进会召开",
-    date: "2024-01-11",
-    link: "/news/5",
-    image: "https://picsum.photos/200/120?random=8",
+    title:
+      "中央宣传思想文化工作领导小组关于认定命名第七届全国文明城市、文明村镇、文明单位和第三届全国文明家庭、文明校园的决定",
+    date: "2025-05-27 12:00",
+    image:
+      "https://www.wyzyz.org/claav-api/profile/upload/2025/05/27/微信截图_20250527095422_20250527095430A374.png",
   },
   {
     id: 6,
-    title: "中国文联文艺支教项目招募志愿者公告",
-    date: "2024-01-10",
-    link: "/news/6",
-    image: "https://picsum.photos/200/120?random=9",
+    title: "第12个中国文艺志愿者服务日｜文艺志愿者们在行动",
+    date: "2025-05-27 12:00",
+    image:
+      "https://www.wyzyz.org/claav-api/profile/upload/2025/05/27/微信截图_20250527094917_20250527094929A372.png",
   },
   {
     id: 7,
-    title: '"到人民中去"文艺志愿服务主题活动在全国多地同步开展',
-    date: "2024-01-09",
-    link: "/news/7",
-    image: "https://picsum.photos/200/120?random=10",
-  },
-  {
-    id: 8,
-    title: "中国文艺志愿者协会组织开展文艺培训志愿服务活动",
-    date: "2024-01-08",
-    link: "/news/8",
-    image: "https://picsum.photos/200/120?random=11",
+    title:
+      "共唱团圆家 百花再出发｜“百花迎春——中国文学艺术界2025春节大联欢”报道",
+    date: "2025-01-27 15:20",
+    image:
+      "https://www.wyzyz.org/claav-api/profile/upload/2025/01/27/微信截图_20250127152109_20250127152122A187.png",
   },
 ];
 
-const localNewsItems = [
-  {
-    id: 1,
-    title: "北京市文联组织开展文艺志愿服务活动",
-    date: "2024-01-15",
-    link: "/news/local/1",
-  },
-  {
-    id: 2,
-    title: "上海市文艺志愿者走进社区慰问演出",
-    date: "2024-01-14",
-    link: "/news/local/2",
-  },
-  {
-    id: 3,
-    title: "广东省文联举办文艺志愿服务培训班",
-    date: "2024-01-13",
-    link: "/news/local/3",
-  },
-  {
-    id: 4,
-    title: "浙江省文艺志愿者开展送温暖活动",
-    date: "2024-01-12",
-    link: "/news/local/4",
-  },
+const rightBanners = {
+  top: "https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20240103100209A005_20240103145859A047.png",
+  platform:
+    "https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20240103100840A009 (1)_20240103145523A040.png",
+};
+
+const noticeList = [
+  "中国文联文艺志愿服务中心部门预算 （2025 年）",
+  "第三届“时代风尚”学雷锋文艺志愿服务先进典型名单公布",
+  "中国文联文艺志愿服务中心2023年度部门决算",
+  "中国文联文艺志愿服务中心部门决算（2022年度）",
+  "公示｜第三届宣传推选“时代风尚”学雷锋文艺志愿服务先进典型公示名单",
+  "中国文联文艺志愿服务中心部门预算（2024年）",
 ];
 
-const quickLinks = [
-  { name: "会员登录", url: "/login" },
-  { name: "活动报名", url: "/activities/register" },
-  { name: "志愿者注册", url: "/volunteer/register" },
-  { name: "资料下载", url: "/downloads" },
-];
-
-const specialTopics = [
-  {
-    id: 1,
-    title: "学习贯彻习近平文化思想",
-    image: "https://picsum.photos/300/200?random=20",
-    link: "/topics/cultural-thought",
-  },
-  {
-    id: 2,
-    title: "百花迎春",
-    image: "https://picsum.photos/300/200?random=21",
-    link: "/topics/baihua",
-  },
-  {
-    id: 3,
-    title: "文艺进万家",
-    image: "https://picsum.photos/300/200?random=22",
-    link: "/topics/volunteer-service",
-  },
-];
+const overviewLinks = ["协会简介", "组织机构", "理事会", "制度建设"];
 </script>
 
 <template>
-  <div>
-    <!-- Hero Section - 轮播图 + 右侧快捷入口 -->
-    <div class="bg-white">
-      <div class="mx-auto px-4 py-6 max-w-7xl lg:px-8 sm:px-6">
-        <div class="gap-6 grid grid-cols-1 lg:grid-cols-3">
-          <!-- Carousel - 占2/3宽度 -->
-          <div class="lg:col-span-2">
-            <NewsCarousel :slides="carouselSlides" />
+  <div class="bg-white min-h-screen font-sans">
+    <div class="mx-auto px-4 py-8 max-w-7xl lg:px-8 sm:px-6">
+      <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Left Column -->
+        <div class="flex-1 w-full lg:w-[860px] lg:flex-shrink-0">
+          <!-- Focus Area -->
+          <div class="flex flex-col sm:flex-row gap-4 mb-6 h-auto sm:h-[370px]">
+            <!-- Big Image -->
+            <div class="flex-1 relative h-[250px] sm:h-full">
+              <img :src="focusImages.big" class="w-full h-full object-cover" />
+            </div>
+            <!-- Small Images Column -->
+            <div
+              class="flex flex-row sm:flex-col gap-4 w-full sm:w-[180px] h-[110px] sm:h-full overflow-x-auto sm:overflow-visible"
+            >
+              <div class="w-[180px] h-[110px] flex-shrink-0">
+                <img
+                  :src="focusImages.small1"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="w-[180px] h-[110px] flex-shrink-0">
+                <img
+                  :src="focusImages.small2"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="w-[180px] h-[110px] flex-shrink-0">
+                <img
+                  :src="focusImages.small3"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            </div>
           </div>
-          <!-- 右侧快捷入口 -->
+
+          <!-- Focus Mini Banner -->
+          <div class="mb-8">
+            <img :src="focusBanner" class="w-full h-[95px] object-cover" />
+          </div>
+
+          <!-- Tabs -->
           <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-6"
+            class="border-b border-gray-200 mb-6 flex justify-between items-end"
           >
-            <!-- 百花迎春 -->
-            <div
-              class="group rounded-lg h-36 cursor-pointer relative overflow-hidden"
-            >
-              <img
-                src="https://picsum.photos/400/200?random=100"
-                alt="百花迎春"
-                class="h-full w-full transition-transform duration-300 object-cover group-hover:scale-105"
-              />
+            <div class="flex">
               <div
-                class="flex items-center inset-0 justify-center absolute from-red-800/90 to-red-600/80 bg-gradient-to-r"
+                class="px-6 py-3 text-lg font-bold text-[#c41e3a] border-b-2 border-[#c41e3a]"
               >
-                <div class="text-white text-center">
-                  <h3 class="text-xl font-bold mb-1">百花迎春</h3>
-                  <p class="text-sm opacity-90">中国文学艺术界春节大联欢</p>
-                </div>
+                要闻
+              </div>
+              <div
+                class="px-6 py-3 text-lg font-medium text-gray-600 hover:text-[#c41e3a] cursor-pointer"
+              >
+                资讯
               </div>
             </div>
-            <!-- 文艺进万家 -->
-            <div
-              class="group rounded-lg h-36 cursor-pointer relative overflow-hidden"
+            <a href="#" class="text-sm text-gray-500 mb-3 hover:text-[#c41e3a]"
+              >更多>></a
             >
-              <img
-                src="https://picsum.photos/400/200?random=101"
-                alt="文艺进万家"
-                class="h-full w-full transition-transform duration-300 object-cover group-hover:scale-105"
-              />
-              <div
-                class="flex items-center inset-0 justify-center absolute from-amber-700/90 to-amber-500/80 bg-gradient-to-r"
-              >
-                <div class="text-white text-center">
-                  <h3 class="text-xl font-bold mb-1">文艺进万家</h3>
-                  <p class="text-sm opacity-90">健康你我他</p>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- 学习贯彻党的二十大精神 Banner -->
-    <div class="mx-auto mb-6 px-4 max-w-7xl lg:px-8 sm:px-6">
-      <div
-        class="text-white p-6 rounded-lg from-red-900 to-red-700 bg-gradient-to-r"
-      >
-        <h2 class="text-xl font-bold">深入学习贯彻党的二十届四中全会精神</h2>
-      </div>
-    </div>
-
-    <!-- News Section -->
-    <div class="mx-auto px-4 pb-8 max-w-7xl lg:px-8 sm:px-6">
-      <div class="gap-6 grid grid-cols-1 lg:grid-cols-3">
-        <!-- Main News - 要闻 -->
-        <div class="lg:col-span-2">
-          <div class="p-6 rounded-lg bg-white">
+          <!-- News List -->
+          <div class="space-y-6">
             <div
-              class="mb-6 pb-3 border-b border-gray-200 flex items-center justify-between"
+              v-for="item in newsItems"
+              :key="item.id"
+              class="flex gap-4 pb-6 border-b border-gray-100 last:border-0"
             >
-              <div class="flex gap-2 items-center">
-                <span class="rounded bg-[#c41e3a] h-5 w-1" />
-                <h2 class="text-lg text-gray-800 font-bold">要闻</h2>
-              </div>
-              <NuxtLink
-                to="/news"
-                class="text-sm text-gray-500 flex gap-1 transition-colors items-center hover:text-[#c41e3a]"
-              >
-                更多
-                <span class="text-xs">›</span>
-              </NuxtLink>
-            </div>
-            <div class="space-y-4">
-              <NuxtLink
-                v-for="item in newsItems"
-                :key="item.id"
-                :to="item.link"
-                class="group flex gap-4"
-              >
-                <div
-                  v-if="item.image"
-                  class="rounded flex-shrink-0 h-24 w-40 overflow-hidden"
-                >
+              <template v-if="item.isImageParams">
+                <div class="w-full">
                   <img
                     :src="item.image"
-                    :alt="item.title"
-                    class="h-full w-full transition-transform duration-300 object-cover group-hover:scale-105"
+                    class="w-full h-[95px] object-contain"
                   />
                 </div>
-                <div class="flex-1 min-w-0">
+              </template>
+              <template v-else>
+                <div class="w-[180px] h-[110px] flex-shrink-0">
+                  <img :src="item.image" class="w-full h-full object-cover" />
+                </div>
+                <div class="flex-1 flex flex-col justify-between py-1">
                   <h3
-                    class="text-sm text-gray-800 font-medium mb-2 transition-colors line-clamp-2 group-hover:text-[#c41e3a]"
+                    class="text-base font-bold text-gray-800 leading-snug hover:text-[#c41e3a] cursor-pointer"
                   >
                     {{ item.title }}
                   </h3>
-                  <p class="text-xs text-gray-400">
+                  <p class="text-xs text-gray-400 text-right">
                     {{ item.date }}
                   </p>
                 </div>
-              </NuxtLink>
+              </template>
             </div>
           </div>
         </div>
 
-        <!-- Sidebar -->
-        <div
-          class="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0 lg:block lg:space-y-6 lg:gap-0"
-        >
-          <!-- 协会概况 -->
-          <div class="p-6 rounded-lg bg-white">
+        <!-- Right Column -->
+        <div class="w-full lg:w-[320px] lg:flex-shrink-0 space-y-8">
+          <!-- Link Box -->
+          <div>
+            <img :src="rightBanners.top" class="w-full h-auto object-cover" />
+          </div>
+
+          <!-- Hots / Notices -->
+          <div>
             <div
-              class="mb-4 pb-3 border-b border-gray-200 flex items-center justify-between"
+              class="border-b border-gray-200 mb-4 flex justify-between items-end"
             >
-              <div class="flex gap-2 items-center">
-                <span class="rounded bg-[#c41e3a] h-5 w-1" />
-                <h2 class="text-lg text-gray-800 font-bold">协会概况</h2>
-              </div>
-              <NuxtLink
-                to="/about"
-                class="text-sm text-gray-500 transition-colors hover:text-[#c41e3a]"
+              <div
+                class="px-2 py-2 text-base font-bold text-[#c41e3a] border-b-2 border-[#c41e3a]"
               >
-                更多 ›
-              </NuxtLink>
+                公告/公示
+              </div>
+              <a
+                href="#"
+                class="text-xs text-gray-500 mb-2 hover:text-[#c41e3a]"
+                >更多>></a
+              >
             </div>
-            <div class="text-sm text-gray-600 leading-relaxed">
-              <p class="mb-3 text-justify">
+            <ul class="space-y-3">
+              <li
+                v-for="(notice, index) in noticeList"
+                :key="index"
+                class="flex items-start gap-2 text-sm text-gray-700 hover:text-[#c41e3a] cursor-pointer"
+              >
+                <span class="font-bold text-gray-400 mt-[2px]">·</span>
+                <span class="line-clamp-1 flex-1">{{ notice }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Association Overview -->
+          <div class="bg-gray-50 p-4 rounded-sm">
+            <h2 class="text-lg font-bold text-[#c41e3a] mb-3">协会概况</h2>
+            <div
+              class="text-sm text-gray-600 leading-relaxed mb-4 text-justify"
+            >
+              <p class="indent-8">
                 中国文艺志愿者协会（China Literary and Art Volunteers'
-                Association，CLAVA）是由文艺志愿者、文艺志愿服务组织以及关心支持文艺志愿服务事业的单位和个人自愿组成的全国性、联合性、非营利性社会组织...
-              </p>
-              <NuxtLink
-                to="/about"
-                class="text-sm text-[#c41e3a] hover:underline"
-              >
-                查看详情 ›
-              </NuxtLink>
-            </div>
-          </div>
-
-          <!-- 基层动态 -->
-          <div class="p-6 rounded-lg bg-white">
-            <div
-              class="mb-4 pb-3 border-b border-gray-200 flex items-center justify-between"
-            >
-              <div class="flex gap-2 items-center">
-                <span class="rounded bg-[#c41e3a] h-5 w-1" />
-                <h2 class="text-lg text-gray-800 font-bold">基层动态</h2>
-              </div>
-              <NuxtLink
-                to="/news/local"
-                class="text-sm text-gray-500 transition-colors hover:text-[#c41e3a]"
-              >
-                更多 ›
-              </NuxtLink>
-            </div>
-            <div class="space-y-3">
-              <NuxtLink
-                v-for="item in localNewsItems"
-                :key="item.id"
-                :to="item.link"
-                class="group block"
-              >
-                <h3
-                  class="text-sm text-gray-700 transition-colors line-clamp-1 group-hover:text-[#c41e3a]"
-                >
-                  {{ item.title }}
-                </h3>
-                <p class="text-xs text-gray-400 mt-1">
-                  {{ item.date }}
-                </p>
-              </NuxtLink>
-            </div>
-          </div>
-
-          <!-- 快捷入口 -->
-          <div class="p-6 rounded-lg bg-white">
-            <div
-              class="mb-4 pb-3 border-b border-gray-200 flex gap-2 items-center"
-            >
-              <span class="rounded bg-[#c41e3a] h-5 w-1" />
-              <h2 class="text-lg text-gray-800 font-bold">快捷入口</h2>
-            </div>
-            <div class="gap-3 grid grid-cols-2">
-              <NuxtLink
-                v-for="link in quickLinks"
-                :key="link.name"
-                :to="link.url"
-                class="text-sm text-gray-700 px-4 py-3 rounded bg-gray-50 flex transition-all items-center justify-center hover:text-white hover:bg-[#c41e3a]"
-              >
-                {{ link.name }}
-              </NuxtLink>
-            </div>
-          </div>
-
-          <!-- 专题活动 -->
-          <div class="p-6 rounded-lg bg-white">
-            <div
-              class="mb-4 pb-3 border-b border-gray-200 flex gap-2 items-center"
-            >
-              <span class="rounded bg-[#c41e3a] h-5 w-1" />
-              <h2 class="text-lg text-gray-800 font-bold">专题活动</h2>
-            </div>
-            <div class="space-y-3">
-              <NuxtLink
-                v-for="topic in specialTopics"
-                :key="topic.id"
-                :to="topic.link"
-                class="group rounded-lg h-24 block relative overflow-hidden"
-              >
-                <img
-                  :src="topic.image"
-                  :alt="topic.title"
-                  class="h-full w-full transition-transform duration-300 object-cover group-hover:scale-105"
-                />
-                <div
-                  class="flex items-end inset-0 absolute from-black/70 to-transparent bg-gradient-to-t"
-                >
-                  <span class="text-sm text-white font-medium p-3">{{
-                    topic.title
-                  }}</span>
-                </div>
-              </NuxtLink>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 学习贯彻习近平文化思想 专题横幅 -->
-    <div class="mx-auto mb-8 px-4 max-w-7xl lg:px-8 sm:px-6">
-      <div class="rounded-lg overflow-hidden">
-        <div class="h-32 relative">
-          <img
-            src="https://picsum.photos/1200/300?random=30"
-            alt="学习贯彻习近平文化思想"
-            class="h-full w-full object-cover"
-          />
-          <div
-            class="flex items-center inset-0 justify-center absolute from-red-800/95 to-red-600/90 bg-gradient-to-r"
-          >
-            <div class="text-white text-center">
-              <h2 class="text-2xl font-bold mb-2">学习贯彻习近平文化思想</h2>
-              <p class="text-sm opacity-90">
-                深入学习贯彻习近平新时代中国特色社会主义思想
+                Association，CLAVA），2013年5月23日在北京成立，现任主席是殷秀梅。中国文艺志愿者协会是在中国文联党组领导下...
               </p>
             </div>
+            <div
+              class="flex flex-wrap gap-2 text-sm text-gray-500 justify-center mb-4"
+            >
+              <template v-for="(link, i) in overviewLinks" :key="link">
+                <a href="#" class="hover:text-[#c41e3a]">{{ link }}</a>
+                <span v-if="i < overviewLinks.length - 1">|</span>
+              </template>
+            </div>
+            <div class="text-center">
+              <button
+                class="text-white px-6 py-1.5 rounded text-sm transition-colors"
+                style="background: linear-gradient(262deg, #e55741, #cc0000)"
+              >
+                logo下载
+              </button>
+            </div>
+          </div>
+
+          <!-- Platform Banner -->
+          <div>
+            <img
+              :src="rightBanners.platform"
+              class="w-full h-[100px] object-cover"
+            />
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.focus-img-box {
+  transition: all 0.3s ease;
+}
+.focus-img-box:hover {
+  opacity: 0.9;
+}
+</style>
