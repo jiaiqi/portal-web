@@ -20,6 +20,7 @@ export class PortalService {
     const focusData = await this.focusService.getHomeFocus();
     const focusBanner = await this.getFocusBanner();
     const newsItems = await this.getNewsItems();
+    const informationItems = await this.getInformationItems();
     const rightBanners = await this.getRightBanners();
     const noticeList = await this.getNoticeList();
 
@@ -27,6 +28,7 @@ export class PortalService {
       focusImages: focusData.data,
       focusBanner,
       newsItems,
+      informationItems,
       rightBanners,
       noticeList,
     });
@@ -41,6 +43,23 @@ export class PortalService {
     const result = await this.articleService.findList({
       pageNum: 1,
       pageSize: 6,
+      categoryId: 1,
+      status: '1',
+    });
+    return result.list.map(item => ({
+      id: item.articleId,
+      title: item.title,
+      date: this.formatDate(item.publishTime),
+      image: item.coverImage,
+      openType: item.openType || 'current',
+    }));
+  }
+
+  private async getInformationItems() {
+    const result = await this.articleService.findList({
+      pageNum: 1,
+      pageSize: 6,
+      categoryId: 2,
       status: '1',
     });
     return result.list.map(item => ({

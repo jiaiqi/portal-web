@@ -6,6 +6,7 @@ const { getHomeData } = usePortal()
 const homeData = ref<any>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
+const activeTab = ref<'news' | 'information'>('news')
 
 onMounted(async () => {
   try {
@@ -76,25 +77,37 @@ onMounted(async () => {
           >
             <div class="flex">
               <div
-                class="px-6 py-3 text-lg font-bold text-[#c41e3a] border-b-2 border-[#c41e3a]"
+                @click="activeTab = 'news'"
+                :class="[
+                  'px-6 py-3 text-lg cursor-pointer',
+                  activeTab === 'news'
+                    ? 'font-bold text-[#c41e3a] border-b-2 border-[#c41e3a]'
+                    : 'font-medium text-gray-600 hover:text-[#c41e3a]'
+                ]"
               >
                 要闻
               </div>
               <div
-                class="px-6 py-3 text-lg font-medium text-gray-600 hover:text-[#c41e3a] cursor-pointer"
+                @click="activeTab = 'information'"
+                :class="[
+                  'px-6 py-3 text-lg cursor-pointer',
+                  activeTab === 'information'
+                    ? 'font-bold text-[#c41e3a] border-b-2 border-[#c41e3a]'
+                    : 'font-medium text-gray-600 hover:text-[#c41e3a]'
+                ]"
               >
                 资讯
               </div>
             </div>
             <a href="#" class="text-sm text-gray-500 mb-3 hover:text-[#c41e3a]"
               >更多>></a
-            >
+          >
           </div>
 
           <!-- News List -->
           <div class="space-y-6">
             <div
-              v-for="item in homeData.newsItems"
+              v-for="item in activeTab === 'news' ? homeData.newsItems : homeData.informationItems"
               :key="item.id"
               class="flex gap-4 pb-6 border-b border-gray-100 last:border-0"
             >
@@ -138,7 +151,7 @@ onMounted(async () => {
                 href="/announcements"
                 class="text-xs text-gray-500 mb-2 hover:text-[#c41e3a]"
                 >更多>></a
-              >
+            >
             </div>
             <ul class="space-y-3">
               <li

@@ -25,6 +25,7 @@ export interface HomeData {
   focusImages: FocusImages
   focusBanner: string
   newsItems: NewsItem[]
+  informationItems: NewsItem[]
   rightBanners: RightBanners
   noticeList: string[]
 }
