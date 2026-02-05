@@ -1,171 +1,117 @@
--- 文艺志愿者官网CMS模块菜单初始化脚本
--- 在后台管理系统中添加CMS管理菜单
+-- CMS 菜单数据初始化脚本
+-- 创建日期: 2026-02-06
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- 添加CMS管理菜单
--- ----------------------------
-
--- 1. CMS管理主目录 (parent_id=0)
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2000, '内容管理', 0, 5, 'cms', NULL, '', '1', '0', 'M', '0', '0', '', 'documentation', 'admin', NOW(), '', NULL, 'CMS内容管理目录', '0');
-
--- 2. 文章管理菜单
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2001, '文章管理', 2000, 1, 'article', 'cms/article/index', '', '1', '0', 'C', '0', '0', 'cms:article:list', 'edit', 'admin', NOW(), '', NULL, '文章管理菜单', '0');
-
--- 3. 分类管理菜单
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2002, '分类管理', 2000, 2, 'category', 'cms/category/index', '', '1', '0', 'C', '0', '0', 'cms:category:list', 'tree', 'admin', NOW(), '', NULL, '分类管理菜单', '0');
-
--- 4. 轮播图管理菜单
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2003, '轮播图管理', 2000, 3, 'banner', 'cms/banner/index', '', '1', '0', 'C', '0', '0', 'cms:banner:list', 'image', 'admin', NOW(), '', NULL, '轮播图管理菜单', '0');
-
--- 5. 专题管理菜单
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2004, '专题管理', 2000, 4, 'special', 'cms/special/index', '', '1', '0', 'C', '0', '0', 'cms:special:list', 'tab', 'admin', NOW(), '', NULL, '专题管理菜单', '0');
-
--- 6. 友情链接管理菜单
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2005, '友情链接', 2000, 5, 'link', 'cms/link/index', '', '1', '0', 'C', '0', '0', 'cms:link:list', 'link', 'admin', NOW(), '', NULL, '友情链接管理菜单', '0');
-
--- 7. 单页管理菜单
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2006, '单页管理', 2000, 6, 'page', 'cms/page/index', '', '1', '0', 'C', '0', '0', 'cms:page:list', 'page', 'admin', NOW(), '', NULL, '单页管理菜单', '0');
-
--- 8. 快捷链接管理菜单
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2007, '快捷链接', 2000, 7, 'quickLink', 'cms/quickLink/index', '', '1', '0', 'C', '0', '0', 'cms:quickLink:list', 'shortcut', 'admin', NOW(), '', NULL, '快捷链接管理菜单', '0');
+USE nest_admin;
 
 -- ----------------------------
--- 文章管理按钮权限
+-- 1. 创建 sys_menu 表（如果不存在）
 -- ----------------------------
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2100, '文章查询', 2001, 1, '', '', '', '1', '0', 'F', '0', '0', 'cms:article:query', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2101, '文章新增', 2001, 2, '', '', '', '1', '0', 'F', '0', '0', 'cms:article:add', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2102, '文章修改', 2001, 3, '', '', '', '1', '0', 'F', '0', '0', 'cms:article:edit', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2103, '文章删除', 2001, 4, '', '', '', '1', '0', 'F', '0', '0', 'cms:article:remove', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2104, '文章导出', 2001, 5, '', '', '', '1', '0', 'F', '0', '0', 'cms:article:export', '#', 'admin', NOW(), '', NULL, '', '0');
+CREATE TABLE IF NOT EXISTS `sys_menu` (
+  `menu_id` int NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
+  `menu_name` varchar(50) NOT NULL COMMENT '菜单名称',
+  `parent_id` int NOT NULL COMMENT '父菜单ID',
+  `order_num` int NOT NULL DEFAULT '0' COMMENT '显示顺序',
+  `path` varchar(200) NOT NULL DEFAULT '' COMMENT '路由地址',
+  `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
+  `query` varchar(255) NOT NULL DEFAULT '' COMMENT '路由参数',
+  `is_frame` char(1) NOT NULL DEFAULT '1' COMMENT '是否为外链',
+  `is_cache` char(1) NOT NULL DEFAULT '0' COMMENT '是否缓存',
+  `menu_type` char(1) NOT NULL DEFAULT 'M' COMMENT '菜单类型',
+  `visible` char(1) NOT NULL DEFAULT '0' COMMENT '是否显示',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '状态',
+  `perms` varchar(100) NOT NULL DEFAULT '' COMMENT '权限标识',
+  `icon` varchar(100) NOT NULL DEFAULT '' COMMENT '菜单图标',
+  `create_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建者',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `update_by` varchar(64) NOT NULL DEFAULT '' COMMENT '更新者',
+  `update_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标志',
+  PRIMARY KEY (`menu_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单权限表';
 
 -- ----------------------------
--- 分类管理按钮权限
+-- 2. 删除已存在的 CMS 菜单
 -- ----------------------------
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2200, '分类查询', 2002, 1, '', '', '', '1', '0', 'F', '0', '0', 'cms:category:query', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2201, '分类新增', 2002, 2, '', '', '', '1', '0', 'F', '0', '0', 'cms:category:add', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2202, '分类修改', 2002, 3, '', '', '', '1', '0', 'F', '0', '0', 'cms:category:edit', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2203, '分类删除', 2002, 4, '', '', '', '1', '0', 'F', '0', '0', 'cms:category:remove', '#', 'admin', NOW(), '', NULL, '', '0');
+DELETE FROM sys_menu WHERE menu_id >= 2000 AND menu_id < 3000;
 
 -- ----------------------------
--- 轮播图管理按钮权限
+-- 3. 插入 CMS 菜单
 -- ----------------------------
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2300, '轮播图查询', 2003, 1, '', '', '', '1', '0', 'F', '0', '0', 'cms:banner:query', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2301, '轮播图新增', 2003, 2, '', '', '', '1', '0', 'F', '0', '0', 'cms:banner:add', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2302, '轮播图修改', 2003, 3, '', '', '', '1', '0', 'F', '0', '0', 'cms:banner:edit', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2303, '轮播图删除', 2003, 4, '', '', '', '1', '0', 'F', '0', '0', 'cms:banner:remove', '#', 'admin', NOW(), '', NULL, '', '0');
 
--- ----------------------------
--- 专题管理按钮权限
--- ----------------------------
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2400, '专题查询', 2004, 1, '', '', '', '1', '0', 'F', '0', '0', 'cms:special:query', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2401, '专题新增', 2004, 2, '', '', '', '1', '0', 'F', '0', '0', 'cms:special:add', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2402, '专题修改', 2004, 3, '', '', '', '1', '0', 'F', '0', '0', 'cms:special:edit', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2403, '专题删除', 2004, 4, '', '', '', '1', '0', 'F', '0', '0', 'cms:special:remove', '#', 'admin', NOW(), '', NULL, '', '0');
+-- 内容管理父菜单
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `update_by`, `remark`, `del_flag`) VALUES
+(2000, '内容管理', 0, 5, 'cms', NULL, '1', '0', 'M', '0', '0', '', 'list', 'admin', 'admin', '内容管理目录', '0');
 
--- ----------------------------
--- 友情链接按钮权限
--- ----------------------------
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2500, '链接查询', 2005, 1, '', '', '', '1', '0', 'F', '0', '0', 'cms:link:query', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2501, '链接新增', 2005, 2, '', '', '', '1', '0', 'F', '0', '0', 'cms:link:add', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2502, '链接修改', 2005, 3, '', '', '', '1', '0', 'F', '0', '0', 'cms:link:edit', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2503, '链接删除', 2005, 4, '', '', '', '1', '0', 'F', '0', '0', 'cms:link:remove', '#', 'admin', NOW(), '', NULL, '', '0');
+-- 文章管理
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `update_by`, `remark`, `del_flag`) VALUES
+(2001, '文章管理', 2000, 1, 'article', 'cms/article/index', '', '1', '0', 'C', '0', '0', 'cms:article:list', 'list', 'admin', 'admin', '文章管理菜单', '0'),
+(2002, '文章查询', 2001, 1, '', '', '1', '0', 'F', '0', '0', 'cms:article:query', '#', 'admin', 'admin', '', '0'),
+(2003, '文章新增', 2001, 2, '', '', '1', '0', 'F', '0', '0', 'cms:article:add', '#', 'admin', 'admin', '', '0'),
+(2004, '文章修改', 2001, 3, '', '', '1', '0', 'F', '0', '0', 'cms:article:edit', '#', 'admin', 'admin', '', '0'),
+(2005, '文章删除', 2001, 4, '', '', '1', '0', 'F', '0', '0', 'cms:article:remove', '#', 'admin', 'admin', '', '0'),
+(2006, '文章导出', 2001, 5, '', '', '1', '0', 'F', '0', '0', 'cms:article:export', '#', 'admin', 'admin', '', '0');
 
--- ----------------------------
--- 单页管理按钮权限
--- ----------------------------
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2600, '单页查询', 2006, 1, '', '', '', '1', '0', 'F', '0', '0', 'cms:page:query', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2601, '单页新增', 2006, 2, '', '', '', '1', '0', 'F', '0', '0', 'cms:page:add', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2602, '单页修改', 2006, 3, '', '', '', '1', '0', 'F', '0', '0', 'cms:page:edit', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2603, '单页删除', 2006, 4, '', '', '', '1', '0', 'F', '0', '0', 'cms:page:remove', '#', 'admin', NOW(), '', NULL, '', '0');
+-- 分类管理
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `update_by`, `remark`, `del_flag`) VALUES
+(2010, '分类管理', 2000, 2, 'category', 'cms/category/index', '', '1', '0', 'C', '0', '0', 'cms:category:list', 'list', 'admin', 'admin', '分类管理菜单', '0'),
+(2011, '分类查询', 2010, 1, '', '', '1', '0', 'F', '0', '0', 'cms:category:query', '#', 'admin', 'admin', '', '0'),
+(2012, '分类新增', 2010, 2, '', '', '1', '0', 'F', '0', '0', 'cms:category:add', '#', 'admin', 'admin', '', '0'),
+(2013, '分类修改', 2010, 3, '', '', '1', '0', 'F', '0', '0', 'cms:category:edit', '#', 'admin', 'admin', '', '0'),
+(2014, '分类删除', 2010, 4, '', '', '1', '0', 'F', '0', '0', 'cms:category:remove', '#', 'admin', 'admin', '', '0');
 
--- ----------------------------
--- 快捷链接按钮权限
--- ----------------------------
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2700, '快捷链接查询', 2007, 1, '', '', '', '1', '0', 'F', '0', '0', 'cms:quickLink:query', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2701, '快捷链接新增', 2007, 2, '', '', '', '1', '0', 'F', '0', '0', 'cms:quickLink:add', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2702, '快捷链接修改', 2007, 3, '', '', '', '1', '0', 'F', '0', '0', 'cms:quickLink:edit', '#', 'admin', NOW(), '', NULL, '', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) 
-VALUES (2703, '快捷链接删除', 2007, 4, '', '', '', '1', '0', 'F', '0', '0', 'cms:quickLink:remove', '#', 'admin', NOW(), '', NULL, '', '0');
+-- 轮播图管理
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `update_by`, `remark`, `del_flag`) VALUES
+(2020, '轮播图管理', 2000, 3, 'banner', 'cms/banner/index', '', '1', '0', 'C', '0', '0', 'cms:banner:list', 'list', 'admin', 'admin', '轮播图管理菜单', '0'),
+(2021, '轮播图查询', 2020, 1, '', '', '1', '0', 'F', '0', '0', 'cms:banner:query', '#', 'admin', 'admin', '', '0'),
+(2022, '轮播图新增', 2020, 2, '', '', '1', '0', 'F', '0', '0', 'cms:banner:add', '#', 'admin', 'admin', '', '0'),
+(2023, '轮播图修改', 2020, 3, '', '', '1', '0', 'F', '0', '0', 'cms:banner:edit', '#', 'admin', 'admin', '', '0'),
+(2024, '轮播图删除', 2020, 4, '', '', '1', '0', 'F', '0', '0', 'cms:banner:remove', '#', 'admin', 'admin', '', '0');
 
--- ----------------------------
--- 将CMS菜单权限分配给管理员角色(role_id=1)
--- ----------------------------
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2000);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2001);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2002);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2003);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2004);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2005);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2006);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2007);
--- 按钮权限
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2100);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2101);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2102);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2103);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2104);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2200);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2201);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2202);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2203);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2300);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2301);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2302);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2303);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2400);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2401);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2402);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2403);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2500);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2501);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2502);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2503);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2600);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2601);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2602);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2603);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2700);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2701);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2702);
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1, 2703);
+-- 焦点图管理
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `update_by`, `remark`, `del_flag`) VALUES
+(2030, '焦点图管理', 2000, 4, 'focus', 'cms/focus/index', '', '1', '0', 'C', '0', '0', 'cms:focus:list', 'list', 'admin', 'admin', '焦点图管理菜单', '0'),
+(2031, '焦点图查询', 2030, 1, '', '', '1', '0', 'F', '0', '0', 'cms:focus:query', '#', 'admin', 'admin', '', '0'),
+(2032, '焦点图新增', 2030, 2, '', '', '1', '0', 'F', '0', '0', 'cms:focus:add', '#', 'admin', 'admin', '', '0'),
+(2033, '焦点图修改', 2030, 3, '', '', '1', '0', 'F', '0', '0', 'cms:focus:edit', '#', 'admin', 'admin', '', '0'),
+(2034, '焦点图删除', 2030, 4, '', '', '1', '0', 'F', '0', '0', 'cms:focus:remove', '#', 'admin', 'admin', '', '0');
 
-SET FOREIGN_KEY_CHECKS = 1;
+-- 公告管理
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `update_by`, `remark`, `del_flag`) VALUES
+(2040, '公告管理', 2000, 5, 'notice', 'cms/notice/index', '', '1', '0', 'C', '0', '0', 'cms:notice:list', 'list', 'admin', 'admin', '公告管理菜单', '0'),
+(2041, '公告查询', 2040, 1, '', '', '1', '0', 'F', '0', '0', 'cms:notice:query', '#', 'admin', 'admin', '', '0'),
+(2042, '公告新增', 2040, 2, '', '', '1', '0', 'F', '0', '0', 'cms:notice:add', '#', 'admin', 'admin', '', '0'),
+(2043, '公告修改', 2040, 3, '', '', '1', '0', 'F', '0', '0', 'cms:notice:edit', '#', 'admin', 'admin', '', '0'),
+(2044, '公告删除', 2040, 4, '', '', '1', '0', 'F', '0', '0', 'cms:notice:remove', '#', 'admin', 'admin', '', '0');
+
+-- 友情链接
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `update_by`, `remark`, `del_flag`) VALUES
+(2050, '友情链接', 2000, 6, 'link', 'cms/link/index', '', '1', '0', 'C', '0', '0', 'cms:link:list', 'list', 'admin', 'admin', '友情链接菜单', '0'),
+(2051, '友情链接查询', 2050, 1, '', '', '1', '0', 'F', '0', '0', 'cms:link:query', '#', 'admin', 'admin', '', '0'),
+(2052, '友情链接新增', 2050, 2, '', '', '1', '0', 'F', '0', '0', 'cms:link:add', '#', 'admin', 'admin', '', '0'),
+(2053, '友情链接修改', 2050, 3, '', '', '1', '0', 'F', '0', '0', 'cms:link:edit', '#', 'admin', 'admin', '', '0'),
+(2054, '友情链接删除', 2050, 4, '', '', '1', '0', 'F', '0', '0', 'cms:link:remove', '#', 'admin', 'admin', '', '0');
+
+-- 单页管理
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `update_by`, `remark`, `del_flag`) VALUES
+(2060, '单页管理', 2000, 7, 'page', 'cms/page/index', '', '1', '0', 'C', '0', '0', 'cms:page:list', 'list', 'admin', 'admin', '单页管理菜单', '0'),
+(2061, '单页查询', 2060, 1, '', '', '1', '0', 'F', '0', '0', 'cms:page:query', '#', 'admin', 'admin', '', '0'),
+(2062, '单页新增', 2060, 2, '', '', '1', '0', 'F', '0', '0', 'cms:page:add', '#', 'admin', 'admin', '', '0'),
+(2063, '单页修改', 2060, 3, '', '', '1', '0', 'F', '0', '0', 'cms:page:edit', '#', 'admin', 'admin', '', '0'),
+(2064, '单页删除', 2060, 4, '', '', '1', '0', 'F', '0', '0', 'cms:page:remove', '#', 'admin', 'admin', '', '0');
+
+-- 快捷链接
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `update_by`, `remark`, `del_flag`) VALUES
+(2070, '快捷链接', 2000, 8, 'quickLink', 'cms/quickLink/index', '', '1', '0', 'C', '0', '0', 'cms:quickLink:list', 'list', 'admin', 'admin', '快捷链接菜单', '0'),
+(2071, '快捷链接查询', 2070, 1, '', '', '1', '0', 'F', '0', '0', 'cms:quickLink:query', '#', 'admin', 'admin', '', '0'),
+(2072, '快捷链接新增', 2070, 2, '', '', '1', '0', 'F', '0', '0', 'cms:quickLink:add', '#', 'admin', 'admin', '', '0'),
+(2073, '快捷链接修改', 2070, 3, '', '', '1', '0', 'F', '0', '0', 'cms:quickLink:edit', '#', 'admin', 'admin', '', '0'),
+(2074, '快捷链接删除', 2070, 4, '', '', '1', '0', 'F', '0', '0', 'cms:quickLink:remove', '#', 'admin', 'admin', '', '0');
+
+-- 专题管理
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `update_by`, `remark`, `del_flag`) VALUES
+(2080, '专题管理', 2000, 9, 'special', 'cms/special/index', '', '1', '0', 'C', '0', '0', 'cms:special:list', 'list', 'admin', 'admin', '专题管理菜单', '0'),
+(2081, '专题查询', 2080, 1, '', '', '1', '0', 'F', '0', '0', 'cms:special:query', '#', 'admin', 'admin', '', '0'),
+(2082, '专题新增', 2080, 2, '', '', '1', '0', 'F', '0', '0', 'cms:special:add', '#', 'admin', 'admin', '', '0'),
+(2083, '专题修改', 2080, 3, '', '', '1', '0', 'F', '0', '0', 'cms:special:edit', '#', 'admin', 'admin', '', '0'),
+(2084, '专题删除', 2080, 4, '', '', '1', '0', 'F', '0', '0', 'cms:special:remove', '#', 'admin', 'admin', '', '0');
