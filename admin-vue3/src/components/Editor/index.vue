@@ -1,163 +1,135 @@
 <template>
-  <div class="editor">
-      <quill-editor
-        v-model:content="content"
-        contentType="html"
-        @textChange="(e) => $emit('update:modelValue', content)"
-        :options="options"
-        :style="styles"
-      />
+  <div style="border: 1px solid #ccc">
+    <Toolbar
+      style="border-bottom: 1px solid #ccc"
+      :editor="editorRef"
+      :defaultConfig="toolbarConfig"
+      :mode="mode"
+    />
+    <Editor
+      :style="{ height: height + 'px', overflowY: 'hidden' }"
+      v-model="valueHtml"
+      :defaultConfig="editorConfig"
+      :mode="mode"
+      @onCreated="handleCreated"
+      @onChange="handleChange"
+    />
   </div>
 </template>
 
 <script setup>
-import { QuillEditor } from '@vueup/vue-quill';
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import '@wangeditor/editor/dist/css/style.css'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import { getToken } from '@/utils/auth'
+import axios from 'axios'
 
 const props = defineProps({
-  /* 编辑器的内容 */
   modelValue: {
     type: String,
+    default: ''
   },
-  /* 高度 */
   height: {
     type: Number,
-    default: null,
+    default: 500
   },
-  /* 最小高度 */
-  minHeight: {
-    type: Number,
-    default: null,
+  placeholder: {
+    type: String,
+    default: '请输入内容...'
   },
-  /* 只读 */
-  readOnly: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-const options = ref({
-  theme: "snow",
-  bounds: document.body,
-  debug: "warn",
-  modules: {
-    // 工具栏配置
-    toolbar: [
-      ["bold", "italic", "underline", "strike"],       // 加粗 斜体 下划线 删除线
-      ["blockquote", "code-block"],                    // 引用  代码块
-      [{ list: "ordered" }, { list: "bullet" }],       // 有序、无序列表
-      [{ indent: "-1" }, { indent: "+1" }],            // 缩进
-      [{ size: ["small", false, "large", "huge"] }],   // 字体大小
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],         // 标题
-      [{ color: [] }, { background: [] }],             // 字体颜色、字体背景颜色
-      [{ align: [] }],                                 // 对齐方式
-      ["clean"],                                       // 清除文本格式
-      ["link", "image", "video"]                       // 链接、图片、视频
-    ],
-  },
-  placeholder: '请输入内容',
-  readOnly: props.readOnly,
-  theme: 'snow'
-});
-
-const styles = computed(() => {
-  let style = {};
-  if (props.minHeight) {
-    style.minHeight = `${props.minHeight}px`;
+  mode: {
+    type: String,
+    default: 'default'
   }
-  if (props.height) {
-    style.height = `${props.height}px`;
-  }
-  return style;
 })
 
-const content = ref("");
-watch(() => props.modelValue, (v) => {
-  if (v !== content.value) {
-    content.value = v === undefined ? "<p></p>" : v;
+const emit = defineEmits(['update:modelValue'])
+
+const editorRef = shallowRef()
+const valueHtml = ref('')
+
+const toolbarConfig = {
+  excludeKeys: [
+    'group-video'
+  ]
+}
+
+const uploadFile = async (file, insertFn) => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  try {
+    const response = await axios.post(
+      import.meta.env.VITE_APP_BASE_API + '/common/upload',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: 'Bearer ' + getToken()
+        }
+      }
+    )
+
+    if (response.data.code === 200) {
+      insertFn(response.data.url, response.data.fileName || file.name, response.data.url)
+    } else {
+      ElMessage.error(response.data.msg || '上传失败')
+    }
+  } catch (error) {
+    ElMessage.error('上传失败')
   }
-}, { immediate: true });
+}
 
+const editorConfig = {
+  placeholder: props.placeholder,
+  MENU_CONF: {
+    uploadImage: {
+      maxFileSize: 10 * 1024 * 1024,
+      customUpload(file, insertFn) {
+        uploadFile(file, insertFn)
+      },
+      onExceedSize(file) {
+        ElMessage.error('图片大小不能超过 10MB')
+      }
+    },
+    uploadVideo: {
+      maxFileSize: 50 * 1024 * 1024,
+      customUpload(file, insertFn) {
+        uploadFile(file, insertFn)
+      },
+      onExceedSize(file) {
+        ElMessage.error('视频大小不能超过 50MB')
+      }
+    }
+  }
+}
 
+watch(() => props.modelValue, (val) => {
+  if (val !== valueHtml.value) {
+    valueHtml.value = val
+  }
+}, { immediate: true })
+
+watch(valueHtml, (val) => {
+  emit('update:modelValue', val)
+})
+
+const handleCreated = (editor) => {
+  editorRef.value = editor
+}
+
+const handleChange = (editor) => {
+  emit('update:modelValue', editor.getHtml())
+}
+
+onBeforeUnmount(() => {
+  const editor = editorRef.value
+  if (editor == null) return
+  editor.destroy()
+})
 </script>
 
-<style>
-.editor, .ql-toolbar {
-  white-space: pre-wrap !important;
-  line-height: normal !important;
-}
-.quill-img {
-  display: none;
-}
-.ql-snow .ql-tooltip[data-mode="link"]::before {
-  content: "请输入链接地址:";
-}
-.ql-snow .ql-tooltip.ql-editing a.ql-action::after {
-  border-right: 0px;
-  content: "保存";
-  padding-right: 0px;
-}
-
-.ql-snow .ql-tooltip[data-mode="video"]::before {
-  content: "请输入视频地址:";
-}
-
-.ql-snow .ql-picker.ql-size .ql-picker-label::before,
-.ql-snow .ql-picker.ql-size .ql-picker-item::before {
-  content: "14px";
-}
-.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="small"]::before,
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="small"]::before {
-  content: "10px";
-}
-.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="large"]::before,
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="large"]::before {
-  content: "18px";
-}
-.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="huge"]::before,
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="huge"]::before {
-  content: "32px";
-}
-
-.ql-snow .ql-picker.ql-header .ql-picker-label::before,
-.ql-snow .ql-picker.ql-header .ql-picker-item::before {
-  content: "文本";
-}
-.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
-.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
-  content: "标题1";
-}
-.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
-.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
-  content: "标题2";
-}
-.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
-.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
-  content: "标题3";
-}
-.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before,
-.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
-  content: "标题4";
-}
-.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="5"]::before,
-.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="5"]::before {
-  content: "标题5";
-}
-.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="6"]::before,
-.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="6"]::before {
-  content: "标题6";
-}
-
-.ql-snow .ql-picker.ql-font .ql-picker-label::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item::before {
-  content: "标准字体";
-}
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="serif"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="serif"]::before {
-  content: "衬线字体";
-}
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="monospace"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="monospace"]::before {
-  content: "等宽字体";
+<style scoped>
+.w-e-text-container {
+  background-color: #fff;
 }
 </style>

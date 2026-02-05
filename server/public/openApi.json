@@ -7963,6 +7963,11 @@
             "description": "是否置顶：0否 1是",
             "default": "0"
           },
+          "openType": {
+            "type": "string",
+            "description": "打开方式：current当前页 new新标签页",
+            "default": "current"
+          },
           "seoTitle": {
             "type": "string",
             "description": "SEO标题"
@@ -8026,6 +8031,11 @@
             "type": "string",
             "description": "是否置顶：0否 1是",
             "default": "0"
+          },
+          "openType": {
+            "type": "string",
+            "description": "打开方式：current当前页 new新标签页",
+            "default": "current"
           },
           "seoTitle": {
             "type": "string",

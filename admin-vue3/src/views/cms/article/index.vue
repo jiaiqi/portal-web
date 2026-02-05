@@ -59,6 +59,12 @@
           <span v-else>否</span>
         </template>
       </el-table-column>
+      <el-table-column label="打开方式" align="center" prop="openType" width="100">
+        <template #default="scope">
+          <el-tag v-if="scope.row.openType === 'new'" type="warning">新标签页</el-tag>
+          <el-tag v-else type="info">当前页</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="发布时间" align="center" prop="publishTime" width="160">
         <template #default="scope">
           <span>{{ parseTime(scope.row.publishTime) }}</span>
@@ -126,6 +132,16 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="打开方式">
+              <el-radio-group v-model="form.openType">
+                <el-radio label="current">当前页</el-radio>
+                <el-radio label="new">新标签页</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
             <el-form-item label="内容类型">
               <el-radio-group v-model="form.contentType" @change="handleContentTypeChange">
                 <el-radio label="rich">富文本</el-radio>
@@ -135,7 +151,7 @@
           </el-col>
         </el-row>
         <el-form-item label="封面图">
-          <el-input v-model="form.coverImage" placeholder="请输入封面图URL" />
+          <ImageUpload v-model="form.coverImage" :limit="1" />
         </el-form-item>
         <el-form-item label="摘要">
           <el-input v-model="form.summary" type="textarea" :rows="3" placeholder="请输入摘要" />
@@ -144,7 +160,7 @@
         <!-- 富文本内容编辑 -->
         <template v-if="form.contentType === 'rich'">
           <el-form-item label="文章内容" prop="content">
-            <TiptapEditor v-model="form.content" placeholder="请输入文章内容，支持富文本编辑、粘贴图片..." />
+            <Editor v-model="form.content" :height="400" placeholder="请输入文章内容，支持富文本编辑、粘贴图片..." />
           </el-form-item>
         </template>
         
@@ -179,7 +195,8 @@
 <script setup>
 import { listArticle, getArticle, addArticle, updateArticle, delArticle } from '@/api/cms/article'
 import { listCategory } from '@/api/cms/category'
-import TiptapEditor from '@/components/TiptapEditor/index.vue'
+import Editor from '@/components/Editor/index.vue'
+import ImageUpload from '@/components/ImageUpload/index.vue'
 
 const { proxy } = getCurrentInstance()
 
@@ -330,12 +347,13 @@ function reset() {
     summary: undefined,
     coverImage: undefined,
     content: '',
-    contentType: 'rich',  // 默认富文本
+    contentType: 'rich',
     source: undefined,
     author: undefined,
     publishTime: new Date(),
     status: '0',
     isTop: '0',
+    openType: 'current',
     seoTitle: undefined,
     seoKeywords: undefined,
     seoDescription: undefined

@@ -48,6 +48,9 @@ export class ArticleEntity {
   @Column({ name: 'is_top', length: 1, default: '0', comment: '是否置顶：0否 1是' })
   isTop: string;
 
+  @Column({ name: 'open_type', length: 10, default: 'current', comment: '打开方式：current当前页 new新标签页' })
+  openType: string;
+
   @Column({ name: 'view_count', type: 'int', default: 0, comment: '浏览量' })
   viewCount: number;
 

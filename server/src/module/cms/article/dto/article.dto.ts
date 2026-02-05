@@ -56,6 +56,11 @@ export class CreateArticleDto {
   @IsIn(['0', '1'])
   isTop?: string;
 
+  @ApiPropertyOptional({ description: '打开方式：current当前页 new新标签页', default: 'current' })
+  @IsOptional()
+  @IsIn(['current', 'new'])
+  openType?: string;
+
   @ApiPropertyOptional({ description: 'SEO标题' })
   @IsOptional()
   @IsString()

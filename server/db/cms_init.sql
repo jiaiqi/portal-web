@@ -43,6 +43,7 @@ CREATE TABLE `cms_article` (
   `publish_time` datetime DEFAULT NULL COMMENT '发布时间',
   `status` char(1) NOT NULL DEFAULT '0' COMMENT '状态：0草稿 1已发布',
   `is_top` char(1) NOT NULL DEFAULT '0' COMMENT '是否置顶：0否 1是',
+  `open_type` varchar(10) NOT NULL DEFAULT 'current' COMMENT '打开方式：current当前页 new新标签页',
   `view_count` int NOT NULL DEFAULT '0' COMMENT '浏览量',
   `seo_title` varchar(200) DEFAULT NULL COMMENT 'SEO标题',
   `seo_keywords` varchar(500) DEFAULT NULL COMMENT 'SEO关键词',
