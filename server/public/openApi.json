@@ -6549,6 +6549,45 @@
           }
         ]
       }
+    },
+    "/cms/portal/home": {
+      "get": {
+        "operationId": "PortalController_getHomeData",
+        "summary": "获取门户首页数据",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-门户"
+        ]
+      }
     }
   },
   "info": {
@@ -8177,6 +8216,11 @@
             "type": "string",
             "description": "链接地址"
           },
+          "position": {
+            "type": "string",
+            "description": "位置：home首页 focus首页焦点 right_top右侧顶部 right_platform右侧平台",
+            "default": "home"
+          },
           "sortOrder": {
             "type": "number",
             "description": "排序",
@@ -8206,6 +8250,11 @@
           "linkUrl": {
             "type": "string",
             "description": "链接地址"
+          },
+          "position": {
+            "type": "string",
+            "description": "位置：home首页 focus首页焦点 right_top右侧顶部 right_platform右侧平台",
+            "default": "home"
           },
           "sortOrder": {
             "type": "number",

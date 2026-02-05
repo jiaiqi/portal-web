@@ -4,6 +4,8 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+USE nest_admin;
+
 -- ----------------------------
 -- 1. 文章分类表
 -- ----------------------------

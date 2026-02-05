@@ -68,7 +68,7 @@ export class PortalService {
       pageSize: 5,
       status: '0',
     });
-    return result.list.map(item => item.title);
+    return result.data.list.map(item => item.title);
   }
 
   private formatDate(date: Date): string {

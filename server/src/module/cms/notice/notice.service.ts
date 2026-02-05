@@ -1,4 +1,5 @@
-import { Injectable, InjectRepository } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NoticeEntity } from './entities/notice.entity';
 import { CreateNoticeDto, UpdateNoticeDto, NoticeListDto } from './dto/notice.dto';
