@@ -13,6 +13,7 @@ import { SystemModule } from './module/system/system.module';
 import { CommonModule } from './module/common/common.module';
 import { MonitorModule } from './module/monitor/monitor.module';
 import { CmsModule } from './module/cms/cms.module';
+import { DashboardModule } from './module/dashboard/dashboard.module';
 
 @Global()
 @Module({
@@ -46,6 +47,7 @@ import { CmsModule } from './module/cms/cms.module';
     SystemModule,
     MonitorModule,
     CmsModule,
+    DashboardModule,
   ],
   providers: [
     {
