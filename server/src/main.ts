@@ -29,7 +29,7 @@ async function bootstrap() {
   const rootPath = process.cwd();
   const baseDirPath = path.posix.join(rootPath, config.get('app.file.location'));
   app.useStaticAssets(baseDirPath, {
-    prefix: '/profile/',
+    prefix: config.get('app.file.serveRoot'),
     maxAge: 86400000 * 365,
   });
 
