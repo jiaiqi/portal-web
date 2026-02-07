@@ -1,77 +1,108 @@
 <script setup lang="ts">
-const activities = [
+import { ref } from 'vue'
+
+const breadcrumbs = [
+  { name: '首页', path: '/' },
+  { name: '品牌活动', path: '/activities' }
+]
+
+const sideMenuItems = [
+  { name: '品牌活动', active: true },
+  { name: '与人民同行', active: false },
+  { name: '时代风尚', active: false },
+  { name: '强基工程', active: false },
+  { name: '学雷锋', active: false },
+  { name: '群众文艺', active: false }
+]
+
+const newsItems = ref([
   {
     id: 1,
-    title: '百花迎春——中国文学艺术界春节大联欢',
-    date: '2024年春节期间',
-    description: '由中国文联主办、中国文艺志愿者协会承办的春节大联欢活动，汇聚各艺术门类优秀文艺工作者，为全国观众送上新春祝福。',
-    image: 'https://picsum.photos/400/300?random=10',
+    title: '新时代文明实践文艺志愿服务｜2023年中国文联文艺志愿服务工作会暨新时代文明实践文艺志愿服务项目年度总结会召开',
+    date: '2023-09-02 14:44:18'
   },
   {
     id: 2,
-    title: '文艺进万家 健康你我他',
-    date: '全年持续开展',
-    description: '新时代文明实践文艺志愿服务项目，组织文艺志愿者深入基层开展慰问演出、文艺培训等活动。',
-    image: 'https://picsum.photos/400/300?random=11',
+    title: '强基工程｜中国文联、中国文艺志愿者协会召开"强基工程"项目工作推进会',
+    date: '2023-09-13 15:02'
   },
   {
     id: 3,
-    title: '送欢乐下基层',
-    date: '全年持续开展',
-    description: '组织文艺工作者深入革命老区、民族地区、边疆地区、贫困地区开展慰问演出，丰富基层群众精神文化生活。',
-    image: 'https://picsum.photos/400/300?random=12',
+    title: '强基工程｜中国文联、中央精神文明建设办公室联合印发《"强基工程"——文艺助力基层精神文明建设行动（2023-2025年）实施方案》',
+    date: '2023-09-02 15:02'
   },
   {
     id: 4,
-    title: '我们的中国梦——文化进万家',
-    date: '元旦春节期间',
-    description: '组织文艺小分队深入基层开展形式多样、内容丰富的文化惠民活动，营造欢乐祥和的节日氛围。',
-    image: 'https://picsum.photos/400/300?random=13',
+    title: '学雷锋文艺志愿服务｜深刻把握雷锋精神的时代内涵，让雷锋精神在新时代绽放更加璀璨的光芒',
+    date: '2023-09-02 15:02:48'
   },
   {
     id: 5,
-    title: '到人民中去',
-    date: '5月23日前后',
-    description: '纪念毛泽东同志《在延安文艺座谈会上的讲话》发表，组织文艺工作者深入生活、扎根人民。',
-    image: 'https://picsum.photos/400/300?random=14',
+    title: '学雷锋文艺志愿服务｜文艺志愿者吴为山雕塑作品《雷锋》落户雷锋学院揭幕仪式举行',
+    date: '2023-09-02 15:03:05'
   },
   {
     id: 6,
-    title: '时代风尚',
-    date: '2023年度',
-    description: '学雷锋文艺志愿服务先进典型宣传推选活动，表彰在文艺志愿服务中表现突出的个人和组织。',
-    image: 'https://picsum.photos/400/300?random=15',
+    title: '群众文艺｜精品奉献人民 服务乡村振兴——中国文联文艺助力乡村振兴原创歌曲系列活动成功举办',
+    date: '2023-09-02 15:03:08'
   },
-]
+  {
+    id: 7,
+    title: '与人民同行｜"与人民同行——新时代文明实践文艺志愿服务特别节目"在全国四级媒体平台播出 央媒广泛报道 反响热烈',
+    date: '2023-09-02 15:03:27'
+  },
+  {
+    id: 8,
+    title: '时代风尚｜各级媒体报道 "时代风尚——文艺志愿者走进中车松原新能源装备产业基地文艺演出" 反响热烈',
+    date: '2023-09-02 15:03:55'
+  },
+  {
+    id: 9,
+    title: '时代风尚｜央级媒体报道"时代风尚"——中国文艺志愿者致敬大国重器特别节目 全国四级媒体平台播出反响热烈',
+    date: '2023-09-02 15:03:59'
+  }
+])
 </script>
 
 <template>
-  <div>
-    <Breadcrumb :items="[{ name: '品牌活动', path: '/activities' }, { name: '列表页' }]" />
-
-    <div class="mx-auto px-4 py-8 max-w-7xl lg:px-8 sm:px-6">
-      <div class="gap-6 grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2">
-        <div
-          v-for="activity in activities"
-          :key="activity.id"
-          class="rounded-lg bg-white shadow-sm transition-shadow overflow-hidden hover:shadow-md"
-        >
-          <div class="h-48 overflow-hidden">
-            <img :src="activity.image" :alt="activity.title" class="h-full w-full transition-transform duration-300 object-cover hover:scale-105">
+  <div class="activities-page">
+    <Breadcrumb :items="breadcrumbs" />
+    
+    <div class="mx-auto px-4 max-w-[1200px] list-wrap">
+      <div class="list">
+        <!-- 左侧栏目导航 -->
+        <div class="second-menu">
+          <h1 class="menu-title">栏目导航</h1>
+          <ul class="menu-list">
+            <li
+              v-for="(item, index) in sideMenuItems"
+              :key="index"
+              :class="{ active: item.active }"
+            >
+              {{ item.name }}
+            </li>
+          </ul>
+        </div>
+        
+        <!-- 右侧内容区域 -->
+        <div class="content">
+          <div class="ant-tabs">
+            <div class="ant-tabs-nav">
+              <div class="ant-tabs-tab active">
+                <div class="ant-tabs-tab-btn">品牌活动</div>
+              </div>
+            </div>
           </div>
-          <div class="p-4">
-            <h3 class="text-gray-800 font-bold mb-2 line-clamp-2">
-              {{ activity.title }}
-            </h3>
-            <p class="text-sm text-gray-500 mb-3">
-              {{ activity.date }}
-            </p>
-            <p class="text-sm text-gray-600 line-clamp-2">
-              {{ activity.description }}
-            </p>
-          </div>
+          
+          <ContentList :items="newsItems" />
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.activities-page {
+  background: #ffffff;
+}
+</style>

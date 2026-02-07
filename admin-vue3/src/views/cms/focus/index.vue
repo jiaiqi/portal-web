@@ -141,19 +141,19 @@ const loading = ref(true)
 const showSearch = ref(true)
 const ids = ref([])
 const single = ref(true)
+const multiple = ref(true)
 const total = ref(0)
 const title = ref('')
 const queryRef = ref(null)
 
-const data = reactive({
-  form: {},
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    imageType: undefined,
-    status: undefined,
-  },
+const queryParams = ref({
+  pageNum: 1,
+  pageSize: 10,
+  imageType: undefined,
+  status: undefined,
 })
+
+const form = ref({})
 
 const rules = ref({
   title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
@@ -167,7 +167,7 @@ const focusRef = ref(null)
 
 function getList() {
   loading.value = true
-  listFocus(data.queryParams).then(response => {
+  listFocus(queryParams.value).then(response => {
     focusList.value = response.data.list
     total.value = response.data.total
     loading.value = false
@@ -175,7 +175,7 @@ function getList() {
 }
 
 function handleQuery() {
-  data.queryParams.pageNum = 1
+  queryParams.value.pageNum = 1
   getList()
 }
 
@@ -197,7 +197,7 @@ function handleAdd() {
 
 function handleUpdate(row) {
   reset()
-  data.form = { ...row }
+  form.value = { ...row }
   open.value = true
   title.value = '修改焦点图'
 }
@@ -214,14 +214,14 @@ function handleDelete(row) {
 function submitForm() {
   focusRef.value.validate(valid => {
     if (valid) {
-      if (data.form.focusId != undefined) {
-        updateFocus(data.form).then(() => {
+      if (form.value.focusId != undefined) {
+        updateFocus(form.value).then(() => {
           proxy.$modal.msg('修改成功')
           open.value = false
           getList()
         })
       } else {
-        addFocus(data.form).then(() => {
+        addFocus(form.value).then(() => {
           proxy.$modal.msg('新增成功')
           open.value = false
           getList()
@@ -237,7 +237,7 @@ function cancel() {
 }
 
 function reset() {
-  data.form = {
+  form.value = {
     imageType: 'big',
     status: '0',
     sortOrder: 0,

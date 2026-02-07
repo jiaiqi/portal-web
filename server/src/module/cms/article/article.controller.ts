@@ -15,6 +15,7 @@ import { ArticleService } from './article.service';
 import { CreateArticleDto, UpdateArticleDto, ArticleListDto, ArticleStatusDto } from './dto/article.dto';
 import { ApiDataResponse } from 'src/common/decorators/apiDataResponse.decorator';
 import { ArticleEntity } from './entities/article.entity';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('CMS-文章管理')
 @ApiBearerAuth()
@@ -24,6 +25,7 @@ export class ArticleController {
 
   @ApiOperation({ summary: '获取文章列表' })
   @ApiDataResponse(ArticleEntity, true, true)
+  @Public()
   @Get('/list')
   findList(@Query() query: ArticleListDto) {
     return this.articleService.findList(query);
@@ -31,6 +33,7 @@ export class ArticleController {
 
   @ApiOperation({ summary: '获取文章详情' })
   @ApiDataResponse(ArticleEntity)
+  @Public()
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.articleService.findOne(id);

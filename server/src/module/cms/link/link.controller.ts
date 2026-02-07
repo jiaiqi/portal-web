@@ -15,6 +15,7 @@ import { LinkService } from './link.service';
 import { CreateLinkDto, UpdateLinkDto, LinkListDto } from './dto/link.dto';
 import { ApiDataResponse } from 'src/common/decorators/apiDataResponse.decorator';
 import { LinkEntity } from './entities/link.entity';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('CMS-友情链接管理')
 @ApiBearerAuth()
@@ -24,6 +25,7 @@ export class LinkController {
 
   @ApiOperation({ summary: '获取友情链接列表' })
   @ApiDataResponse(LinkEntity, true, true)
+  @Public()
   @Get('/list')
   findList(@Query() query: LinkListDto) {
     return this.linkService.findList(query);
@@ -31,6 +33,7 @@ export class LinkController {
 
   @ApiOperation({ summary: '获取友情链接详情' })
   @ApiDataResponse(LinkEntity)
+  @Public()
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.linkService.findOne(id);

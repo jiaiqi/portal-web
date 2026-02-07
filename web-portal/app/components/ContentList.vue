@@ -1,54 +1,117 @@
 <script setup lang="ts">
-interface ContentItem {
-  id: string | number
+interface ListItem {
+  id: number
   title: string
   date: string
-  link: string
-  openType?: 'current' | 'new'
+  image?: string
 }
 
-defineProps<{
-  items: ContentItem[]
-}>()
+interface Props {
+  items: ListItem[]
+  basePath?: string
+}
+
+withDefaults(defineProps<Props>(), {
+  basePath: '/news'
+})
 </script>
 
 <template>
-  <div class="rounded-lg bg-white">
-    <div class="divide-gray-100 divide-y">
-      <template v-for="item in items" :key="item.id">
-        <NuxtLink
-          v-if="!item.openType || item.openType === 'current'"
-          :to="item.link"
-          class="group px-6 py-4 flex transition-colors items-center justify-between hover:bg-gray-50"
-        >
-          <div class="flex flex-1 gap-3 min-w-0 items-center">
-            <span class="rounded-full bg-gray-300 flex-shrink-0 h-1.5 w-1.5 transition-colors group-hover:bg-[#c41e3a]" />
-            <h3 class="text-sm text-gray-700 truncate transition-colors group-hover:text-[#c41e3a]">
-              {{ item.title }}
-            </h3>
+  <div class="content-list">
+    <div class="ant-list">
+      <NuxtLink
+        v-for="item in items"
+        :key="item.id"
+        :to="`${basePath}/${item.id}`"
+        class="ant-list-item"
+      >
+        <div class="ant-list-item-meta">
+          <div class="ant-list-item-meta-avatar">
+            <div v-if="item.image" class="image-wrapper">
+              <img :src="item.image" :alt="item.title" />
+            </div>
+            <div v-else class="image-placeholder"></div>
           </div>
-          <span class="text-xs text-gray-400 ml-4 whitespace-nowrap">
-            {{ item.date }}
-          </span>
-        </NuxtLink>
-        <a
-          v-else
-          :href="item.link"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group px-6 py-4 flex transition-colors items-center justify-between hover:bg-gray-50"
-        >
-          <div class="flex flex-1 gap-3 min-w-0 items-center">
-            <span class="rounded-full bg-gray-300 flex-shrink-0 h-1.5 w-1.5 transition-colors group-hover:bg-[#c41e3a]" />
-            <h3 class="text-sm text-gray-700 truncate transition-colors group-hover:text-[#c41e3a]">
-              {{ item.title }}
-            </h3>
+          <div class="ant-list-item-meta-content">
+            <h4 class="ant-list-item-meta-title">
+              <h1 class="title">{{ item.title }}</h1>
+            </h4>
+            <div class="ant-list-item-meta-description">
+              <p class="date">{{ item.date }}</p>
+            </div>
           </div>
-          <span class="text-xs text-gray-400 ml-4 whitespace-nowrap">
-            {{ item.date }}
-          </span>
-        </a>
-      </template>
+        </div>
+      </NuxtLink>
     </div>
+    <slot />
   </div>
 </template>
+
+<style scoped>
+.content-list {
+  padding: 30px 0;
+}
+
+.ant-list-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.ant-list-item:hover .title {
+  color: #c00;
+}
+
+.ant-list-item-meta {
+  display: flex;
+  align-items: flex-start;
+}
+
+.ant-list-item-meta-avatar {
+  width: 180px;
+  flex-shrink: 0;
+  margin-right: 15px;
+}
+
+.image-wrapper {
+  width: 180px;
+  height: 110px;
+  overflow: hidden;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-placeholder {
+  width: 180px;
+  height: 110px;
+}
+
+.ant-list-item-meta-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: normal;
+  color: #333;
+  margin: 0;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+.date {
+  font-size: 12px;
+  color: #999;
+  text-align: right;
+  margin: 10px 0 0;
+}
+</style>

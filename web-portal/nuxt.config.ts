@@ -2,7 +2,7 @@ import { pwa } from "./app/config/pwa";
 import { appDescription } from "./app/constants/index";
 
 export default defineNuxtConfig({
-  css: ["~/assets/css/wyzyz.css"],
+  css: ["~/assets/css/wyzyz.css", "~/assets/css/layout.css"],
   modules: [
     "@vueuse/nuxt",
     "@unocss/nuxt",

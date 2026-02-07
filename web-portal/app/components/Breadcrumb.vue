@@ -1,38 +1,35 @@
 <script setup lang="ts">
-interface BreadcrumbItem {
-  name: string
-  path?: string
+interface Props {
+  items: { name: string; path?: string }[]
 }
 
-defineProps<{
-  items: BreadcrumbItem[]
-}>()
+defineProps<Props>()
 </script>
 
 <template>
-  <div class="border-b border-gray-200 bg-gray-50">
-    <div class="mx-auto px-4 py-3 max-w-7xl lg:px-8 sm:px-6">
-      <nav class="text-sm text-gray-500 flex items-center">
-        <NuxtLink to="/" class="transition-colors hover:text-[#c41e3a]">
-          首页
-        </NuxtLink>
+  <div class="breadcrumb-container mb-4">
+    <div class="mx-auto px-4 max-w-[1200px]">
+      <div class="flex items-center text-sm text-gray-500 py-3">
         <template v-for="(item, index) in items" :key="index">
-          <span class="text-gray-300 mx-2">/</span>
           <NuxtLink
-            v-if="item.path && index < items.length - 1"
+            v-if="item.path"
             :to="item.path"
-            class="transition-colors hover:text-[#c41e3a]"
+            class="hover:text-[#c31f1f] transition-colors"
           >
             {{ item.name }}
           </NuxtLink>
-          <span
-            v-else
-            :class="{ 'text-[#c41e3a]': index === items.length - 1 }"
-          >
+          <span v-else class="text-[#c31f1f] font-medium">
             {{ item.name }}
           </span>
+          <span v-if="index < items.length - 1" class="mx-2">/</span>
         </template>
-      </nav>
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.breadcrumb-container {
+  background: #fafafa;
+}
+</style>

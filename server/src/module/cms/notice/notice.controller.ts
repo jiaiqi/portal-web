@@ -15,6 +15,7 @@ import { NoticeService } from './notice.service';
 import { CreateNoticeDto, UpdateNoticeDto, NoticeListDto } from './dto/notice.dto';
 import { ApiDataResponse } from 'src/common/decorators/apiDataResponse.decorator';
 import { NoticeEntity } from './entities/notice.entity';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('CMS-公告管理')
 @ApiBearerAuth()
@@ -24,6 +25,7 @@ export class NoticeController {
 
   @ApiOperation({ summary: '获取公告列表' })
   @ApiDataResponse(NoticeEntity, true, true)
+  @Public()
   @Get('/list')
   findList(@Query() query: NoticeListDto) {
     return this.noticeService.findList(query);
@@ -31,6 +33,7 @@ export class NoticeController {
 
   @ApiOperation({ summary: '获取公告详情' })
   @ApiDataResponse(NoticeEntity)
+  @Public()
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.noticeService.findOne(id);

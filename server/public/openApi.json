@@ -6550,6 +6550,645 @@
         ]
       }
     },
+    "/cms/notice/list": {
+      "get": {
+        "operationId": "NoticeController_findList",
+        "summary": "获取公告列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "每页条数",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "description": "公告标题",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "noticeType",
+            "required": false,
+            "in": "query",
+            "description": "公告类型：notice公告 announcement公示",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "状态：0正常 1关闭",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/NoticeEntity"
+                              }
+                            },
+                            "total": {
+                              "type": "number",
+                              "default": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-公告管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/notice/{id}": {
+      "get": {
+        "operationId": "NoticeController_findOne",
+        "summary": "获取公告详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/NoticeEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-公告管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "NoticeController_delete",
+        "summary": "删除公告",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-公告管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/notice": {
+      "post": {
+        "operationId": "NoticeController_create",
+        "summary": "新增公告",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNoticeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-公告管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "NoticeController_update",
+        "summary": "修改公告",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNoticeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-公告管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/focus/list": {
+      "get": {
+        "operationId": "FocusController_findList",
+        "summary": "获取焦点图列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "每页条数",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "imageType",
+            "required": false,
+            "in": "query",
+            "description": "图片类型：big大图 small小图",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "状态：0正常 1停用",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/FocusEntity"
+                              }
+                            },
+                            "total": {
+                              "type": "number",
+                              "default": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-焦点图管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/focus/home": {
+      "get": {
+        "operationId": "FocusController_getHomeFocus",
+        "summary": "获取首页焦点图",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-焦点图管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/focus/{id}": {
+      "get": {
+        "operationId": "FocusController_findOne",
+        "summary": "获取焦点图详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/FocusEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-焦点图管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "FocusController_delete",
+        "summary": "删除焦点图",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-焦点图管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/focus": {
+      "post": {
+        "operationId": "FocusController_create",
+        "summary": "新增焦点图",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFocusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-焦点图管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "FocusController_update",
+        "summary": "修改焦点图",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFocusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-焦点图管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/cms/portal/home": {
       "get": {
         "operationId": "PortalController_getHomeData",
@@ -7141,15 +7780,37 @@
       "CreateNoticeDto": {
         "type": "object",
         "properties": {
-          "remark": {
-            "type": "string"
+          "title": {
+            "type": "string",
+            "description": "公告标题"
+          },
+          "content": {
+            "type": "string",
+            "description": "公告内容"
+          },
+          "noticeType": {
+            "type": "string",
+            "description": "公告类型：notice公告 announcement公示",
+            "default": "notice"
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "description": "状态：0正常 1关闭",
+            "default": "0"
+          },
+          "isTop": {
+            "type": "string",
+            "description": "是否置顶：0否 1是",
+            "default": "0"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
           }
         },
         "required": [
-          "remark"
+          "title"
         ]
       },
       "ListNoticeDto": {
@@ -7190,15 +7851,42 @@
       "UpdateNoticeDto": {
         "type": "object",
         "properties": {
-          "remark": {
-            "type": "string"
+          "title": {
+            "type": "string",
+            "description": "公告标题"
+          },
+          "content": {
+            "type": "string",
+            "description": "公告内容"
+          },
+          "noticeType": {
+            "type": "string",
+            "description": "公告类型：notice公告 announcement公示",
+            "default": "notice"
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "description": "状态：0正常 1关闭",
+            "default": "0"
+          },
+          "isTop": {
+            "type": "string",
+            "description": "是否置顶：0否 1是",
+            "default": "0"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "noticeId": {
+            "type": "number",
+            "description": "公告ID"
           }
         },
         "required": [
-          "remark"
+          "title",
+          "noticeId"
         ]
       },
       "CreatePostDto": {
@@ -8670,6 +9358,91 @@
           "linkName",
           "linkUrl",
           "linkId"
+        ]
+      },
+      "NoticeEntity": {
+        "type": "object",
+        "properties": {}
+      },
+      "FocusEntity": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateFocusDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "焦点图标题"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "图片URL"
+          },
+          "imageType": {
+            "type": "string",
+            "description": "图片类型：big大图 small小图",
+            "default": "big"
+          },
+          "linkUrl": {
+            "type": "string",
+            "description": "跳转链接"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "状态：0正常 1停用",
+            "default": "0"
+          }
+        },
+        "required": [
+          "title",
+          "imageUrl"
+        ]
+      },
+      "UpdateFocusDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "焦点图标题"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "图片URL"
+          },
+          "imageType": {
+            "type": "string",
+            "description": "图片类型：big大图 small小图",
+            "default": "big"
+          },
+          "linkUrl": {
+            "type": "string",
+            "description": "跳转链接"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "状态：0正常 1停用",
+            "default": "0"
+          },
+          "focusId": {
+            "type": "number",
+            "description": "焦点图ID"
+          }
+        },
+        "required": [
+          "title",
+          "imageUrl",
+          "focusId"
         ]
       }
     }

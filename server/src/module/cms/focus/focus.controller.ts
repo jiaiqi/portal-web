@@ -15,6 +15,7 @@ import { FocusService } from './focus.service';
 import { CreateFocusDto, UpdateFocusDto, FocusListDto } from './dto/focus.dto';
 import { ApiDataResponse } from 'src/common/decorators/apiDataResponse.decorator';
 import { FocusEntity } from './entities/focus.entity';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('CMS-焦点图管理')
 @ApiBearerAuth()
@@ -24,6 +25,7 @@ export class FocusController {
 
   @ApiOperation({ summary: '获取焦点图列表' })
   @ApiDataResponse(FocusEntity, true, true)
+  @Public()
   @Get('/list')
   findList(@Query() query: FocusListDto) {
     return this.focusService.findList(query);
@@ -31,6 +33,7 @@ export class FocusController {
 
   @ApiOperation({ summary: '获取首页焦点图' })
   @ApiDataResponse()
+  @Public()
   @Get('/home')
   getHomeFocus() {
     return this.focusService.getHomeFocus();
@@ -38,6 +41,7 @@ export class FocusController {
 
   @ApiOperation({ summary: '获取焦点图详情' })
   @ApiDataResponse(FocusEntity)
+  @Public()
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.focusService.findOne(id);

@@ -147,20 +147,20 @@ const loading = ref(true)
 const showSearch = ref(true)
 const ids = ref([])
 const single = ref(true)
+const multiple = ref(true)
 const total = ref(0)
 const title = ref('')
 const queryRef = ref(null)
 
-const data = reactive({
-  form: {},
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    title: undefined,
-    noticeType: undefined,
-    status: undefined,
-  },
+const queryParams = ref({
+  pageNum: 1,
+  pageSize: 10,
+  title: undefined,
+  noticeType: undefined,
+  status: undefined,
 })
+
+const form = ref({})
 
 const rules = ref({
   title: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
@@ -174,7 +174,7 @@ const noticeRef = ref(null)
 
 function getList() {
   loading.value = true
-  listNotice(data.queryParams).then(response => {
+  listNotice(queryParams.value).then(response => {
     noticeList.value = response.data.list
     total.value = response.data.total
     loading.value = false
@@ -182,7 +182,7 @@ function getList() {
 }
 
 function handleQuery() {
-  data.queryParams.pageNum = 1
+  queryParams.value.pageNum = 1
   getList()
 }
 
@@ -194,6 +194,7 @@ function resetQuery() {
 function handleSelectionChange(selection) {
   ids.value = selection.map(item => item.noticeId)
   single.value = selection.length !== 1
+  multiple.value = !selection.length
 }
 
 function handleAdd() {
@@ -204,14 +205,15 @@ function handleAdd() {
 
 function handleUpdate(row) {
   reset()
-  data.form = { ...row }
+  form.value = { ...row }
   open.value = true
   title.value = '修改公告'
 }
 
 function handleDelete(row) {
-  proxy.$modal.confirm('是否确认删除公告"' + row.title + '"?', function() {
-    delNotice(row.noticeId).then(() => {
+  const deleteIds = row.noticeId ? [row.noticeId] : ids.value
+  proxy.$modal.confirm('是否确认删除选中的公告?', function() {
+    delNotice(deleteIds).then(() => {
       getList()
       proxy.$modal.msg('删除成功')
     })
@@ -221,14 +223,14 @@ function handleDelete(row) {
 function submitForm() {
   noticeRef.value.validate(valid => {
     if (valid) {
-      if (data.form.noticeId != undefined) {
-        updateNotice(data.form).then(() => {
+      if (form.value.noticeId != undefined) {
+        updateNotice(form.value).then(() => {
           proxy.$modal.msg('修改成功')
           open.value = false
           getList()
         })
       } else {
-        addNotice(data.form).then(() => {
+        addNotice(form.value).then(() => {
           proxy.$modal.msg('新增成功')
           open.value = false
           getList()
@@ -244,7 +246,7 @@ function cancel() {
 }
 
 function reset() {
-  data.form = {
+  form.value = {
     noticeType: 'notice',
     status: '0',
     isTop: '0',

@@ -15,6 +15,7 @@ import { BannerService } from './banner.service';
 import { CreateBannerDto, UpdateBannerDto, BannerListDto } from './dto/banner.dto';
 import { ApiDataResponse } from 'src/common/decorators/apiDataResponse.decorator';
 import { BannerEntity } from './entities/banner.entity';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('CMS-轮播图管理')
 @ApiBearerAuth()
@@ -24,6 +25,7 @@ export class BannerController {
 
   @ApiOperation({ summary: '获取轮播图列表' })
   @ApiDataResponse(BannerEntity, true)
+  @Public()
   @Get('/list')
   findList(@Query() query: BannerListDto) {
     return this.bannerService.findList(query);
@@ -31,6 +33,7 @@ export class BannerController {
 
   @ApiOperation({ summary: '获取所有启用轮播图' })
   @ApiDataResponse(BannerEntity, true)
+  @Public()
   @Get('/all')
   findAll() {
     return this.bannerService.findAll();
@@ -38,6 +41,7 @@ export class BannerController {
 
   @ApiOperation({ summary: '获取轮播图详情' })
   @ApiDataResponse(BannerEntity)
+  @Public()
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.bannerService.findOne(id);

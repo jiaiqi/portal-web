@@ -15,6 +15,7 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto, CategoryListDto } from './dto/category.dto';
 import { ApiDataResponse } from 'src/common/decorators/apiDataResponse.decorator';
 import { CategoryEntity } from './entities/category.entity';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('CMS-分类管理')
 @ApiBearerAuth()
@@ -24,6 +25,7 @@ export class CategoryController {
 
   @ApiOperation({ summary: '获取分类列表' })
   @ApiDataResponse(CategoryEntity, true)
+  @Public()
   @Get('/list')
   findList(@Query() query: CategoryListDto) {
     return this.categoryService.findList(query);
@@ -31,6 +33,7 @@ export class CategoryController {
 
   @ApiOperation({ summary: '获取所有启用分类' })
   @ApiDataResponse(CategoryEntity, true)
+  @Public()
   @Get('/all')
   findAll() {
     return this.categoryService.findAll();
@@ -38,6 +41,7 @@ export class CategoryController {
 
   @ApiOperation({ summary: '获取分类详情' })
   @ApiDataResponse(CategoryEntity)
+  @Public()
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.findOne(id);

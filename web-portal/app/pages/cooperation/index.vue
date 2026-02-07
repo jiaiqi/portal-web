@@ -1,48 +1,95 @@
-<template>
-  <div>
-    <Breadcrumb :items="[{ name: '全国联动', path: '/cooperation' }, { name: '列表页' }]" />
+<script setup lang="ts">
+import { ref } from 'vue'
 
-    <div class="mx-auto px-4 py-8 max-w-7xl lg:px-8 sm:px-6">
-      <div class="p-8 bg-white">
-        <h1 class="text-2xl text-gray-900 font-bold mb-6">
-          全国联动
-        </h1>
-        <div class="text-gray-700 leading-relaxed max-w-none prose prose-gray">
-          <p class="mb-4">
-            中国文艺志愿者协会积极推动全国文艺志愿服务工作联动发展，与各团体会员、各级文联组织建立联动机制，形成上下贯通、左右联动的文艺志愿服务工作格局。
-          </p>
-          <h2 class="text-xl text-gray-900 font-bold mb-4 mt-8">
-            联动机制
-          </h2>
-          <ul class="mb-6 list-disc list-inside space-y-2">
-            <li>建立全国文艺志愿服务工作联席会议制度</li>
-            <li>搭建全国文艺志愿服务信息共享平台</li>
-            <li>组织全国性文艺志愿服务主题活动</li>
-            <li>开展文艺志愿服务工作培训和交流</li>
+const breadcrumbs = [
+  { name: '首页', path: '/' },
+  { name: '全国联动', path: '/cooperation' }
+]
+
+const sideMenuItems = [
+  { name: '全国联动', active: true },
+  { name: '省级动态', active: false },
+  { name: '地市级动态', active: false }
+]
+
+const newsItems = ref([
+  {
+    id: 1,
+    title: '北京市文联文艺志愿服务团开展"走进社区"系列活动',
+    date: '2024-01-15 10:00'
+  },
+  {
+    id: 2,
+    title: '上海市文艺志愿者协会召开年度工作总结会',
+    date: '2024-01-10 14:00'
+  },
+  {
+    id: 3,
+    title: '广东省文艺志愿服务工作经验交流会在广州召开',
+    date: '2024-01-05 09:00'
+  },
+  {
+    id: 4,
+    title: '浙江省"文艺送万家"志愿服务活动启动',
+    date: '2024-01-01 16:00'
+  },
+  {
+    id: 5,
+    title: '江苏省文艺志愿服务队赴基层开展慰问演出',
+    date: '2023-12-28 11:00'
+  },
+  {
+    id: 6,
+    title: '四川省文艺志愿服务助力乡村振兴活动纪实',
+    date: '2023-12-25 15:00'
+  },
+  {
+    id: 7,
+    title: '山东省文艺志愿服务工作推进会在济南召开',
+    date: '2023-12-20 10:00'
+  }
+])
+</script>
+
+<template>
+  <div class="cooperation-page">
+    <Breadcrumb :items="breadcrumbs" />
+    
+    <div class="mx-auto px-4 max-w-[1200px] list-wrap">
+      <div class="list">
+        <!-- 左侧栏目导航 -->
+        <div class="second-menu">
+          <h1 class="menu-title">栏目导航</h1>
+          <ul class="menu-list">
+            <li
+              v-for="(item, index) in sideMenuItems"
+              :key="index"
+              :class="{ active: item.active }"
+            >
+              {{ item.name }}
+            </li>
           </ul>
-          <h2 class="text-xl text-gray-900 font-bold mb-4 mt-8">
-            联动活动
-          </h2>
-          <div class="gap-4 grid grid-cols-1 md:grid-cols-2">
-            <div class="p-4 border rounded-lg">
-              <h3 class="text-gray-800 font-bold mb-2">
-                "到人民中去"全国联动
-              </h3>
-              <p class="text-sm text-gray-600">
-                每年5月23日前后，全国各地同步开展"到人民中去"文艺志愿服务活动
-              </p>
-            </div>
-            <div class="p-4 border rounded-lg">
-              <h3 class="text-gray-800 font-bold mb-2">
-                "送欢乐下基层"全国联动
-              </h3>
-              <p class="text-sm text-gray-600">
-                元旦春节期间，全国各地同步开展"送欢乐下基层"慰问演出活动
-              </p>
+        </div>
+        
+        <!-- 右侧内容区域 -->
+        <div class="content">
+          <div class="ant-tabs">
+            <div class="ant-tabs-nav">
+              <div class="ant-tabs-tab active">
+                <div class="ant-tabs-tab-btn">全国联动</div>
+              </div>
             </div>
           </div>
+          
+          <ContentList :items="newsItems" />
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.cooperation-page {
+  background: #ffffff;
+}
+</style>

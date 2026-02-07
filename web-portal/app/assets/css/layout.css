@@ -1,0 +1,130 @@
+/* 全局布局样式 - 用于栏目导航页面 */
+
+.list-wrap {
+  margin: 20px auto 50px;
+}
+
+.list {
+  background: #ffffff;
+  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.1);
+  padding: 0 30px;
+  margin: 20px 0 0;
+  display: flex;
+  min-height: 600px;
+}
+
+/* 左侧栏目导航 */
+.second-menu {
+  width: 20%;
+  padding: 10px;
+  margin: 20px 0 0;
+  flex-shrink: 0;
+}
+
+.second-menu h1 {
+  font-size: 18px;
+  position: relative;
+  padding: 0 0 0 10px;
+  margin: 0 0 20px;
+  color: #333;
+}
+
+.second-menu h1::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: #c31f1f;
+  content: "";
+}
+
+.second-menu ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.second-menu ul li {
+  text-align: center;
+  padding: 8px 15px;
+  margin: 10px 0 0;
+  background: #eee;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 2px;
+}
+
+.second-menu ul li:hover,
+.second-menu ul li.active {
+  background: #c31f1f;
+  color: #fff;
+}
+
+/* 右侧内容区域 */
+.content {
+  width: 80%;
+  padding: 30px;
+  white-space: pre-wrap;
+  flex: 1;
+  overflow: hidden;
+}
+
+.content img {
+  max-width: 100%;
+  width: auto;
+}
+
+/* Tab 样式 */
+.ant-tabs {
+  background: #fafafa;
+  padding: 0 10px;
+  margin-bottom: 20px;
+}
+
+.ant-tabs-nav {
+  display: flex;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.ant-tabs-tab {
+  padding: 12px 20px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.ant-tabs-tab.active {
+  color: #c31f1f;
+  border-bottom: 2px solid #c31f1f;
+}
+
+.ant-tabs-tab:hover {
+  color: #c31f1f;
+}
+
+/* 响应式布局 */
+@media screen and (max-width: 1024px) {
+  .list {
+    flex-direction: column;
+  }
+  
+  .second-menu,
+  .content {
+    width: 100%;
+  }
+  
+  .second-menu {
+    margin-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .list {
+    padding: 0 15px;
+  }
+  
+  .content {
+    padding: 20px 15px;
+  }
+}
