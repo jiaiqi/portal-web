@@ -909,7 +909,7 @@ INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`
 
 -- 公告管理
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES 
-(2040, '公告管理', 2000, 5, 'notice', 'cms/notice/index', '', '1', '0', 'C', '0', '0', 'cms:notice:list', 'list', 'admin', NOW(), 'admin', NOW(), '公告管理菜单', '0'),
+(2040, '公告管理', 2000, 5, 'notification', 'cms/notice/index', '', '1', '0', 'C', '0', '0', 'cms:notice:list', 'list', 'admin', NOW(), 'admin', NOW(), '公告管理菜单', '0'),
 (2041, '公告查询', 2040, 1, '', '', '', '1', '0', 'F', '0', '0', 'cms:notice:query', '#', 'admin', NOW(), 'admin', NOW(), '', '0'),
 (2042, '公告新增', 2040, 2, '', '', '', '1', '0', 'F', '0', '0', 'cms:notice:add', '#', 'admin', NOW(), 'admin', NOW(), '', '0'),
 (2043, '公告修改', 2040, 3, '', '', '', '1', '0', 'F', '0', '0', 'cms:notice:edit', '#', 'admin', NOW(), 'admin', NOW(), '', '0'),
