@@ -117,70 +117,58 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          
+
           <div class="mb-8 focus-img-box">
             <img :src="focusBanner" class="w-full h-[95px] object-cover" />
           </div>
-          
+
           <div class="border-b border-gray-200 mb-6 flex justify-between items-end">
             <div class="flex">
-              <div
-                @click="activeTab = 'news'"
-                :class="[
-                  'px-6 py-3 text-lg cursor-pointer font-bold',
-                  activeTab === 'news'
-                    ? 'text-[#c31f1f] border-b-2 border-[#c31f1f]'
-                    : 'text-gray-600 hover:text-[#c31f1f]'
-                ]"
-              >
+              <div @click="activeTab = 'news'" :class="[
+                'px-6 py-3 text-lg cursor-pointer font-bold',
+                activeTab === 'news'
+                  ? 'text-[#c31f1f] border-b-2 border-[#c31f1f]'
+                  : 'text-gray-600 hover:text-[#c31f1f]'
+              ]">
                 要闻
               </div>
-              <div
-                @click="activeTab = 'information'"
-                :class="[
-                  'px-6 py-3 text-lg cursor-pointer font-bold',
-                  activeTab === 'information'
-                    ? 'text-[#c31f1f] border-b-2 border-[#c31f1f]'
-                    : 'text-gray-600 hover:text-[#c31f1f]'
-                ]"
-              >
+              <div @click="activeTab = 'information'" :class="[
+                'px-6 py-3 text-lg cursor-pointer font-bold',
+                activeTab === 'information'
+                  ? 'text-[#c31f1f] border-b-2 border-[#c31f1f]'
+                  : 'text-gray-600 hover:text-[#c31f1f]'
+              ]">
                 资讯
               </div>
             </div>
             <a href="/news" class="text-sm text-gray-500 mb-3 hover:text-[#c31f1f]">更多>></a>
           </div>
-          
+
           <div class="space-y-6">
             <template v-if="activeTab === 'news'">
-              <NuxtLink
-                v-for="item in newsItems"
-                :key="item.id"
-                :to="`/news/${item.id}`"
-                class="flex gap-4 pb-6 border-b border-gray-100 last:border-0"
-              >
+              <NuxtLink v-for="item in newsItems" :key="item.id" :to="`/news/${item.id}`"
+                class="flex gap-4 pb-6 border-b border-gray-100 last:border-0">
                 <div v-if="item.image" class="w-[180px] h-[110px] flex-shrink-0 focus-img-box">
                   <img :src="item.image" class="w-full h-full object-cover" />
                 </div>
                 <div v-else class="w-[180px] h-[110px] flex-shrink-0 bg-gray-100"></div>
                 <div class="flex-1 flex flex-col justify-between py-1">
-                  <h3 class="text-base font-medium text-gray-800 leading-snug hover:text-[#c31f3a] cursor-pointer line-clamp-2">
+                  <h3
+                    class="text-base font-medium text-gray-800 leading-snug hover:text-[#c31f3a] cursor-pointer line-clamp-2">
                     {{ item.title }}
                   </h3>
                   <p class="text-xs text-gray-400 text-right">{{ item.date }}</p>
                 </div>
               </NuxtLink>
             </template>
-            
+
             <template v-else>
-              <NuxtLink
-                v-for="item in informationItems"
-                :key="item.id"
-                :to="`/news/${item.id}`"
-                class="flex gap-4 pb-6 border-b border-gray-100 last:border-0"
-              >
+              <NuxtLink v-for="item in informationItems" :key="item.id" :to="`/news/${item.id}`"
+                class="flex gap-4 pb-6 border-b border-gray-100 last:border-0">
                 <div class="w-[180px] h-[110px] flex-shrink-0 bg-gray-100"></div>
                 <div class="flex-1 flex flex-col justify-between py-1">
-                  <h3 class="text-base font-medium text-gray-800 leading-snug hover:text-[#c31f3a] cursor-pointer line-clamp-2">
+                  <h3
+                    class="text-base font-medium text-gray-800 leading-snug hover:text-[#c31f3a] cursor-pointer line-clamp-2">
                     {{ item.title }}
                   </h3>
                   <p class="text-xs text-gray-400 text-right">{{ item.date }}</p>
@@ -189,12 +177,12 @@ onMounted(() => {
             </template>
           </div>
         </div>
-        
+
         <div class="w-full lg:w-[310px] space-y-8">
           <div class="focus-img-box">
             <img :src="rightBanners.top" class="w-full h-auto object-cover" />
           </div>
-          
+
           <div>
             <div class="border-b border-gray-200 mb-4 flex justify-between items-end">
               <div class="px-2 py-2 text-base font-bold text-[#c31f1f] border-b-2 border-[#c31f1f]">
@@ -203,19 +191,16 @@ onMounted(() => {
               <a href="/announcements" class="text-xs text-gray-500 mb-2 hover:text-[#c31f1f]">更多>></a>
             </div>
             <ul class="space-y-3">
-              <li
-                v-for="(notice, index) in noticeList"
-                :key="index"
-                class="flex items-start gap-2 text-sm text-gray-700 hover:text-[#c31f1f] cursor-pointer"
-              >
+              <li v-for="(notice, index) in noticeList" :key="index"
+                class="flex items-start gap-2 text-sm text-gray-700 hover:text-[#c31f1f] cursor-pointer">
                 <span class="font-bold text-gray-400 mt-[2px]">·</span>
                 <span class="line-clamp-1 flex-1">{{ notice }}</span>
               </li>
             </ul>
           </div>
-          
+
           <div class="bg-gray-50 p-4 rounded-sm">
-            <h2 class="text-lg font-bold text-[#c31f1f] mb-3">协会概况</h2>
+            <h1 class="text-lg font-bold text-black mb-3 xhgk">协会概况</h1>
             <div class="text-sm text-gray-600 leading-relaxed mb-4 text-justify">
               <p class="indent-8">
                 中国文艺志愿者协会（China Literary and Art Volunteers'
@@ -232,12 +217,13 @@ onMounted(() => {
               <a href="/about" class="hover:text-[#c31f1f]">制度建设</a>
             </div>
             <div class="text-center">
-              <button class="text-white px-6 py-1.5 rounded text-sm" style="background: linear-gradient(262deg, #e55741, #cc0000)">
+              <button class="text-white px-6 py-1.5 rounded text-sm"
+                style="background: linear-gradient(262deg, #e55741, #cc0000)">
                 logo下载
               </button>
             </div>
           </div>
-          
+
           <div class="focus-img-box">
             <img :src="rightBanners.platform" class="w-full h-[100px] object-cover" />
           </div>
@@ -251,6 +237,21 @@ onMounted(() => {
 .home-page {
   background: #ffffff;
   min-height: calc(100vh - 200px);
+}
+
+.home-page .xhgk {
+  position: relative;
+}
+
+.home-page .xhgk::after {
+  position: absolute;
+  content: "";
+  display: block;
+  width: 29%;
+  height: 8px;
+  left: 0%;
+  top: 18px;
+  background: rgba(204, 0, 0, .2);
 }
 
 .focus-img-box {

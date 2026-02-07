@@ -5,11 +5,11 @@ const breadcrumbs = [
 ]
 
 const sideMenuItems = [
-  { name: '协会简介', active: true },
-  { name: '组织机构', active: false },
-  { name: '理事会', active: false },
-  { name: '制度建设', active: false },
-  { name: '协会章程', active: false }
+  { name: '协会简介', path: '/about', active: true },
+  { name: '协会领导', path: '/about/leaders', active: false },
+  { name: '理事会', path: '/about/council', active: false },
+  { name: '协会章程', path: '/about/charter', active: false },
+  { name: '会员工作条例', path: '/about/regulations', active: false }
 ]
 </script>
 
@@ -28,7 +28,7 @@ const sideMenuItems = [
               :key="index"
               :class="{ active: item.active }"
             >
-              {{ item.name }}
+              <NuxtLink :to="item.path" class="menu-link">{{ item.name }}</NuxtLink>
             </li>
           </ul>
         </div>
@@ -112,5 +112,18 @@ const sideMenuItems = [
 
 .indent {
   text-indent: 2em;
+}
+
+.menu-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.menu-list li:hover .menu-link,
+.menu-list li.active .menu-link {
+  color: #fff;
 }
 </style>
