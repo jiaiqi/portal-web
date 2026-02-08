@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, In } from 'typeorm';
 import { SpecialEntity } from './entities/special.entity';
 import { CreateSpecialDto, UpdateSpecialDto, SpecialListDto, AddSpecialArticleDto } from './dto/special.dto';
 import { SpecialArticleEntity } from './entities/special-article.entity';
+import { ArticleEntity } from '../article/entities/article.entity';
 
 @Injectable()
 export class SpecialService {
@@ -12,6 +13,8 @@ export class SpecialService {
     private specialRepository: Repository<SpecialEntity>,
     @InjectRepository(SpecialArticleEntity)
     private specialArticleRepository: Repository<SpecialArticleEntity>,
+    @InjectRepository(ArticleEntity)
+    private articleRepository: Repository<ArticleEntity>,
   ) {}
 
   async create(createDto: CreateSpecialDto, userName: string): Promise<SpecialEntity> {
@@ -82,5 +85,47 @@ export class SpecialService {
     });
 
     return specialArticles;
+  }
+
+  // 获取专题下的文章列表（带文章详情）
+  async findSpecialArticlesWithDetail(specialId: number, pageNum = 1, pageSize = 10) {
+    // 先获取专题下的文章关联列表
+    const [specialArticles, total] = await this.specialArticleRepository.findAndCount({
+      where: { specialId },
+      order: { sortOrder: 'ASC' },
+      skip: (pageNum - 1) * pageSize,
+      take: pageSize,
+    });
+
+    if (specialArticles.length === 0) {
+      return { list: [], total, pageNum, pageSize };
+    }
+
+    // 获取文章ID列表
+    const articleIds = specialArticles.map(sa => sa.articleId);
+
+    // 查询文章详情
+    const articles = await this.articleRepository.find({
+      where: { articleId: In(articleIds), delFlag: '0', status: '1' },
+    });
+
+    // 创建文章ID到文章详情的映射
+    const articleMap = new Map(articles.map(a => [a.articleId, a]));
+
+    // 合并数据，保持排序
+    const list = specialArticles.map(sa => ({
+      ...sa,
+      article: articleMap.get(sa.articleId) || null,
+    })).filter(item => item.article !== null);
+
+    return { list, total, pageNum, pageSize };
+  }
+
+  // 获取所有启用的专题列表（用于门户网站）
+  async findAllActive() {
+    return this.specialRepository.find({
+      where: { status: '1', delFlag: '0' },
+      order: { sortOrder: 'ASC', createTime: 'DESC' },
+    });
   }
 }

@@ -37,3 +37,27 @@ export function delSpecial(specialId) {
     method: 'delete'
   })
 }
+
+// 专题文章管理
+export function listSpecialArticles(specialId, query) {
+  return request({
+    url: '/cms/special/' + specialId + '/articleList',
+    method: 'get',
+    params: query
+  })
+}
+
+export function addSpecialArticle(data) {
+  return request({
+    url: '/cms/special/article',
+    method: 'post',
+    data: data
+  })
+}
+
+export function delSpecialArticle(id) {
+  return request({
+    url: '/cms/special/article/' + id,
+    method: 'delete'
+  })
+}

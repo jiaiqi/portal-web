@@ -53,7 +53,7 @@ export class SpecialCategoryService {
     const { specialId, categoryName, status } = query;
 
     const where: any = { delFlag: '0' };
-    if (specialId) where.specialId = specialId;
+    if (specialId) where.specialId = Number(specialId);
     if (categoryName) where.categoryName = Like(`%${categoryName}%`);
     if (status) where.status = status;
 

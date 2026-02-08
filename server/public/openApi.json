@@ -5674,6 +5674,106 @@
         ]
       }
     },
+    "/cms/special/{specialId}/articleList": {
+      "get": {
+        "operationId": "SpecialController_findSpecialArticlesWithDetail",
+        "summary": "获取专题下的文章列表（带文章详情）",
+        "parameters": [
+          {
+            "name": "specialId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/SpecialArticleEntity"
+                              }
+                            },
+                            "total": {
+                              "type": "number",
+                              "default": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/special/all/active": {
+      "get": {
+        "operationId": "SpecialController_findAllActive",
+        "summary": "获取所有启用的专题列表",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/SpecialEntity"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/cms/link/list": {
       "get": {
         "operationId": "LinkController_findList",

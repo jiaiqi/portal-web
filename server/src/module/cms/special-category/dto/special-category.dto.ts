@@ -34,7 +34,6 @@ export class UpdateSpecialCategoryDto extends CreateSpecialCategoryDto {
 
 export class SpecialCategoryListDto {
   @ApiProperty({ description: '专题ID', required: false })
-  @IsNumber()
   @IsOptional()
   specialId?: number;
 

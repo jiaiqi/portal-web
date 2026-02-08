@@ -17,6 +17,7 @@ import { ApiDataResponse } from 'src/common/decorators/apiDataResponse.decorator
 import { SpecialEntity } from './entities/special.entity';
 import { SpecialArticleEntity } from './entities/special-article.entity';
 import { Public } from 'src/common/decorators/public.decorator';
+import { ResultData } from 'src/common/utils/result';
 
 @ApiTags('CMS-专题管理')
 @ApiBearerAuth()
@@ -82,5 +83,27 @@ export class SpecialController {
     @Query('categoryId') categoryId?: number,
   ) {
     return this.specialService.findArticlesByCategory(specialId, categoryId);
+  }
+
+  @ApiOperation({ summary: '获取专题下的文章列表（带文章详情）' })
+  @ApiDataResponse(SpecialArticleEntity, true, true)
+  @Public()
+  @Get('/:specialId/articleList')
+  async findSpecialArticlesWithDetail(
+    @Param('specialId', ParseIntPipe) specialId: number,
+    @Query('pageNum') pageNum = 1,
+    @Query('pageSize') pageSize = 10,
+  ) {
+    const data = await this.specialService.findSpecialArticlesWithDetail(specialId, pageNum, pageSize);
+    return ResultData.ok(data);
+  }
+
+  @ApiOperation({ summary: '获取所有启用的专题列表' })
+  @ApiDataResponse(SpecialEntity, true)
+  @Public()
+  @Get('/all/active')
+  async findAllActive() {
+    const data = await this.specialService.findAllActive();
+    return ResultData.ok(data);
   }
 }

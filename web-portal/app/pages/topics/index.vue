@@ -1,78 +1,80 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useCategory } from '~/composables/useCategory'
+import { useSpecial } from '~/composables/useSpecial'
 import { useImage } from '~/composables/useImage'
 
-const { getArticlesByCategory, getCategoryChildren } = useCategory()
+const { getSpecialList, getSpecialArticles } = useSpecial()
 const { getFullImageUrl } = useImage()
 
 const loading = ref(false)
 const error = ref<string | null>(null)
+const specials = ref<any[]>([])
 const articles = ref<any[]>([])
 const total = ref(0)
 const pageNum = ref(1)
 const pageSize = ref(10)
 
-const subCategories = ref<any[]>([])
-const activeCategoryId = ref<number>(6)
+const activeSpecialId = ref<number>(0)
 
 const breadcrumbs = [
   { name: '首页', path: '/' },
   { name: '专题', path: '/topics' }
 ]
 
-async function loadSubCategories() {
+// 加载专题列表
+async function loadSpecialList() {
   try {
-    const data = await getCategoryChildren(6)
-    subCategories.value = data
+    const data = await getSpecialList()
+    specials.value = data
+    // 默认选中第一个专题
+    if (data.length > 0 && activeSpecialId.value === 0) {
+      activeSpecialId.value = data[0].specialId
+      loadArticles(data[0].specialId)
+    }
   } catch (err) {
-    console.error('获取二级分类失败:', err)
+    console.error('获取专题列表失败:', err)
+    error.value = '获取专题列表失败'
   }
 }
 
-async function loadData() {
+// 加载专题下的文章
+async function loadArticles(specialId: number) {
   loading.value = true
   try {
-    const response = await getArticlesByCategory('special', pageNum.value, pageSize.value)
-    articles.value = response.list
+    const response = await getSpecialArticles(specialId, pageNum.value, pageSize.value)
+    // 转换数据格式
+    articles.value = response.list.map((item: any) => ({
+      articleId: item.article?.articleId,
+      title: item.article?.title,
+      summary: item.article?.summary,
+      coverImage: item.article?.coverImage,
+      publishTime: item.article?.publishTime,
+      createTime: item.article?.createTime,
+    })).filter((item: any) => item.articleId)
     total.value = response.total
   } catch (err) {
-    console.error('获取专题数据失败:', err)
-    error.value = '获取数据失败，显示默认内容'
+    console.error('获取专题文章失败:', err)
+    error.value = '获取文章列表失败'
   } finally {
     loading.value = false
   }
 }
 
-async function handleCategoryChange(categoryId: number, categoryCode: string) {
-  activeCategoryId.value = categoryId
+// 切换专题
+function handleSpecialChange(specialId: number) {
+  activeSpecialId.value = specialId
   pageNum.value = 1
-  loading.value = true
-  try {
-    const response = await getArticlesByCategory(categoryCode, pageNum.value, pageSize.value)
-    articles.value = response.list
-    total.value = response.total
-  } catch (err) {
-    console.error('获取分类数据失败:', err)
-    error.value = '获取数据失败'
-  } finally {
-    loading.value = false
-  }
+  loadArticles(specialId)
 }
 
+// 分页切换
 function handlePageChange(page: number) {
   pageNum.value = page
-  const activeCategory = subCategories.value.find(c => c.categoryId === activeCategoryId.value)
-  if (activeCategory) {
-    handleCategoryChange(activeCategory.categoryId, activeCategory.categoryCode)
-  } else {
-    loadData()
-  }
+  loadArticles(activeSpecialId.value)
 }
 
 onMounted(() => {
-  loadSubCategories()
-  loadData()
+  loadSpecialList()
 })
 </script>
 
@@ -82,23 +84,17 @@ onMounted(() => {
     
     <div class="mx-auto px-4 max-w-[1200px] list-wrap">
       <div class="list">
-        <!-- 左侧栏目导航 -->
+        <!-- 左侧专题列表 -->
         <div class="second-menu">
-          <h1 class="menu-title">栏目导航</h1>
+          <h1 class="menu-title">专题导航</h1>
           <ul class="menu-list">
             <li
-              :class="{ active: activeCategoryId === 6 }"
-              @click="handleCategoryChange(6, 'special')"
+              v-for="special in specials"
+              :key="special.specialId"
+              :class="{ active: activeSpecialId === special.specialId }"
+              @click="handleSpecialChange(special.specialId)"
             >
-              全部专题
-            </li>
-            <li
-              v-for="category in subCategories"
-              :key="category.categoryId"
-              :class="{ active: activeCategoryId === category.categoryId }"
-              @click="handleCategoryChange(category.categoryId, category.categoryCode)"
-            >
-              {{ category.categoryName }}
+              {{ special.title }}
             </li>
           </ul>
         </div>
@@ -108,7 +104,9 @@ onMounted(() => {
           <div class="ant-tabs">
             <div class="ant-tabs-nav">
               <div class="ant-tabs-tab active">
-                <div class="ant-tabs-tab-btn">专题</div>
+                <div class="ant-tabs-tab-btn">
+                  {{ specials.find(s => s.specialId === activeSpecialId)?.title || '专题' }}
+                </div>
               </div>
             </div>
           </div>
@@ -131,6 +129,7 @@ onMounted(() => {
               <div v-if="article.coverImage" class="article-image">
                 <img :src="getFullImageUrl(article.coverImage)" :alt="article.title" />
               </div>
+              <div v-else class="article-image bg-gray-100"></div>
               <div class="article-content">
                 <h3 class="article-title">{{ article.title }}</h3>
                 <p class="article-summary">{{ article.summary }}</p>

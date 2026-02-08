@@ -16,9 +16,10 @@
           <el-tag v-else type="info">禁用</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="280">
+      <el-table-column label="操作" align="center" width="360">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdateSpecial(scope.row)" v-hasPermi="['cms:special:edit']">修改</el-button>
+          <el-button link type="primary" icon="Document" @click="handleManageArticles(scope.row)" v-hasPermi="['cms:special:edit']">文章</el-button>
           <el-button link type="primary" icon="Setting" @click="handleManageCategory(scope.row)" v-hasPermi="['cms:special:edit']">栏目</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDeleteSpecial(scope.row)" v-hasPermi="['cms:special:remove']">删除</el-button>
         </template>
@@ -105,12 +106,62 @@
         </div>
       </template>
     </el-dialog>
+
+    <!-- 文章管理对话框 -->
+    <el-dialog title="文章管理" v-model="articleOpen" width="900px" append-to-body>
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button type="primary" plain icon="Plus" @click="handleAddArticle">添加文章</el-button>
+        </el-col>
+      </el-row>
+      <el-table v-loading="articleLoading" :data="articleList">
+        <el-table-column label="ID" align="center" prop="id" width="80" />
+        <el-table-column label="文章标题" align="left" prop="article.title" />
+        <el-table-column label="栏目" align="left" prop="categoryName" width="120">
+          <template #default="scope">
+            {{ scope.row.category ? scope.row.category.categoryName : '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="排序" align="center" prop="sortOrder" width="80" />
+        <el-table-column label="操作" align="center" width="100">
+          <template #default="scope">
+            <el-button link type="primary" icon="Delete" @click="handleDeleteArticle(scope.row)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <!-- 添加文章对话框 -->
+    <el-dialog title="添加文章" v-model="articleDialogOpen" width="700px" append-to-body>
+      <el-form ref="articleRef" :model="articleForm" :rules="articleRules" label-width="100px">
+        <el-form-item label="选择文章" prop="articleId">
+          <el-select v-model="articleForm.articleId" filterable remote :remote-method="searchArticles" placeholder="请输入文章标题搜索" style="width: 100%">
+            <el-option v-for="item in articleOptions" :key="item.articleId" :label="item.title" :value="item.articleId" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择栏目">
+          <el-select v-model="articleForm.categoryId" placeholder="请选择栏目（可选）" style="width: 100%">
+            <el-option v-for="item in categoryList" :key="item.categoryId" :label="item.categoryName" :value="item.categoryId" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input-number v-model="articleForm.sortOrder" :min="0" :max="999" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitArticleForm">确 定</el-button>
+          <el-button @click="articleDialogOpen = false">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { listSpecial, getSpecial, addSpecial, updateSpecial, delSpecial } from '@/api/cms/special'
+import { listSpecial, getSpecial, addSpecial, updateSpecial, delSpecial, listSpecialArticles, addSpecialArticle, delSpecialArticle } from '@/api/cms/special'
 import { listSpecialCategory, getSpecialCategory, addSpecialCategory, updateSpecialCategory, delSpecialCategory } from '@/api/cms/specialCategory'
+import { listArticle } from '@/api/cms/article'
 const { proxy } = getCurrentInstance()
 const specialList = ref([])
 const categoryList = ref([])
@@ -138,6 +189,20 @@ const categoryData = reactive({
 })
 const { form: specialForm, rules: specialRules } = toRefs(specialData)
 const { form: categoryForm, rules: categoryRules } = toRefs(categoryData)
+
+// 文章管理相关
+const articleOpen = ref(false)
+const articleDialogOpen = ref(false)
+const articleLoading = ref(false)
+const articleList = ref([])
+const articleOptions = ref([])
+const articleData = reactive({
+  form: {},
+  rules: {
+    articleId: [{ required: true, message: '请选择文章', trigger: 'change' }]
+  }
+})
+const { form: articleForm, rules: articleRules } = toRefs(articleData)
 
 function getSpecialList() {
   loading.value = true
@@ -227,6 +292,72 @@ function submitSpecialForm() {
       }
     }
   })
+}
+
+// 文章管理方法
+function handleManageArticles(row) {
+  currentSpecialId.value = row.specialId
+  getArticleList(row.specialId)
+  getCategoryList(row.specialId)
+  articleOpen.value = true
+}
+
+function getArticleList(specialId) {
+  articleLoading.value = true
+  listSpecialArticles(specialId).then(res => {
+    articleList.value = res.data?.list || res.list || []
+    articleLoading.value = false
+  })
+}
+
+function handleAddArticle() {
+  resetArticleForm()
+  articleDialogOpen.value = true
+}
+
+function handleDeleteArticle(row) {
+  proxy.$modal.confirm('是否确认从专题中移除该文章？').then(() => {
+    return delSpecialArticle(row.id)
+  }).then(() => {
+    getArticleList(currentSpecialId.value)
+    proxy.$modal.msgSuccess('移除成功')
+  }).catch(() => {})
+}
+
+function searchArticles(query) {
+  if (query) {
+    listArticle({ title: query, pageNum: 1, pageSize: 20 }).then(res => {
+      articleOptions.value = res.data?.list || res.list || []
+    })
+  }
+}
+
+function submitArticleForm() {
+  proxy.$refs['articleRef'].validate(valid => {
+    if (valid) {
+      const data = {
+        specialId: currentSpecialId.value,
+        articleId: articleForm.value.articleId,
+        categoryId: articleForm.value.categoryId,
+        sortOrder: articleForm.value.sortOrder || 0
+      }
+      addSpecialArticle(data).then(() => {
+        proxy.$modal.msgSuccess('添加成功')
+        articleDialogOpen.value = false
+        getArticleList(currentSpecialId.value)
+      })
+    }
+  })
+}
+
+function resetArticleForm() {
+  articleForm.value = {
+    articleId: undefined,
+    categoryId: undefined,
+    sortOrder: 0
+  }
+  articleOptions.value = []
+  proxy.resetForm('articleRef')
 }
 
 function submitCategoryForm() {
