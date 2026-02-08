@@ -177,7 +177,11 @@ const { form: articleForm, rules: articleRules } = toRefs(articleData)
 function getSectionList() {
   loading.value = true
   listSection().then(res => {
-    sectionList.value = res.data?.list || []
+    const data = res.data?.list || res.data || res.list || res
+    sectionList.value = Array.isArray(data) ? data : []
+    loading.value = false
+  }).catch(() => {
+    sectionList.value = []
     loading.value = false
   })
 }
@@ -185,7 +189,19 @@ function getSectionList() {
 function getArticleList(sectionKey) {
   articleLoading.value = true
   listAboutArticle({ sectionKey }).then(res => {
-    articleList.value = res.data || res.list || []
+    // 处理返回数据结构: res.data.list 或 res.data 或 res.list
+    let data = []
+    if (res.data && Array.isArray(res.data.list)) {
+      data = res.data.list
+    } else if (Array.isArray(res.data)) {
+      data = res.data
+    } else if (Array.isArray(res.list)) {
+      data = res.list
+    }
+    articleList.value = data
+    articleLoading.value = false
+  }).catch(() => {
+    articleList.value = []
     articleLoading.value = false
   })
 }
