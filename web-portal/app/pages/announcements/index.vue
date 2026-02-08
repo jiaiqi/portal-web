@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useCategory } from '~/composables/useCategory'
+import { useNotice } from '~/composables/useNotice'
 
-const { getArticlesByCategory } = useCategory()
+const { getNoticeList } = useNotice()
 
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -19,7 +19,7 @@ const breadcrumbs = [
 async function loadData() {
   loading.value = true
   try {
-    const response = await getArticlesByCategory('notice', pageNum.value, pageSize.value)
+    const response = await getNoticeList({ pageNum: pageNum.value, pageSize: pageSize.value, status: '0' })
     articles.value = response.list
     total.value = response.total
   } catch (err) {
@@ -66,8 +66,8 @@ onMounted(() => {
           <div v-else class="article-list">
             <NuxtLink
               v-for="article in articles"
-              :key="article.articleId"
-              :to="`/announcements/${article.articleId}`"
+              :key="article.noticeId"
+              :to="`/announcements/${article.noticeId}`"
               class="article-item"
             >
               <div v-if="article.coverImage" class="article-image">

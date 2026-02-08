@@ -15,6 +15,9 @@ export class SpecialArticleEntity {
   @Column({ name: 'article_id', comment: '文章ID' })
   articleId: number;
 
+  @Column({ name: 'category_id', nullable: true, comment: '栏目ID' })
+  categoryId: number;
+
   @Column({ name: 'sort_order', default: 0, comment: '排序' })
   sortOrder: number;
 }

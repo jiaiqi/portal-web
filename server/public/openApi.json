@@ -5220,7 +5220,6 @@
             "in": "query",
             "description": "页码",
             "schema": {
-              "default": 1,
               "type": "number"
             }
           },
@@ -5228,9 +5227,8 @@
             "name": "pageSize",
             "required": false,
             "in": "query",
-            "description": "每页条数",
+            "description": "每页数量",
             "schema": {
-              "default": 10,
               "type": "number"
             }
           },
@@ -5482,6 +5480,171 @@
                               "type": "boolean",
                               "default": true
                             }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/special/article": {
+      "post": {
+        "operationId": "SpecialController_addArticle",
+        "summary": "添加文章到专题",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSpecialArticleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/special/article/{id}": {
+      "delete": {
+        "operationId": "SpecialController_removeArticle",
+        "summary": "从专题移除文章",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/special/{specialId}/articles": {
+      "get": {
+        "operationId": "SpecialController_findArticlesByCategory",
+        "summary": "获取专题下的文章列表（支持栏目筛选）",
+        "parameters": [
+          {
+            "name": "specialId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/SpecialArticleEntity"
                           }
                         }
                       }
@@ -8088,6 +8251,661 @@
         ]
       }
     },
+    "/cms/navigation/list": {
+      "get": {
+        "operationId": "NavigationController_findList",
+        "summary": "获取导航列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "navName",
+            "required": false,
+            "in": "query",
+            "description": "导航名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "状态：0禁用 1启用",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/NavigationEntity"
+                              }
+                            },
+                            "total": {
+                              "type": "number",
+                              "default": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-网站导航管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/navigation/all": {
+      "get": {
+        "operationId": "NavigationController_findAll",
+        "summary": "获取所有启用的导航",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/NavigationEntity"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-网站导航管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/navigation/{id}": {
+      "get": {
+        "operationId": "NavigationController_findOne",
+        "summary": "获取导航详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/NavigationEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-网站导航管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "NavigationController_delete",
+        "summary": "删除导航",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-网站导航管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/navigation": {
+      "post": {
+        "operationId": "NavigationController_create",
+        "summary": "新增导航",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNavigationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-网站导航管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "NavigationController_update",
+        "summary": "修改导航",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNavigationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-网站导航管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/special-category/list": {
+      "get": {
+        "operationId": "SpecialCategoryController_findList",
+        "summary": "获取专题栏目列表",
+        "parameters": [
+          {
+            "name": "specialId",
+            "required": false,
+            "in": "query",
+            "description": "专题ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "categoryName",
+            "required": false,
+            "in": "query",
+            "description": "栏目名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "状态：0禁用 1启用",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/SpecialCategoryEntity"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题栏目管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/special-category/special/{specialId}": {
+      "get": {
+        "operationId": "SpecialCategoryController_findBySpecialId",
+        "summary": "根据专题ID获取栏目列表",
+        "parameters": [
+          {
+            "name": "specialId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/SpecialCategoryEntity"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题栏目管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/special-category/{id}": {
+      "get": {
+        "operationId": "SpecialCategoryController_findOne",
+        "summary": "获取专题栏目详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/SpecialCategoryEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题栏目管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "SpecialCategoryController_delete",
+        "summary": "删除专题栏目",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题栏目管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/special-category": {
+      "post": {
+        "operationId": "SpecialCategoryController_create",
+        "summary": "新增专题栏目",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSpecialCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题栏目管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "SpecialCategoryController_update",
+        "summary": "修改专题栏目",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSpecialCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-专题栏目管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/dashboard/statistics": {
       "get": {
         "operationId": "DashboardController_getStatistics",
@@ -9898,18 +10716,13 @@
             "type": "string",
             "description": "专题标题"
           },
-          "description": {
-            "type": "string",
-            "description": "专题描述"
-          },
           "coverImage": {
             "type": "string",
             "description": "封面图"
           },
-          "coverImageSourceType": {
+          "description": {
             "type": "string",
-            "description": "封面图片来源类型：upload上传 link链接",
-            "default": "upload"
+            "description": "专题描述"
           },
           "sortOrder": {
             "type": "number",
@@ -9923,7 +10736,9 @@
           }
         },
         "required": [
-          "title"
+          "title",
+          "sortOrder",
+          "status"
         ]
       },
       "UpdateSpecialDto": {
@@ -9933,18 +10748,13 @@
             "type": "string",
             "description": "专题标题"
           },
-          "description": {
-            "type": "string",
-            "description": "专题描述"
-          },
           "coverImage": {
             "type": "string",
             "description": "封面图"
           },
-          "coverImageSourceType": {
+          "description": {
             "type": "string",
-            "description": "封面图片来源类型：upload上传 link链接",
-            "default": "upload"
+            "description": "专题描述"
           },
           "sortOrder": {
             "type": "number",
@@ -9963,8 +10773,41 @@
         },
         "required": [
           "title",
+          "sortOrder",
+          "status",
           "specialId"
         ]
+      },
+      "AddSpecialArticleDto": {
+        "type": "object",
+        "properties": {
+          "specialId": {
+            "type": "number",
+            "description": "专题ID"
+          },
+          "articleId": {
+            "type": "number",
+            "description": "文章ID"
+          },
+          "categoryId": {
+            "type": "number",
+            "description": "栏目ID"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          }
+        },
+        "required": [
+          "specialId",
+          "articleId",
+          "sortOrder"
+        ]
+      },
+      "SpecialArticleEntity": {
+        "type": "object",
+        "properties": {}
       },
       "LinkEntity": {
         "type": "object",
@@ -10483,6 +11326,174 @@
         "required": [
           "pageUrl",
           "pageType"
+        ]
+      },
+      "NavigationEntity": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateNavigationDto": {
+        "type": "object",
+        "properties": {
+          "navName": {
+            "type": "string",
+            "description": "导航名称"
+          },
+          "navPath": {
+            "type": "string",
+            "description": "导航路径/路由"
+          },
+          "navType": {
+            "type": "string",
+            "description": "导航类型：internal内部 external外部",
+            "default": "internal"
+          },
+          "navTarget": {
+            "type": "string",
+            "description": "打开方式：_self当前页 _blank新标签页",
+            "default": "_self"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "状态：0禁用 1启用",
+            "default": "1"
+          }
+        },
+        "required": [
+          "navName",
+          "navPath",
+          "navType",
+          "navTarget",
+          "sortOrder",
+          "status"
+        ]
+      },
+      "UpdateNavigationDto": {
+        "type": "object",
+        "properties": {
+          "navName": {
+            "type": "string",
+            "description": "导航名称"
+          },
+          "navPath": {
+            "type": "string",
+            "description": "导航路径/路由"
+          },
+          "navType": {
+            "type": "string",
+            "description": "导航类型：internal内部 external外部",
+            "default": "internal"
+          },
+          "navTarget": {
+            "type": "string",
+            "description": "打开方式：_self当前页 _blank新标签页",
+            "default": "_self"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "状态：0禁用 1启用",
+            "default": "1"
+          },
+          "navId": {
+            "type": "number",
+            "description": "导航ID"
+          }
+        },
+        "required": [
+          "navName",
+          "navPath",
+          "navType",
+          "navTarget",
+          "sortOrder",
+          "status",
+          "navId"
+        ]
+      },
+      "SpecialCategoryEntity": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateSpecialCategoryDto": {
+        "type": "object",
+        "properties": {
+          "specialId": {
+            "type": "number",
+            "description": "专题ID"
+          },
+          "categoryName": {
+            "type": "string",
+            "description": "栏目名称"
+          },
+          "categoryCode": {
+            "type": "string",
+            "description": "栏目编码"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "状态：0禁用 1启用",
+            "default": "1"
+          }
+        },
+        "required": [
+          "specialId",
+          "categoryName",
+          "categoryCode",
+          "sortOrder",
+          "status"
+        ]
+      },
+      "UpdateSpecialCategoryDto": {
+        "type": "object",
+        "properties": {
+          "specialId": {
+            "type": "number",
+            "description": "专题ID"
+          },
+          "categoryName": {
+            "type": "string",
+            "description": "栏目名称"
+          },
+          "categoryCode": {
+            "type": "string",
+            "description": "栏目编码"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "状态：0禁用 1启用",
+            "default": "1"
+          },
+          "categoryId": {
+            "type": "number",
+            "description": "栏目ID"
+          }
+        },
+        "required": [
+          "specialId",
+          "categoryName",
+          "categoryCode",
+          "sortOrder",
+          "status",
+          "categoryId"
         ]
       }
     }

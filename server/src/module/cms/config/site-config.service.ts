@@ -7,6 +7,7 @@ import {
   UpdateSiteConfigDto,
   SiteConfigListDto,
 } from './dto/site-config.dto';
+import { ResultData } from 'src/common/utils/result';
 
 @Injectable()
 export class SiteConfigService {
@@ -47,13 +48,58 @@ export class SiteConfigService {
     const configs = await this.siteConfigRepository.find({
       order: { sortOrder: 'ASC' },
     });
-    
-    const result = {};
+
+    const result = {
+      siteIcp: '',
+      sitePolice: '',
+      siteCopyright: '',
+      siteContact: '',
+      siteComplaint: '',
+      siteForum: '',
+      siteDepartment: '',
+      siteMember: '',
+      siteOrganization: '',
+      qrcodeUrl: ''
+    };
+
     configs.forEach(config => {
-      result[config.configKey] = config.configValue;
+      const key = config.configKey;
+      const value = config.configValue;
+      switch (key) {
+        case 'site_icp':
+          result.siteIcp = value;
+          break;
+        case 'site_police':
+          result.sitePolice = value;
+          break;
+        case 'site_copyright':
+          result.siteCopyright = value;
+          break;
+        case 'site_contact':
+          result.siteContact = value;
+          break;
+        case 'site_complaint':
+          result.siteComplaint = value;
+          break;
+        case 'site_forum':
+          result.siteForum = value;
+          break;
+        case 'site_department':
+          result.siteDepartment = value;
+          break;
+        case 'site_member':
+          result.siteMember = value;
+          break;
+        case 'site_organization':
+          result.siteOrganization = value;
+          break;
+        case 'site_qrcode':
+          result.qrcodeUrl = value;
+          break;
+      }
     });
-    
-    return result;
+
+    return ResultData.ok(result);
   }
 
   async getValue(key: string) {

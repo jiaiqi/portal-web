@@ -1,69 +1,77 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNumber, IsOptional, IsIn, Length, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsNumber, IsOptional, IsIn } from 'class-validator';
 
 export class CreateSpecialDto {
   @ApiProperty({ description: '专题标题' })
   @IsString()
-  @Length(1, 200)
   title: string;
 
-  @ApiPropertyOptional({ description: '专题描述' })
-  @IsOptional()
+  @ApiProperty({ description: '封面图', required: false })
   @IsString()
-  description?: string;
-
-  @ApiPropertyOptional({ description: '封面图' })
   @IsOptional()
-  @IsString()
   coverImage?: string;
 
-  @ApiPropertyOptional({ description: '封面图片来源类型：upload上传 link链接', default: 'upload' })
+  @ApiProperty({ description: '专题描述', required: false })
+  @IsString()
   @IsOptional()
-  @IsIn(['upload', 'link'])
-  coverImageSourceType?: string;
+  description?: string;
 
-  @ApiPropertyOptional({ description: '排序', default: 0 })
-  @IsOptional()
-  @Type(() => Number)
+  @ApiProperty({ description: '排序', default: 0 })
   @IsNumber()
+  @IsOptional()
   sortOrder?: number;
 
-  @ApiPropertyOptional({ description: '状态：0禁用 1启用', default: '1' })
-  @IsOptional()
+  @ApiProperty({ description: '状态：0禁用 1启用', default: '1' })
+  @IsString()
   @IsIn(['0', '1'])
+  @IsOptional()
   status?: string;
 }
 
 export class UpdateSpecialDto extends CreateSpecialDto {
   @ApiProperty({ description: '专题ID' })
-  @Type(() => Number)
   @IsNumber()
   specialId: number;
 }
 
 export class SpecialListDto {
-  @ApiPropertyOptional({ description: '页码', default: 1 })
-  @IsOptional()
-  @Type(() => Number)
+  @ApiProperty({ description: '页码', required: false })
   @IsNumber()
-  @Min(1)
-  pageNum?: number = 1;
-
-  @ApiPropertyOptional({ description: '每页条数', default: 10 })
   @IsOptional()
-  @Type(() => Number)
+  pageNum?: number;
+
+  @ApiProperty({ description: '每页数量', required: false })
   @IsNumber()
-  @Min(1)
-  pageSize?: number = 10;
-
-  @ApiPropertyOptional({ description: '专题标题' })
   @IsOptional()
+  pageSize?: number;
+
+  @ApiProperty({ description: '专题标题', required: false })
   @IsString()
+  @IsOptional()
   title?: string;
 
-  @ApiPropertyOptional({ description: '状态：0禁用 1启用' })
+  @ApiProperty({ description: '状态：0禁用 1启用', required: false })
+  @IsString()
   @IsOptional()
-  @IsIn(['0', '1'])
   status?: string;
+}
+
+export class AddSpecialArticleDto {
+  @ApiProperty({ description: '专题ID' })
+  @IsNumber()
+  specialId: number;
+
+  @ApiProperty({ description: '文章ID' })
+  @IsNumber()
+  articleId: number;
+
+  @ApiProperty({ description: '栏目ID', required: false })
+  @IsNumber()
+  @IsOptional()
+  categoryId?: number;
+
+  @ApiProperty({ description: '排序', default: 0 })
+  @IsNumber()
+  @IsOptional()
+  sortOrder?: number;
 }

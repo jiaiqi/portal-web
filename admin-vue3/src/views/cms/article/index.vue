@@ -4,11 +4,6 @@
       <el-form-item label="文章标题" prop="title">
         <el-input v-model="queryParams.title" placeholder="请输入文章标题" clearable style="width: 240px" @keyup.enter="handleQuery" />
       </el-form-item>
-      <el-form-item label="分类" prop="categoryId">
-        <el-select v-model="queryParams.categoryId" placeholder="请选择分类" clearable style="width: 240px">
-          <el-option v-for="item in categoryList" :key="item.categoryId" :label="item.categoryName" :value="item.categoryId" />
-        </el-select>
-      </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable style="width: 240px">
           <el-option label="草稿" value="0" />
@@ -79,7 +74,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="文章分类" prop="categoryId">
-              <el-select v-model="form.categoryId" placeholder="请选择分类" style="width: 100%">
+              <el-select v-model="form.categoryId" placeholder="请选择分类" style="width: 100%" disabled>
                 <el-option v-for="item in categoryList" :key="item.categoryId" :label="item.categoryName" :value="item.categoryId" />
               </el-select>
             </el-form-item>
@@ -164,8 +159,10 @@
 <script setup name="Article">
 import { listArticle, getArticle, delArticle, addArticle, updateArticle } from '@/api/cms/article'
 import { listAllCategory } from '@/api/cms/category'
+import { useRoute } from 'vue-router'
 
 const { proxy } = getCurrentInstance()
+const route = useRoute()
 
 // 基础URL
 const baseUrl = import.meta.env.VITE_APP_BASE_API
@@ -176,6 +173,12 @@ function getFullImageUrl(url) {
   if (url.startsWith('http')) return url
   return baseUrl + url
 }
+
+// 从路由查询参数中获取分类代码
+const categoryCode = route.query.categoryCode
+
+// 当前分类信息
+const currentCategory = ref(null)
 
 const articleList = ref([])
 const categoryList = ref([])
@@ -195,6 +198,7 @@ const queryParams = ref({
   pageSize: 10,
   title: undefined,
   categoryId: undefined,
+  categoryCode: categoryCode || undefined, // 从路由参数获取分类代码
   status: undefined,
 })
 
@@ -206,8 +210,14 @@ const rules = ref({
   status: [{ required: true, message: '状态不能为空', trigger: 'change' }],
 })
 
+// 根据分类代码获取分类信息
+function getCategoryByCode(code) {
+  return categoryList.value.find(item => item.categoryCode === code)
+}
+
 function getList() {
   loading.value = true
+  // 直接传递 categoryCode 给后端，后端会自动处理
   listArticle(queryParams.value).then(response => {
     articleList.value = response.data?.list || []
     total.value = response.data?.total || 0
@@ -220,6 +230,15 @@ function getList() {
 function getCategoryList() {
   listAllCategory().then(response => {
     categoryList.value = response.data || response.list || []
+    // 获取分类列表后，根据分类代码设置当前分类
+    if (categoryCode) {
+      currentCategory.value = getCategoryByCode(categoryCode)
+      if (currentCategory.value) {
+        queryParams.value.categoryId = currentCategory.value.categoryId
+      }
+    }
+    // 然后获取文章列表
+    getList()
   })
 }
 
@@ -230,6 +249,8 @@ function handleQuery() {
 
 function resetQuery() {
   queryRef.value.resetFields()
+  // 重置时保留分类代码
+  queryParams.value.categoryCode = categoryCode || undefined
   handleQuery()
 }
 
@@ -298,7 +319,7 @@ function reset() {
   form.value = {
     articleId: undefined,
     title: undefined,
-    categoryId: undefined,
+    categoryId: currentCategory.value?.categoryId, // 默认设置为当前分类
     coverImage: undefined,
     coverImageSourceType: 'upload',
     summary: undefined,
@@ -323,6 +344,6 @@ function parseTime(time) {
   return `${year}-${month}-${day} ${hours}:${minutes}`
 }
 
-getList()
+// 先获取分类列表，再根据分类代码获取文章列表
 getCategoryList()
 </script>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useCategory } from '~/composables/useCategory'
+import { useNotice } from '~/composables/useNotice'
 import { usePageTracking } from '~/composables/usePageTracking'
 
 const route = useRoute()
-const { getArticleById } = useCategory()
+const { getNoticeDetail } = useNotice()
 const { trackPageVisit } = usePageTracking()
 
 const articleId = computed(() => Number(route.params.id))
@@ -26,7 +26,7 @@ async function loadData() {
   
   loading.value = true
   try {
-    article.value = await getArticleById(articleId.value)
+    article.value = await getNoticeDetail(articleId.value)
   } catch (error) {
     console.error('加载数据失败:', error)
   } finally {

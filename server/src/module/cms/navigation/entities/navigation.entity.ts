@@ -6,19 +6,25 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('cms_special')
-export class SpecialEntity {
-  @PrimaryGeneratedColumn({ name: 'special_id' })
-  specialId: number;
+@Entity('cms_navigation')
+export class NavigationEntity {
+  @PrimaryGeneratedColumn({ name: 'nav_id' })
+  navId: number;
 
-  @Column({ name: 'title', length: 200, comment: '专题标题' })
-  title: string;
+  @Column({ name: 'nav_name', length: 50, comment: '导航名称' })
+  navName: string;
 
-  @Column({ name: 'cover_image', length: 255, nullable: true, comment: '封面图' })
-  coverImage: string;
+  @Column({ name: 'nav_path', length: 200, comment: '导航路径/路由' })
+  navPath: string;
 
-  @Column({ name: 'description', length: 500, nullable: true, comment: '专题描述' })
-  description: string;
+  @Column({ name: 'nav_type', length: 20, default: 'internal', comment: '导航类型：internal内部 external外部' })
+  navType: string;
+
+  @Column({ name: 'nav_target', length: 20, default: '_self', comment: '打开方式：_self当前页 _blank新标签页' })
+  navTarget: string;
+
+  @Column({ name: 'is_fixed', length: 1, default: '0', comment: '是否固定：0否 1是（不可编辑删除）' })
+  isFixed: string;
 
   @Column({ name: 'sort_order', default: 0, comment: '排序' })
   sortOrder: number;

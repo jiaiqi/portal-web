@@ -472,7 +472,7 @@ onMounted(async () => {
               <a href="/about" class="hover:text-[#c31f1f]">制度建设</a>
             </div>
             <div class="text-center">
-              <button class="text-white px-6 py-1.5 rounded text-sm"
+              <button class="text-white px-6 py-1.5 rounded text-sm cursor-pointer"
                 style="background: linear-gradient(262deg, #e55741, #cc0000)"
                 @click="downloadLogo">
                 logo下载

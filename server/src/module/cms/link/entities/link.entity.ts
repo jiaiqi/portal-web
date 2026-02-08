@@ -20,9 +20,6 @@ export class LinkEntity {
   @Column({ name: 'link_logo', length: 255, nullable: true, comment: '链接Logo' })
   linkLogo: string;
 
-  @Column({ name: 'link_logo_source_type', length: 20, default: 'upload', comment: 'Logo图片来源类型：upload上传 link链接' })
-  linkLogoSourceType: string;
-
   @Column({ name: 'link_type', length: 1, default: '0', comment: '链接类型：0普通链接 1全国分会' })
   linkType: string;
 

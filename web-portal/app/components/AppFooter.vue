@@ -4,8 +4,30 @@ import { useStatistics } from '../composables/useStatistics'
 
 const { getTotalVisits } = useStatistics()
 
+interface LinkItem {
+  linkName: string
+  linkUrl: string
+}
+
+interface SiteConfig {
+  siteIcp?: string
+  sitePolice?: string
+  siteCopyright?: string
+  siteContact?: string
+  siteComplaint?: string
+  siteForum?: string
+  siteDepartment?: string
+  siteMember?: string
+  siteOrganization?: string
+  qrcodeUrl?: string
+}
+
+interface ApiResponse<T> {
+  data: T
+}
+
 // 默认友情链接
-const defaultLinks = [
+const defaultLinks: LinkItem[] = [
   { linkName: '中国文联', linkUrl: 'https://www.cflac.org.cn/' },
   { linkName: '中国作协', linkUrl: 'https://www.chinawriter.com.cn/' },
   { linkName: '中国剧协', linkUrl: 'https://www.chinatheatre.org.cn/' },
@@ -23,10 +45,10 @@ const defaultLinks = [
 ]
 
 // 友情链接数据
-const links = ref([...defaultLinks])
+const links = ref<LinkItem[]>([...defaultLinks])
 
 // 默认配置
-const defaultConfig = {
+const defaultConfig: SiteConfig = {
   siteIcp: '京ICP备14001194号-1',
   sitePolice: '京公网安备11010502025171',
   siteCopyright: '中国文艺志愿者协会 版权所有',
@@ -40,7 +62,7 @@ const defaultConfig = {
 }
 
 // 响应式配置数据
-const config = ref({ ...defaultConfig })
+const config = ref<SiteConfig>({ ...defaultConfig })
 const api = useApi()
 
 // 总访问量
@@ -49,27 +71,25 @@ const totalVisits = ref(0)
 onMounted(async () => {
   try {
     // 从后台获取友情链接
-    const linksRes = await api.get('/cms/link/all').catch(() => null)
-    if (linksRes && Array.isArray(linksRes) && linksRes.length > 0) {
-      links.value = linksRes
-    } else if (linksRes?.data && Array.isArray(linksRes.data) && linksRes.data.length > 0) {
+    const linksRes = await api.get<ApiResponse<LinkItem[]>>('/cms/link/all').catch(() => null)
+    if (linksRes?.data && Array.isArray(linksRes.data) && linksRes.data.length > 0) {
       links.value = linksRes.data
     }
 
     // 从后台获取网站配置
-    const response = await api.get('/cms/site-config/all').catch(() => null)
-    if (response) {
+    const response = await api.get<ApiResponse<SiteConfig>>('/cms/site-config/all').catch(() => null)
+    if (response?.data) {
       config.value = {
-        siteIcp: response.site_icp || defaultConfig.siteIcp,
-        sitePolice: response.site_police || defaultConfig.sitePolice,
-        siteCopyright: response.site_copyright || defaultConfig.siteCopyright,
-        siteContact: response.site_contact || defaultConfig.siteContact,
-        siteComplaint: response.site_complaint || defaultConfig.siteComplaint,
-        siteForum: response.site_forum || defaultConfig.siteForum,
-        siteDepartment: response.site_department || defaultConfig.siteDepartment,
-        siteMember: response.site_member || defaultConfig.siteMember,
-        siteOrganization: response.site_organization || defaultConfig.siteOrganization,
-        qrcodeUrl: response.site_qrcode || defaultConfig.qrcodeUrl
+        siteIcp: response.data.site_icp || defaultConfig.siteIcp,
+        sitePolice: response.data.site_police || defaultConfig.sitePolice,
+        siteCopyright: response.data.site_copyright || defaultConfig.siteCopyright,
+        siteContact: response.data.site_contact || defaultConfig.siteContact,
+        siteComplaint: response.data.site_complaint || defaultConfig.siteComplaint,
+        siteForum: response.data.site_forum || defaultConfig.siteForum,
+        siteDepartment: response.data.site_department || defaultConfig.siteDepartment,
+        siteMember: response.data.site_member || defaultConfig.siteMember,
+        siteOrganization: response.data.site_organization || defaultConfig.siteOrganization,
+        qrcodeUrl: response.data.site_qrcode || defaultConfig.qrcodeUrl
       }
     }
 

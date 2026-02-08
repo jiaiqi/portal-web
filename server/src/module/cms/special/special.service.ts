@@ -2,13 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { SpecialEntity } from './entities/special.entity';
-import { CreateSpecialDto, UpdateSpecialDto, SpecialListDto } from './dto/special.dto';
+import { CreateSpecialDto, UpdateSpecialDto, SpecialListDto, AddSpecialArticleDto } from './dto/special.dto';
+import { SpecialArticleEntity } from './entities/special-article.entity';
 
 @Injectable()
 export class SpecialService {
   constructor(
     @InjectRepository(SpecialEntity)
     private specialRepository: Repository<SpecialEntity>,
+    @InjectRepository(SpecialArticleEntity)
+    private specialArticleRepository: Repository<SpecialArticleEntity>,
   ) {}
 
   async create(createDto: CreateSpecialDto, userName: string): Promise<SpecialEntity> {
@@ -58,5 +61,26 @@ export class SpecialService {
     });
 
     return { list, total, pageNum, pageSize };
+  }
+
+  async addArticle(addDto: AddSpecialArticleDto): Promise<SpecialArticleEntity> {
+    const specialArticle = this.specialArticleRepository.create(addDto);
+    return this.specialArticleRepository.save(specialArticle);
+  }
+
+  async removeArticle(id: number): Promise<void> {
+    await this.specialArticleRepository.delete({ id });
+  }
+
+  async findArticlesByCategory(specialId: number, categoryId?: number) {
+    const where: any = { specialId };
+    if (categoryId) where.categoryId = categoryId;
+
+    const specialArticles = await this.specialArticleRepository.find({
+      where,
+      order: { sortOrder: 'ASC' },
+    });
+
+    return specialArticles;
   }
 }

@@ -17,9 +17,6 @@ export class BannerEntity {
   @Column({ name: 'image', length: 500, comment: '图片' })
   image: string;
 
-  @Column({ name: 'image_source_type', length: 20, default: 'upload', comment: '图片来源类型：upload上传 link链接' })
-  imageSourceType: string;
-
   @Column({ name: 'link_url', length: 500, nullable: true, comment: '链接地址' })
   linkUrl: string;
 

@@ -81,7 +81,23 @@ function resolvePath(routePath, routeQuery) {
     return props.basePath
   }
   if (routeQuery) {
-    let query = JSON.parse(routeQuery)
+    let query
+    try {
+      query = JSON.parse(routeQuery)
+    } catch (e) {
+      // 如果不是 JSON 格式，尝试解析为 URL 查询字符串格式（如 "categoryCode=news"）
+      if (typeof routeQuery === 'string' && routeQuery.includes('=')) {
+        query = {}
+        routeQuery.split('&').forEach(param => {
+          const [key, value] = param.split('=')
+          if (key && value !== undefined) {
+            query[key] = value
+          }
+        })
+      } else {
+        query = routeQuery
+      }
+    }
     return { path: getNormalPath(props.basePath + '/' + routePath), query: query }
   }
   return getNormalPath(props.basePath + '/' + routePath)

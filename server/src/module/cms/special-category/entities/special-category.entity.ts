@@ -6,19 +6,19 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('cms_special')
-export class SpecialEntity {
-  @PrimaryGeneratedColumn({ name: 'special_id' })
+@Entity('cms_special_category')
+export class SpecialCategoryEntity {
+  @PrimaryGeneratedColumn({ name: 'category_id' })
+  categoryId: number;
+
+  @Column({ name: 'special_id', comment: '专题ID' })
   specialId: number;
 
-  @Column({ name: 'title', length: 200, comment: '专题标题' })
-  title: string;
+  @Column({ name: 'category_name', length: 100, comment: '栏目名称' })
+  categoryName: string;
 
-  @Column({ name: 'cover_image', length: 255, nullable: true, comment: '封面图' })
-  coverImage: string;
-
-  @Column({ name: 'description', length: 500, nullable: true, comment: '专题描述' })
-  description: string;
+  @Column({ name: 'category_code', length: 50, comment: '栏目编码' })
+  categoryCode: string;
 
   @Column({ name: 'sort_order', default: 0, comment: '排序' })
   sortOrder: number;

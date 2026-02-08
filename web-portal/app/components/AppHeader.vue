@@ -1,20 +1,28 @@
 <script setup lang="ts">
+import { getNavigation } from '~/api/navigation'
+
+interface NavItem {
+  name: string
+  path: string
+  target?: string
+}
+
 const route = useRoute()
 const isMenuOpen = ref(false)
+const navItems = ref<NavItem[]>([])
 
-const navItems = [
-  { name: "首页", path: "/" },
-  { name: "协会概况", path: "/about" },
-  { name: "要闻动态", path: "/news" },
-  { name: "党建工作", path: "/party" },
-  { name: "品牌活动", path: "/activities" },
-  { name: "表彰激励", path: "/awards" },
-  { name: "公告公示", path: "/announcements" },
-  { name: "专题", path: "/topics" },
-  { name: "全国联动", path: "/cooperation" },
-  { name: "智慧平台", path: "https://zg.wyzyz.org", target: "_blank" },
-  // { name: "智慧平台", path: "/platform" },
-]
+onMounted(() => {
+  fetchNavigation()
+})
+
+async function fetchNavigation() {
+  try {
+    const res = await getNavigation()
+    navItems.value = res || []
+  } catch (error) {
+    console.error('获取导航失败:', error)
+  }
+}
 
 function isActive(path: string) {
   if (path === "/") {
@@ -71,13 +79,13 @@ watch(
         <div class="flex h-[50px] items-center">
           <div class="flex items-center w-full justify-between">
             <div class="flex items-center">
-              <NuxtLink v-for="item in navItems" :key="item.path" :to="item.path" :target="item.target"
+              <NuxtLink v-for="item in navItems" :key="item.navPath" :to="item.navPath" :target="item.target"
                 class="group text-base text-white px-6 py-3 transition-all duration-200 font-medium">
                 <span class="relative">
-                  {{ item.name }}
+                  {{ item.name || item.navName || '' }}
                   <span
                     class="absolute -bottom-3 left-0 w-full h-[2px] bg-white transition-transform duration-300 ease-in-out origin-center scale-x-0 group-hover:scale-x-100"
-                    :class="{ 'scale-x-100': isActive(item.path) }" />
+                    :class="{ 'scale-x-100': isActive(item.navPath) }" />
                 </span>
               </NuxtLink>
             </div>
@@ -90,12 +98,12 @@ watch(
       class="lg:hidden absolute top-full left-0 w-full bg-white shadow-lg overflow-hidden transition-all duration-300 ease-in-out"
       :class="isMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'">
       <div class="py-2 flex flex-col">
-        <NuxtLink v-for="item in navItems" :key="item.path" :to="item.path" :target="item.target"
+        <NuxtLink v-for="item in navItems" :key="item.navPath" :to="item.navPath" :target="item.target"
           class="px-6 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#c31f1f] border-b border-gray-100 last:border-0"
           :class="{
-            'text-[#c31f1f] bg-red-50 font-medium': isActive(item.path),
+            'text-[#c31f1f] bg-red-50 font-medium': isActive(item.navPath),
           }">
-          {{ item.name }}
+          {{ item.name || item.navName || '' }}
         </NuxtLink>
       </div>
     </div>
