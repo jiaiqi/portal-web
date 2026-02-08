@@ -199,7 +199,7 @@ function handleAddSection() {
 function handleUpdateSection(row) {
   resetSectionForm()
   getSection(row.sectionId).then(res => {
-    sectionForm.value = res
+    sectionForm.value = res.data || res
     sectionOpen.value = true
     sectionTitle.value = '修改栏目'
   })
@@ -217,9 +217,10 @@ function handleDeleteSection(row) {
 function handleEditContent(row) {
   resetContentForm()
   getSection(row.sectionId).then(res => {
+    const data = res.data || res
     contentForm.value = {
-      sectionId: res.sectionId,
-      content: res.content
+      sectionId: data.sectionId,
+      content: data.content
     }
     contentOpen.value = true
     contentTitle.value = '编辑内容 - ' + row.sectionName
@@ -242,7 +243,7 @@ function handleAddArticle() {
 function handleUpdateArticle(row) {
   resetArticleForm()
   getAboutArticle(row.articleId).then(res => {
-    articleForm.value = res
+    articleForm.value = res.data || res
     articleDialogOpen.value = true
     articleDialogTitle.value = '修改文章'
   })
