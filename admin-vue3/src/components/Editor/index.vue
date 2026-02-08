@@ -70,12 +70,25 @@ const uploadFile = async (file, insertFn) => {
     )
 
     if (response.data.code === 200) {
-      insertFn(response.data.url, response.data.fileName || file.name, response.data.url)
+      const data = response.data.data || response.data
+      // 构建完整的图片URL
+      let url = data.url || data.fileName
+      if (!url) {
+        ElMessage.error('上传成功但未获取到图片地址')
+        return
+      }
+      if (!url.startsWith('http')) {
+        url = import.meta.env.VITE_APP_BASE_API + url
+      }
+      const name = data.fileName || data.newFileName || file.name
+      // insertFn 参数: url, alt, href
+      insertFn(url, name, url)
     } else {
       ElMessage.error(response.data.msg || '上传失败')
     }
   } catch (error) {
     ElMessage.error('上传失败')
+    console.error('Upload error:', error)
   }
 }
 

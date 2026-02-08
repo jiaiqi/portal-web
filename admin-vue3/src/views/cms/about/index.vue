@@ -64,10 +64,10 @@
       </template>
     </el-dialog>
 
-    <el-dialog :title="contentTitle" v-model="contentOpen" width="800px" append-to-body>
+    <el-dialog :title="contentTitle" v-model="contentOpen" width="900px" append-to-body>
       <el-form ref="contentRef" :model="contentForm" :rules="contentRules" label-width="100px">
         <el-form-item label="栏目内容" prop="content">
-          <el-input v-model="contentForm.content" type="textarea" :rows="10" placeholder="请输入栏目内容" />
+          <editor v-model="contentForm.content" :min-height="400" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -288,6 +288,8 @@ function handleEditContent(row) {
     const data = res.data || res
     contentForm.value = {
       sectionId: data.sectionId,
+      sectionKey: data.sectionKey,
+      sectionName: data.sectionName,
       content: data.content
     }
     contentOpen.value = true
