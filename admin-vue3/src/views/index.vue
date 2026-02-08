@@ -206,18 +206,18 @@
               </div>
               <div class="quick-label">文章管理</div>
             </div>
-            <div class="quick-item" @click="handleQuickLink('/cms/notice')">
+            <div class="quick-item" @click="handleQuickLink('/cms/notification')">
               <div class="quick-icon quick-icon-green">
                 <el-icon :size="20"><Bell /></el-icon>
               </div>
               <div class="quick-label">公告管理</div>
             </div>
-            <div class="quick-item" @click="handleQuickLink('/cms/banner')">
+            <!-- <div class="quick-item" @click="handleQuickLink('/cms/banner')">
               <div class="quick-icon quick-icon-orange">
                 <el-icon :size="20"><Film /></el-icon>
               </div>
               <div class="quick-label">轮播图</div>
-            </div>
+            </div> -->
             <div class="quick-item" @click="handleQuickLink('/cms/focus')">
               <div class="quick-icon quick-icon-purple">
                 <el-icon :size="20"><Picture /></el-icon>

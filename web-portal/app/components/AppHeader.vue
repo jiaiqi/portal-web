@@ -12,7 +12,8 @@ const navItems = [
   { name: "公告公示", path: "/announcements" },
   { name: "专题", path: "/topics" },
   { name: "全国联动", path: "/cooperation" },
-  { name: "智慧平台", path: "/platform" },
+  { name: "智慧平台", path: "https://zg.wyzyz.org", target: "_blank" },
+  // { name: "智慧平台", path: "/platform" },
 ]
 
 function isActive(path: string) {
@@ -70,7 +71,7 @@ watch(
         <div class="flex h-[50px] items-center">
           <div class="flex items-center w-full justify-between">
             <div class="flex items-center">
-              <NuxtLink v-for="item in navItems" :key="item.path" :to="item.path"
+              <NuxtLink v-for="item in navItems" :key="item.path" :to="item.path" :target="item.target"
                 class="group text-base text-white px-6 py-3 transition-all duration-200 font-medium">
                 <span class="relative">
                   {{ item.name }}
@@ -89,7 +90,7 @@ watch(
       class="lg:hidden absolute top-full left-0 w-full bg-white shadow-lg overflow-hidden transition-all duration-300 ease-in-out"
       :class="isMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'">
       <div class="py-2 flex flex-col">
-        <NuxtLink v-for="item in navItems" :key="item.path" :to="item.path"
+        <NuxtLink v-for="item in navItems" :key="item.path" :to="item.path" :target="item.target"
           class="px-6 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#c31f1f] border-b border-gray-100 last:border-0"
           :class="{
             'text-[#c31f1f] bg-red-50 font-medium': isActive(item.path),

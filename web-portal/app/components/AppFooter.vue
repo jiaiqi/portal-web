@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useStatistics } from '../composables/useStatistics'
+
+const { getTotalVisits } = useStatistics()
 
 // 默认友情链接
 const defaultLinks = [
@@ -40,6 +43,9 @@ const defaultConfig = {
 const config = ref({ ...defaultConfig })
 const api = useApi()
 
+// 总访问量
+const totalVisits = ref(0)
+
 onMounted(async () => {
   try {
     // 从后台获取友情链接
@@ -66,6 +72,9 @@ onMounted(async () => {
         qrcodeUrl: response.site_qrcode || defaultConfig.qrcodeUrl
       }
     }
+
+    // 获取总访问量
+    totalVisits.value = await getTotalVisits()
   } catch (err) {
     console.error('获取网站配置失败:', err)
     // 使用默认配置
@@ -100,7 +109,7 @@ onMounted(async () => {
         <!-- 版权信息区域 -->
         <div class="copyright-box">
           <div class="copyright">
-            <p class="visit-count">网站总访问量 : 103364</p>
+            <p class="visit-count">网站总访问量 : {{ totalVisits }}</p>
             <p class="bottom-links">
               <a href="#">{{ config.siteContact }}</a>
               <span>|</span>

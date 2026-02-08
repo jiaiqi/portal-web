@@ -15,6 +15,8 @@ import { FocusHistoryEntity } from './focus/entities/focus-history.entity';
 import { SiteConfigEntity } from './config/entities/site-config.entity';
 import { AboutSectionEntity } from './about/entities/about-section.entity';
 import { AboutArticleEntity } from './about/entities/about-article.entity';
+import { VisitLogEntity } from './statistics/entities/visit-log.entity';
+import { StatisticsEntity } from './statistics/entities/statistics.entity';
 
 // Modules
 import { ArticleModule } from './article/article.module';
@@ -28,6 +30,7 @@ import { FocusModule } from './focus/focus.module';
 import { PortalModule } from './portal/portal.module';
 import { SiteConfigModule } from './config/site-config.module';
 import { AboutModule } from './about/about.module';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -45,6 +48,8 @@ import { AboutModule } from './about/about.module';
       SiteConfigEntity,
       AboutSectionEntity,
       AboutArticleEntity,
+      VisitLogEntity,
+      StatisticsEntity,
     ]),
     ArticleModule,
     CategoryModule,
@@ -57,7 +62,8 @@ import { AboutModule } from './about/about.module';
     PortalModule,
     SiteConfigModule,
     AboutModule,
+    StatisticsModule,
   ],
-  exports: [ArticleModule, CategoryModule, SpecialModule, LinkModule, PageModule, QuickLinkModule, NoticeModule, FocusModule, PortalModule, SiteConfigModule, AboutModule],
+  exports: [ArticleModule, CategoryModule, SpecialModule, LinkModule, PageModule, QuickLinkModule, NoticeModule, FocusModule, PortalModule, SiteConfigModule, AboutModule, StatisticsModule],
 })
 export class CmsModule {}

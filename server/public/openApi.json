@@ -7913,6 +7913,181 @@
         ]
       }
     },
+    "/cms/statistics/record": {
+      "post": {
+        "operationId": "StatisticsController_recordVisit",
+        "summary": "记录访问",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordVisitDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS统计"
+        ]
+      }
+    },
+    "/cms/statistics/total": {
+      "get": {
+        "operationId": "StatisticsController_getTotalVisits",
+        "summary": "获取总访问量",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS统计"
+        ]
+      }
+    },
+    "/cms/statistics/today": {
+      "get": {
+        "operationId": "StatisticsController_getTodayVisits",
+        "summary": "获取今日访问量",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS统计"
+        ]
+      }
+    },
+    "/cms/statistics/trend": {
+      "get": {
+        "operationId": "StatisticsController_getVisitTrend",
+        "summary": "获取访问趋势",
+        "parameters": [
+          {
+            "name": "days",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS统计"
+        ]
+      }
+    },
     "/dashboard/statistics": {
       "get": {
         "operationId": "DashboardController_getStatistics",
@@ -10277,6 +10452,37 @@
           "sectionKey",
           "title",
           "articleId"
+        ]
+      },
+      "RecordVisitDto": {
+        "type": "object",
+        "properties": {
+          "pageUrl": {
+            "type": "string",
+            "description": "访问页面URL",
+            "example": "/"
+          },
+          "pageType": {
+            "type": "string",
+            "description": "页面类型：home首页 article文章 special专题",
+            "example": "home"
+          },
+          "refTypeId": {
+            "type": "number",
+            "description": "关联ID（文章ID、专题ID等）"
+          },
+          "ipAddress": {
+            "type": "string",
+            "description": "IP地址"
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "浏览器信息"
+          }
+        },
+        "required": [
+          "pageUrl",
+          "pageType"
         ]
       }
     }

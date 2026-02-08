@@ -2,9 +2,14 @@
 import { ref, onMounted, computed } from 'vue'
 import { useArticle } from '~/composables/useArticle'
 import { useNotice } from '~/composables/useNotice'
+import { usePageTracking } from '~/composables/usePageTracking'
 
 const { getArticleList } = useArticle()
 const { getNoticeList } = useNotice()
+const { trackPageVisit } = usePageTracking()
+
+// 追踪首页访问
+trackPageVisit('home')
 
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -131,7 +136,7 @@ const defaultFocusList = [
 // 响应式数据
 const newsItems = ref([...defaultNewsItems])
 const informationItems = ref([...defaultInformationItems])
-const noticeList = ref([...defaultNoticeList])
+const noticeList = ref<Array<{ id: number; title: string }>>([...defaultNoticeList.map(title => ({ id: 0, title }))])
 
 // 计算属性 - 获取各类焦点图
 const focusBig = computed(() => {
@@ -298,7 +303,10 @@ onMounted(async () => {
 
     // 处理公告数据
     if (noticeRes?.list?.length > 0) {
-      noticeList.value = noticeRes.list.map((item: any) => item.title)
+      noticeList.value = noticeRes.list.map((item: any) => ({
+        id: item.articleId,
+        title: item.title
+      }))
     }
   } catch (err) {
     console.error('获取首页数据失败:', err)
@@ -438,11 +446,11 @@ onMounted(async () => {
               <a href="/announcements" class="text-xs text-gray-500 mb-2 hover:text-[#c31f1f]">更多>></a>
             </div>
             <ul class="space-y-3">
-              <li v-for="(notice, index) in noticeList" :key="index"
+              <NuxtLink v-for="(notice, index) in noticeList" :key="index" :to="`/announcements/${notice.id}`"
                 class="flex items-start gap-2 text-sm text-gray-700 hover:text-[#c31f1f] cursor-pointer">
                 <span class="font-bold text-gray-400 mt-[2px]">·</span>
-                <span class="line-clamp-1 flex-1">{{ notice }}</span>
-              </li>
+                <span class="line-clamp-1 flex-1">{{ notice.title }}</span>
+              </NuxtLink>
             </ul>
           </div>
 

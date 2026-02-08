@@ -67,6 +67,10 @@ perm:
         { path: '/logout', method: 'POST' },
         { path: '/perm/{id}', method: 'GET' },
         { path: '/upload', method: 'POST' },
+        { path: '/cms/statistics/record', method: 'POST' },
+        { path: '/cms/statistics/total', method: 'GET' },
+        { path: '/cms/statistics/today', method: 'GET' },
+        { path: '/cms/statistics/trend', method: 'GET' },
       ]
 
 # 用户相关

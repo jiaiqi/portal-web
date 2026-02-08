@@ -772,7 +772,6 @@ INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`
 (1, '系统管理', 0, 2, 'system', NULL, '', '1', '0', 'M', '0', '0', '', 'system', 'admin', NOW(), '', NULL, '系统管理目录', '0'),
 (2, '系统监控', 0, 3, 'monitor', NULL, '', '1', '0', 'M', '0', '0', '', 'monitor', 'admin', NOW(), '', NULL, '系统监控目录', '0'),
 (3, '系统工具', 0, 4, 'tool', NULL, '', '1', '0', 'M', '0', '0', '', 'tool', 'admin', NOW(), '', NULL, '系统工具目录', '0'),
-(4, 'cms-admin官网', 0, 5, 'https://cms-admin.dooring.vip', NULL, '', '0', '0', 'M', '0', '0', '', 'guide', 'admin', NOW(), '', NULL, 'cms-admin官网地址', '0'),
 (100, '用户管理', 1, 1, 'user', 'system/user/index', '', '1', '0', 'C', '0', '0', 'system:user:list', 'user', 'admin', NOW(), '', NULL, '用户管理菜单', '0'),
 (101, '角色管理', 1, 2, 'role', 'system/role/index', '', '1', '0', 'C', '0', '0', 'system:role:list', 'peoples', 'admin', NOW(), '', NULL, '角色管理菜单', '0'),
 (102, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', '1', '0', 'C', '0', '0', 'system:menu:list', 'tree-table', 'admin', NOW(), '', NULL, '菜单管理菜单', '0'),

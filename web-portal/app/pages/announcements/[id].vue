@@ -2,11 +2,16 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCategory } from '~/composables/useCategory'
+import { usePageTracking } from '~/composables/usePageTracking'
 
 const route = useRoute()
 const { getArticleById } = useCategory()
+const { trackPageVisit } = usePageTracking()
 
 const articleId = computed(() => Number(route.params.id))
+
+// 追踪公告页访问
+trackPageVisit('article', articleId.value)
 const loading = ref(false)
 const article = ref<any>(null)
 

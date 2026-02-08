@@ -692,8 +692,8 @@ CREATE TABLE `cms_about_article` (
 DROP TABLE IF EXISTS `cms_visit_log`;
 CREATE TABLE `cms_visit_log` (
   `log_id` int NOT NULL AUTO_INCREMENT COMMENT '日志ID',
-  `page_url` varchar(255) NOT NULL COMMENT '访问页面',
-  `page_type` varchar(50) NOT NULL COMMENT '页面类型：home首页 article文章 special专题',
+  `page_url` varchar(255) DEFAULT NULL COMMENT '访问页面',
+  `page_type` varchar(50) DEFAULT NULL COMMENT '页面类型：home首页 article文章 special专题',
   `ref_type_id` int DEFAULT NULL COMMENT '关联ID',
   `ip_address` varchar(128) DEFAULT NULL COMMENT 'IP地址',
   `user_agent` varchar(500) DEFAULT NULL COMMENT '浏览器信息',
@@ -701,7 +701,8 @@ CREATE TABLE `cms_visit_log` (
   PRIMARY KEY (`log_id`),
   KEY `idx_visit_time` (`visit_time`),
   KEY `idx_page_type` (`page_type`),
-  KEY `idx_ref_type_id` (`ref_type_id`)
+  KEY `idx_ref_type_id` (`ref_type_id`),
+  KEY `idx_page_url` (`page_url`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='访问日志表';
 
 -- ----------------------------
@@ -1154,7 +1155,6 @@ INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_valu
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES (1, '系统管理', 0, 1, 'system', NULL, '', '1', '0', 'M', '0', '0', '', 'system', 'admin', '2025-02-28 16:52:10.000000', '', NULL, '系统管理目录', '0');
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES (2, '系统监控', 0, 2, 'monitor', NULL, '', '1', '0', 'M', '0', '0', '', 'monitor', 'admin', '2025-02-28 16:52:10.000000', '', NULL, '系统监控目录', '0');
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES (3, '系统工具', 0, 3, 'tool', NULL, '', '1', '0', 'M', '0', '0', '', 'tool', 'admin', '2025-02-28 16:52:10.000000', '', NULL, '系统工具目录', '0');
-INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES (4, 'cms-admin官网', 0, 4, 'https://cms-admin.dooring.vip', NULL, '', '0', '0', 'M', '0', '0', '', 'guide', 'admin', '2025-02-28 16:52:10.000000', '', NULL, 'cms-admin官网地址', '0');
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES (100, '用户管理', 1, 1, 'user', 'system/user/index', '', '1', '0', 'C', '0', '0', 'system:user:list', 'user', 'admin', '2025-02-28 16:52:10.000000', '', NULL, '用户管理菜单', '0');
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES (101, '角色管理', 1, 2, 'role', 'system/role/index', '', '1', '0', 'C', '0', '0', 'system:role:list', 'peoples', 'admin', '2025-02-28 16:52:10.000000', '', NULL, '角色管理菜单', '0');
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES (102, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', '1', '0', 'C', '0', '0', 'system:menu:list', 'tree-table', 'admin', '2025-02-28 16:52:10.000000', '', NULL, '菜单管理菜单', '0');
