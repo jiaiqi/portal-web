@@ -44,7 +44,7 @@ export class NoticeService {
     const notice = await this.noticeRepository.findOne({
       where: { noticeId: id, delFlag: '0' },
     });
-    return notice;
+    return ResultData.ok(notice);
   }
 
   async create(createDto: CreateNoticeDto, userName: string) {

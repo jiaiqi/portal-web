@@ -25,10 +25,13 @@ const breadcrumbs = computed(() => [
 
 async function loadData() {
   if (!articleId.value) return
-  
+
   loading.value = true
   try {
-    article.value = await getNoticeDetail(articleId.value)
+    const data = await getNoticeDetail(articleId.value)
+    // eslint-disable-next-line no-console
+    console.warn('公告详情数据:', data)
+    article.value = data
   } catch (error) {
     console.error('加载数据失败:', error)
   } finally {
@@ -54,7 +57,7 @@ onMounted(() => {
 
           <div v-else class="article-detail">
             <h1 class="article-title">{{ article?.title }}</h1>
-            
+
             <div class="article-meta">
               <span v-if="article?.author">作者：{{ article.author }}</span>
               <span v-if="article?.source">来源：{{ article.source }}</span>
@@ -69,8 +72,8 @@ onMounted(() => {
             </div>
 
             <div v-if="article?.content" class="article-content rich-text" v-html="article.content"></div>
-            
-            <div v-else class="text-gray-500 text-center py-10">
+
+            <div v-else-if="!loading" class="text-gray-500 text-center py-10">
               暂无内容
             </div>
 

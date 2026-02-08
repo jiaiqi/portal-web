@@ -159,8 +159,15 @@
           <el-form-item label="文章摘要">
             <el-input v-model="articleForm.summary" type="textarea" :rows="3" placeholder="请输入文章摘要" />
           </el-form-item>
+          <el-form-item label="封面图片来源">
+            <el-radio-group v-model="articleForm.coverImageSourceType">
+              <el-radio label="upload">本地上传</el-radio>
+              <el-radio label="link">外部链接</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item label="封面图">
-            <el-input v-model="articleForm.coverImage" placeholder="请输入封面图URL" />
+            <image-upload v-if="articleForm.coverImageSourceType === 'upload'" v-model="articleForm.coverImage" />
+            <el-input v-else v-model="articleForm.coverImage" placeholder="请输入封面图URL地址" />
           </el-form-item>
           <el-form-item label="内容类型">
             <el-radio-group v-model="articleForm.contentType">
@@ -169,10 +176,19 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item v-if="articleForm.contentType === 'editor'" label="文章内容">
-            <el-input v-model="articleForm.content" type="textarea" :rows="10" placeholder="请输入文章内容" />
+            <editor v-model="articleForm.content" :min-height="300" />
           </el-form-item>
           <el-form-item v-if="articleForm.contentType === 'link'" label="外部链接">
             <el-input v-model="articleForm.externalLink" placeholder="请输入外部链接URL" />
+          </el-form-item>
+          <el-form-item label="作者">
+            <el-input v-model="articleForm.author" placeholder="请输入作者" />
+          </el-form-item>
+          <el-form-item label="来源">
+            <el-input v-model="articleForm.source" placeholder="请输入文章来源" />
+          </el-form-item>
+          <el-form-item label="发布时间">
+            <el-date-picker v-model="articleForm.publishTime" type="datetime" placeholder="选择发布时间" style="width: 100%" />
           </el-form-item>
         </template>
 
@@ -404,10 +420,14 @@ function submitArticleForm() {
     const articleData = {
       title: articleForm.value.title,
       summary: articleForm.value.summary,
+      coverImageSourceType: articleForm.value.coverImageSourceType || 'upload',
       coverImage: articleForm.value.coverImage,
       contentType: articleForm.value.contentType || 'editor',
       content: articleForm.value.content,
       externalLink: cleanExternalLink,
+      author: articleForm.value.author,
+      source: articleForm.value.source,
+      publishTime: articleForm.value.publishTime,
       status: '1'
     }
     addArticle(articleData).then(res => {
@@ -436,10 +456,14 @@ function resetArticleForm() {
     articleId: undefined,
     title: undefined,
     summary: undefined,
+    coverImageSourceType: 'upload',
     coverImage: undefined,
     contentType: 'editor',
     content: undefined,
     externalLink: undefined,
+    author: undefined,
+    source: undefined,
+    publishTime: undefined,
     categoryId: undefined,
     sortOrder: 0
   }
