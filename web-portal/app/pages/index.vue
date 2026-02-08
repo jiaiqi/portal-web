@@ -264,6 +264,7 @@ async function loadNewsData() {
     if (newsRes?.list?.length > 0) {
       newsItems.value = newsRes.list.map((item: any) => ({
         id: item.articleId,
+        articleId: item.articleId,
         title: item.title,
         date: item.publishTime ? dayjs(item.publishTime).format('YYYY-MM-DD HH:mm') : '',
         image: getFullImageUrl(item.coverImage) || '',
@@ -293,6 +294,7 @@ async function loadInformationData() {
     if (infoRes?.list?.length > 0) {
       informationItems.value = infoRes.list.map((item: any) => ({
         id: item.articleId,
+        articleId: item.articleId,
         title: item.title,
         date: item.publishTime ? dayjs(item.publishTime).format('YYYY-MM-DD HH:mm') : '',
         image: getFullImageUrl(item.coverImage) || '',
@@ -347,6 +349,7 @@ onMounted(async () => {
     if (articleRes?.list?.length > 0) {
       newsItems.value = articleRes.list.map((item: any) => ({
         id: item.articleId,
+        articleId: item.articleId,
         title: item.title,
         date: item.publishTime ? dayjs(item.publishTime).format('YYYY-MM-DD HH:mm') : '',
         image: getFullImageUrl(item.coverImage) || '',
@@ -359,6 +362,7 @@ onMounted(async () => {
     if (infoRes?.list?.length > 0) {
       informationItems.value = infoRes.list.map((item: any) => ({
         id: item.articleId,
+        articleId: item.articleId,
         title: item.title,
         date: item.publishTime ? dayjs(item.publishTime).format('YYYY-MM-DD HH:mm') : '',
         image: getFullImageUrl(item.coverImage) || '',
