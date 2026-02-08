@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAbout } from '~/composables/useAbout'
+import { useRichText } from '~/composables/useRichText'
 
 const { getSectionByKey } = useAbout()
+const { processHtml } = useRichText()
 
 const breadcrumbs = [
   { name: '首页', path: '/' },
   { name: '协会概况', path: '/about' },
-  { name: '会员工作条例', path: '/about/regulations' }
+  { name: '会员工作条例', path: '/about/regulations' },
 ]
 
 const sideMenuItems = [
@@ -15,11 +17,16 @@ const sideMenuItems = [
   { name: '协会章程', path: '/about/charter', active: false, key: 'charter' },
   { name: '协会领导', path: '/about/leadership', active: false, key: 'leadership' },
   { name: '理事会', path: '/about/council', active: false, key: 'council' },
-  { name: '会员工作条例', path: '/about/regulations', active: true, key: 'regulations' }
+  { name: '会员工作条例', path: '/about/regulations', active: true, key: 'regulations' },
 ]
 
 const loading = ref(false)
 const section = ref<any>(null)
+
+// 处理后的内容
+const processedContent = computed(() => {
+  return processHtml(section.value?.content)
+})
 
 onMounted(async () => {
   loading.value = true
@@ -50,14 +57,6 @@ onMounted(async () => {
 
         <!-- 右侧内容区域 -->
         <div class="content">
-          <!-- <div class="ant-tabs">
-            <div class="ant-tabs-nav">
-              <div class="ant-tabs-tab active">
-                <div class="ant-tabs-tab-btn">会员工作条例</div>
-              </div>
-            </div>
-          </div> -->
-
           <!-- 加载状态 -->
           <div v-if="loading" class="flex justify-center items-center py-20">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c31f1f]"></div>
@@ -65,7 +64,7 @@ onMounted(async () => {
 
           <!-- 内容 -->
           <div v-else class="content-detail">
-            <div v-if="section?.content" class="rich-text" v-html="section.content"></div>
+            <div v-if="processedContent" class="rich-text" v-html="processedContent"></div>
             <div v-else class="text-gray-500 text-center py-10">
               暂无内容
             </div>

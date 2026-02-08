@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCategory } from '~/composables/useCategory'
-import { usePageTracking } from '~/composables/usePageTracking'
 import { useImage } from '~/composables/useImage'
+import { usePageTracking } from '~/composables/usePageTracking'
+import { useRichText } from '~/composables/useRichText'
 
 const route = useRoute()
 const { getArticleById, getCategoryByCode } = useCategory()
-const { trackPageVisit } = usePageTracking()
 const { getFullImageUrl } = useImage()
+const { trackPageVisit } = usePageTracking()
+const { processHtml } = useRichText()
 
 const articleId = computed(() => Number(route.params.id))
 const fromCategory = computed(() => route.query.from as string)
@@ -138,7 +140,7 @@ onMounted(() => {
               <img :src="getFullImageUrl(article.coverImage)" :alt="article.title" />
             </div>
 
-            <div v-if="article?.content" class="article-content rich-text" v-html="article.content"></div>
+            <div v-if="article?.content" class="article-content rich-text" v-html="processHtml(article.content)"></div>
             
             <div v-else class="text-gray-500 text-center py-10">
               暂无内容

@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAbout } from '~/composables/useAbout'
+import { useRichText } from '~/composables/useRichText'
 
 const { getSectionByKey } = useAbout()
+const { processHtml } = useRichText()
 
 const breadcrumbs = [
   { name: '首页', path: '/' },
-  { name: '协会概况', path: '/about' }
+  { name: '协会概况', path: '/about' },
 ]
 
 const sideMenuItems = [
@@ -14,7 +16,7 @@ const sideMenuItems = [
   { name: '协会章程', path: '/about/charter', active: false, key: 'charter' },
   { name: '协会领导', path: '/about/leadership', active: false, key: 'leadership' },
   { name: '理事会', path: '/about/council', active: false, key: 'council' },
-  { name: '会员工作条例', path: '/about/regulations', active: false, key: 'regulations' }
+  { name: '会员工作条例', path: '/about/regulations', active: false, key: 'regulations' },
 ]
 
 const loading = ref(false)
@@ -64,7 +66,7 @@ onMounted(async () => {
 
           <!-- 内容 -->
           <div v-else class="content-detail">
-            <div v-if="section?.content" class="rich-text" v-html="section.content"></div>
+            <div v-if="section?.content" class="rich-text" v-html="processHtml(section.content)"></div>
             <div v-else class="text-gray-500 text-center py-10">
               暂无内容
             </div>

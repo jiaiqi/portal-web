@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCategory } from '~/composables/useCategory'
 import { useImage } from '~/composables/useImage'
+import { useRichText } from '~/composables/useRichText'
 
 const route = useRoute()
 const { getArticleById } = useCategory()
 const { getFullImageUrl } = useImage()
+const { processHtml } = useRichText()
 
 const articleId = computed(() => Number(route.params.id))
 const loading = ref(false)
@@ -15,12 +17,12 @@ const article = ref<any>(null)
 const breadcrumbs = computed(() => [
   { name: '首页', path: '/' },
   { name: '要闻动态', path: '/news' },
-  { name: article.value?.title || '文章详情', path: '' }
+  { name: article.value?.title || '文章详情', path: '' },
 ])
 
 async function loadData() {
   if (!articleId.value) return
-  
+
   loading.value = true
   try {
     article.value = await getArticleById(articleId.value)
@@ -49,7 +51,7 @@ onMounted(() => {
 
           <div v-else class="article-detail">
             <h1 class="article-title">{{ article?.title }}</h1>
-            
+
             <div class="article-meta">
               <span v-if="article?.author">作者：{{ article.author }}</span>
               <span v-if="article?.source">来源：{{ article.source }}</span>
@@ -63,8 +65,8 @@ onMounted(() => {
               <img :src="getFullImageUrl(article.coverImage)" :alt="article.title" />
             </div>
 
-            <div v-if="article?.content" class="article-content rich-text" v-html="article.content"></div>
-            
+            <div v-if="article?.content" class="article-content rich-text" v-html="processHtml(article.content)"></div>
+
             <div v-else class="text-gray-500 text-center py-10">
               暂无内容
             </div>
@@ -163,11 +165,11 @@ onMounted(() => {
   .article-detail {
     padding: 20px;
   }
-  
+
   .article-title {
     font-size: 22px;
   }
-  
+
   .article-meta {
     flex-direction: column;
     gap: 10px;

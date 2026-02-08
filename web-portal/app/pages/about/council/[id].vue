@@ -2,7 +2,8 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAbout } from '~/composables/useAbout'
-
+import { useRichText } from '~/composables/useRichText'
+const { processHtml } = useRichText()
 const route = useRoute()
 const { getArticleById } = useAbout()
 
@@ -75,7 +76,7 @@ onMounted(async () => {
           <!-- 内容 -->
           <div v-else class="content-detail">
             <h1 v-if="article" class="text-2xl font-bold mb-6">{{ article.title }}</h1>
-            <div v-if="article?.content" class="rich-text" v-html="article.content"></div>
+            <div v-if="article?.content" class="rich-text" v-html="processHtml(article.content)"></div>
             <div v-else class="text-gray-500 text-center py-10">
               暂无内容
             </div>

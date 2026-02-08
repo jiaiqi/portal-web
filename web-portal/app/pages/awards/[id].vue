@@ -3,6 +3,8 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCategory } from '~/composables/useCategory'
 import { useImage } from '~/composables/useImage'
+import { useRichText } from '~/composables/useRichText'
+const { processHtml } = useRichText()
 
 const route = useRoute()
 const { getArticleById } = useCategory()
@@ -63,7 +65,7 @@ onMounted(() => {
               <img :src="getFullImageUrl(article.coverImage)" :alt="article.title" />
             </div>
 
-            <div v-if="article?.content" class="article-content rich-text" v-html="article.content"></div>
+            <div v-if="article?.content" class="article-content rich-text" v-html="processHtml(article.content)"></div>
             
             <div v-else class="text-gray-500 text-center py-10">
               暂无内容
