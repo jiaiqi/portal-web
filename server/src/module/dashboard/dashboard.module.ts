@@ -5,7 +5,6 @@ import { DashboardService } from './dashboard.service';
 import { ArticleEntity } from '../cms/article/entities/article.entity';
 import { NoticeEntity } from '../cms/notice/entities/notice.entity';
 import { FocusEntity } from '../cms/focus/entities/focus.entity';
-import { BannerEntity } from '../cms/banner/entities/banner.entity';
 import { CategoryEntity } from '../cms/category/entities/category.entity';
 
 @Module({
@@ -14,7 +13,6 @@ import { CategoryEntity } from '../cms/category/entities/category.entity';
       ArticleEntity,
       NoticeEntity,
       FocusEntity,
-      BannerEntity,
       CategoryEntity,
     ]),
   ],

@@ -42,6 +42,17 @@ onMounted(() => {
 onUnmounted(() => {
   stopAutoPlay()
 })
+
+// 获取完整图片URL
+function getFullImageUrl(url: string | undefined) {
+  if (!url) return ''
+  if (url.startsWith('http')) return url
+  if (url.startsWith('/')) {
+    const config = useRuntimeConfig()
+    return (config.public.apiBase || 'http://localhost:8080') + url
+  }
+  return url
+}
 </script>
 
 <template>
@@ -55,7 +66,7 @@ onUnmounted(() => {
         :key="index"
         class="flex-shrink-0 h-full w-full relative"
       >
-        <img :src="slide.image" :alt="slide.title" class="h-full w-full object-cover">
+        <img :src="getFullImageUrl(slide.image)" :alt="slide.title" class="h-full w-full object-cover">
         <div class="p-6 bottom-0 left-0 right-0 absolute from-black/70 to-transparent bg-gradient-to-t">
           <h3 class="text-xl text-white font-bold">
             {{ slide.title }}

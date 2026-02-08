@@ -1,44 +1,77 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useCategory } from '~/composables/useCategory'
+
+const { getArticlesByCategory, getCategoryChildren } = useCategory()
+
+const loading = ref(false)
+const error = ref<string | null>(null)
+const articles = ref<any[]>([])
+const total = ref(0)
+const pageNum = ref(1)
+const pageSize = ref(10)
+
+const subCategories = ref<any[]>([])
+const activeCategoryId = ref<number>(6)
 
 const breadcrumbs = [
   { name: '首页', path: '/' },
   { name: '专题', path: '/topics' }
 ]
 
-const sideMenuItems = [
-  { name: '专题', active: true },
-  { name: '2024专题', active: false },
-  { name: '2023专题', active: false }
-]
-
-const newsItems = ref([
-  {
-    id: 1,
-    title: '中国文联、中国文艺志愿者协会深入学习宣传贯彻党的二十届三中全会精神专题',
-    date: '2024-07-22 10:20'
-  },
-  {
-    id: 2,
-    title: '新时代文明实践文艺志愿服务专题',
-    date: '2023-09-02 14:44:18'
-  },
-  {
-    id: 3,
-    title: '"强基工程"——文艺助力基层精神文明建设行动专题',
-    date: '2023-09-02 15:02'
-  },
-  {
-    id: 4,
-    title: '学雷锋文艺志愿服务专题',
-    date: '2023-09-02 15:02:48'
-  },
-  {
-    id: 5,
-    title: '"与人民同行——新时代文明实践文艺志愿服务特别节目"专题',
-    date: '2023-09-02 15:03:27'
+async function loadSubCategories() {
+  try {
+    const data = await getCategoryChildren(6)
+    subCategories.value = data
+  } catch (err) {
+    console.error('获取二级分类失败:', err)
   }
-])
+}
+
+async function loadData() {
+  loading.value = true
+  try {
+    const response = await getArticlesByCategory('special', pageNum.value, pageSize.value)
+    articles.value = response.list
+    total.value = response.total
+  } catch (err) {
+    console.error('获取专题数据失败:', err)
+    error.value = '获取数据失败，显示默认内容'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function handleCategoryChange(categoryId: number, categoryCode: string) {
+  activeCategoryId.value = categoryId
+  pageNum.value = 1
+  loading.value = true
+  try {
+    const response = await getArticlesByCategory(categoryCode, pageNum.value, pageSize.value)
+    articles.value = response.list
+    total.value = response.total
+  } catch (err) {
+    console.error('获取分类数据失败:', err)
+    error.value = '获取数据失败'
+  } finally {
+    loading.value = false
+  }
+}
+
+function handlePageChange(page: number) {
+  pageNum.value = page
+  const activeCategory = subCategories.value.find(c => c.categoryId === activeCategoryId.value)
+  if (activeCategory) {
+    handleCategoryChange(activeCategory.categoryId, activeCategory.categoryCode)
+  } else {
+    loadData()
+  }
+}
+
+onMounted(() => {
+  loadSubCategories()
+  loadData()
+})
 </script>
 
 <template>
@@ -52,11 +85,18 @@ const newsItems = ref([
           <h1 class="menu-title">栏目导航</h1>
           <ul class="menu-list">
             <li
-              v-for="(item, index) in sideMenuItems"
-              :key="index"
-              :class="{ active: item.active }"
+              :class="{ active: activeCategoryId === 6 }"
+              @click="handleCategoryChange(6, 'special')"
             >
-              {{ item.name }}
+              全部专题
+            </li>
+            <li
+              v-for="category in subCategories"
+              :key="category.categoryId"
+              :class="{ active: activeCategoryId === category.categoryId }"
+              @click="handleCategoryChange(category.categoryId, category.categoryCode)"
+            >
+              {{ category.categoryName }}
             </li>
           </ul>
         </div>
@@ -70,8 +110,47 @@ const newsItems = ref([
               </div>
             </div>
           </div>
-          
-          <ContentList :items="newsItems" />
+
+          <div v-if="loading" class="flex justify-center items-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c31f1f]"></div>
+          </div>
+
+          <div v-else-if="error" class="text-center py-10 text-gray-500">
+            <p>{{ error }}</p>
+          </div>
+
+          <div v-else class="article-list">
+            <NuxtLink
+              v-for="article in articles"
+              :key="article.articleId"
+              :to="`/topics/${article.articleId}`"
+              class="article-item"
+            >
+              <div v-if="article.coverImage" class="article-image">
+                <img :src="article.coverImage" :alt="article.title" />
+              </div>
+              <div class="article-content">
+                <h3 class="article-title">{{ article.title }}</h3>
+                <p class="article-summary">{{ article.summary }}</p>
+                <p class="article-date">{{ article.publishTime || article.createTime }}</p>
+              </div>
+            </NuxtLink>
+            
+            <div v-if="articles.length === 0" class="text-gray-500 text-center py-10">
+              暂无内容
+            </div>
+
+            <div v-if="total > pageSize" class="pagination mt-6 flex justify-center gap-2">
+              <button
+                v-for="page in Math.ceil(total / pageSize)"
+                :key="page"
+                :class="['px-3 py-1 rounded', page === pageNum ? 'bg-[#c31f1f] text-white' : 'bg-gray-200']"
+                @click="handlePageChange(page)"
+              >
+                {{ page }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -81,5 +160,102 @@ const newsItems = ref([
 <style scoped>
 .topics-page {
   background: #ffffff;
+}
+
+.article-list {
+  padding: 20px 0;
+}
+
+.article-item {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.article-item:hover {
+  background: #f9f9f9;
+  padding-left: 10px;
+}
+
+.article-item:last-child {
+  border-bottom: none;
+}
+
+.article-image {
+  width: 200px;
+  height: 120px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.article-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.article-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.article-item:hover .article-title {
+  color: #c31f1f;
+}
+
+.article-summary {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-date {
+  font-size: 14px;
+  color: #999;
+  margin-top: 10px;
+}
+
+.pagination button {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.pagination button:hover:not(.bg-\[#c31f1f\]) {
+  background: #ddd;
+}
+
+@media (max-width: 768px) {
+  .article-item {
+    flex-direction: column;
+  }
+  
+  .article-image {
+    width: 100%;
+    height: 180px;
+  }
 }
 </style>

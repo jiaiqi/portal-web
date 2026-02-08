@@ -616,6 +616,45 @@ CREATE TABLE `cms_page` (
   UNIQUE KEY `uk_page_key` (`page_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='单页内容表';
 
+-- 协会概况栏目表
+DROP TABLE IF EXISTS `cms_about_section`;
+CREATE TABLE `cms_about_section` (
+  `section_id` int NOT NULL AUTO_INCREMENT COMMENT '栏目ID',
+  `section_key` varchar(50) NOT NULL COMMENT '栏目标识：overview概况 charter章程 leadership领导 council理事会 regulations条例',
+  `section_name` varchar(100) NOT NULL COMMENT '栏目名称',
+  `section_type` varchar(20) NOT NULL DEFAULT 'richText' COMMENT '栏目类型：richText富文本 list列表',
+  `content` longtext COMMENT '富文本内容（type=richText时使用）',
+  `sort_order` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态：0禁用 1启用',
+  `create_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建者',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `update_by` varchar(64) NOT NULL DEFAULT '' COMMENT '更新者',
+  `update_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
+  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标志',
+  PRIMARY KEY (`section_id`),
+  UNIQUE KEY `uk_section_key` (`section_key`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='协会概况栏目表';
+
+-- 协会文章表（理事会等列表类型栏目使用）
+DROP TABLE IF EXISTS `cms_about_article`;
+CREATE TABLE `cms_about_article` (
+  `article_id` int NOT NULL AUTO_INCREMENT COMMENT '文章ID',
+  `section_key` varchar(50) NOT NULL COMMENT '栏目标识',
+  `title` varchar(200) NOT NULL COMMENT '文章标题',
+  `content` longtext COMMENT '文章内容',
+  `sort_order` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态：0禁用 1启用',
+  `create_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建者',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `update_by` varchar(64) NOT NULL DEFAULT '' COMMENT '更新者',
+  `update_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
+  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标志',
+  PRIMARY KEY (`article_id`),
+  KEY `idx_section_key` (`section_key`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='协会文章表';
+
 -- 访问日志表
 DROP TABLE IF EXISTS `cms_visit_log`;
 CREATE TABLE `cms_visit_log` (
@@ -666,16 +705,16 @@ INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_valu
 
 -- 部门数据
 INSERT INTO `sys_dept` (`dept_id`, `parent_id`, `ancestors`, `dept_name`, `order_num`, `leader`, `phone`, `email`, `status`, `del_flag`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES 
-(100, 0, '0', 'nest-admin科技', 0, 'nest-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
-(101, 100, '0,100', '深圳总公司', 1, 'nest-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
-(102, 100, '0,100', '长沙分公司', 2, 'nest-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
-(103, 101, '0,100,101', '研发部门', 1, 'nest-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
-(104, 101, '0,100,101', '市场部门', 2, 'nest-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
-(105, 101, '0,100,101', '测试部门', 3, 'nest-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
-(106, 101, '0,100,101', '财务部门', 4, 'nest-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
-(107, 101, '0,100,101', '运维部门', 5, 'nest-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
-(108, 102, '0,100,102', '市场部门', 1, 'nest-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
-(109, 102, '0,100,102', '财务部门', 2, 'nest-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL);
+(100, 0, '0', 'CMS科技', 0, 'CMS', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
+(101, 100, '0,100', '深圳总公司', 1, 'CMS', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
+(102, 100, '0,100', '长沙分公司', 2, 'CMS', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
+(103, 101, '0,100,101', '研发部门', 1, 'cms-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
+(104, 101, '0,100,101', '市场部门', 2, 'cms-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
+(105, 101, '0,100,101', '测试部门', 3, 'cms-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
+(106, 101, '0,100,101', '财务部门', 4, 'cms-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
+(107, 101, '0,100,101', '运维部门', 5, 'cms-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
+(108, 102, '0,100,102', '市场部门', 1, 'cms-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL),
+(109, 102, '0,100,102', '财务部门', 2, 'cms-admin', '15888888888', 'ry@qq.com', '0', '0', 'admin', NOW(), '', NULL, NULL);
 
 -- 字典类型数据
 INSERT INTO `sys_dict_type` (`dict_id`, `dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES 
@@ -733,7 +772,7 @@ INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`
 (1, '系统管理', 0, 2, 'system', NULL, '', '1', '0', 'M', '0', '0', '', 'system', 'admin', NOW(), '', NULL, '系统管理目录', '0'),
 (2, '系统监控', 0, 3, 'monitor', NULL, '', '1', '0', 'M', '0', '0', '', 'monitor', 'admin', NOW(), '', NULL, '系统监控目录', '0'),
 (3, '系统工具', 0, 4, 'tool', NULL, '', '1', '0', 'M', '0', '0', '', 'tool', 'admin', NOW(), '', NULL, '系统工具目录', '0'),
-(4, 'nest-admin官网', 0, 5, 'https://nest-admin.dooring.vip', NULL, '', '0', '0', 'M', '0', '0', '', 'guide', 'admin', NOW(), '', NULL, 'nest-admin官网地址', '0'),
+(4, 'cms-admin官网', 0, 5, 'https://cms-admin.dooring.vip', NULL, '', '0', '0', 'M', '0', '0', '', 'guide', 'admin', NOW(), '', NULL, 'cms-admin官网地址', '0'),
 (100, '用户管理', 1, 1, 'user', 'system/user/index', '', '1', '0', 'C', '0', '0', 'system:user:list', 'user', 'admin', NOW(), '', NULL, '用户管理菜单', '0'),
 (101, '角色管理', 1, 2, 'role', 'system/role/index', '', '1', '0', 'C', '0', '0', 'system:role:list', 'peoples', 'admin', NOW(), '', NULL, '角色管理菜单', '0'),
 (102, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', '1', '0', 'C', '0', '0', 'system:menu:list', 'tree-table', 'admin', NOW(), '', NULL, '菜单管理菜单', '0'),
@@ -818,8 +857,8 @@ INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`
 
 -- 系统公告数据
 INSERT INTO `sys_notice` (`notice_id`, `notice_title`, `notice_type`, `notice_content`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`, `remark`) VALUES 
-(1, '温馨提醒：2018-07-01 nest-admin新版本发布啦', '2', '新版本内容', '0', 'admin', NOW(), '', NULL, '0', NULL),
-(2, '维护通知：2018-07-01 nest-admin系统凌晨维护', '1', '维护内容', '0', 'admin', NOW(), '', NULL, '0', NULL);
+(1, '温馨提醒：2018-07-01 cms-admin新版本发布啦', '2', '新版本内容', '0', 'admin', NOW(), '', NULL, '0', NULL),
+(2, '维护通知：2018-07-01 cms-admin系统凌晨维护', '1', '维护内容', '0', 'admin', NOW(), '', NULL, '0', NULL);
 
 -- 岗位数据
 INSERT INTO `sys_post` (`post_id`, `post_code`, `post_name`, `post_sort`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES 
@@ -853,8 +892,8 @@ INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES
 
 -- 用户数据
 INSERT INTO `sys_user` (`user_id`, `dept_id`, `user_name`, `nick_name`, `user_type`, `email`, `phonenumber`, `sex`, `password`, `status`, `del_flag`, `login_ip`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `avatar`, `login_date`) VALUES 
-(1, 103, 'admin', 'nest-admin', '00', 'ry@163.com', '15888888888', '1', '$2b$10$d4Z9Iq.v9J4pjX55I9mzRuPHsOMKLupOqxlb/UfbD9oYsYxd5ezeS', '0', '0', '127.0.0.1', 'admin', NOW(), '', NULL, '管理员', '', NULL),
-(2, 105, 'ry', 'nest-admin', '00', 'ry@qq.com', '15666666666', '1', '$2b$10$d4Z9Iq.v9J4pjX55I9mzRuPHsOMKLupOqxlb/UfbD9oYsYxd5ezeS', '0', '0', '127.0.0.1', 'admin', NOW(), '', NULL, '测试员', '', NULL);
+(1, 103, 'admin', 'cms-admin', '00', 'ry@163.com', '15888888888', '1', '$2b$10$d4Z9Iq.v9J4pjX55I9mzRuPHsOMKLupOqxlb/UfbD9oYsYxd5ezeS', '0', '0', '127.0.0.1', 'admin', NOW(), '', NULL, '管理员', '', NULL),
+(2, 105, 'ry', 'cms-admin', '00', 'ry@qq.com', '15666666666', '1', '$2b$10$d4Z9Iq.v9J4pjX55I9mzRuPHsOMKLupOqxlb/UfbD9oYsYxd5ezeS', '0', '0', '127.0.0.1', 'admin', NOW(), '', NULL, '测试员', '', NULL);
 
 -- 用户岗位关联
 INSERT INTO `sys_user_post` (`user_id`, `post_id`) VALUES 
@@ -947,6 +986,22 @@ INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`
 (2083, '专题修改', 2080, 3, '', '', '', '1', '0', 'F', '0', '0', 'cms:special:edit', '#', 'admin', NOW(), 'admin', NOW(), '', '0'),
 (2084, '专题删除', 2080, 4, '', '', '', '1', '0', 'F', '0', '0', 'cms:special:remove', '#', 'admin', NOW(), 'admin', NOW(), '', '0');
 
+-- 协会概况管理
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES 
+(2090, '协会概况', 2000, 10, 'about', '', '', '1', '0', 'M', '0', '0', '', 'list', 'admin', NOW(), 'admin', NOW(), '协会概况管理目录', '0');
+
+-- 协会概况-栏目管理
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES 
+(2091, '栏目管理', 2090, 1, 'aboutSection', 'cms/about/section', '', '1', '0', 'C', '0', '0', 'cms:about:list', 'list', 'admin', NOW(), 'admin', NOW(), '栏目管理菜单', '0'),
+(2092, '栏目查询', 2091, 1, '', '', '', '1', '0', 'F', '0', '0', 'cms:about:query', '#', 'admin', NOW(), 'admin', NOW(), '', '0'),
+(2093, '栏目新增', 2091, 2, '', '', '', '1', '0', 'F', '0', '0', 'cms:about:add', '#', 'admin', NOW(), 'admin', NOW(), '', '0'),
+(2094, '栏目修改', 2091, 3, '', '', '', '1', '0', 'F', '0', '0', 'cms:about:edit', '#', 'admin', NOW(), 'admin', NOW(), '', '0'),
+(2095, '栏目删除', 2091, 4, '', '', '', '1', '0', 'F', '0', '0', 'cms:about:remove', '#', 'admin', NOW(), 'admin', NOW(), '', '0');
+
+-- 协会概况-理事会文章管理
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `del_flag`) VALUES 
+(2096, '理事会文章', 2090, 2, 'aboutArticle', 'cms/about/article', '', '1', '0', 'C', '0', '0', 'cms:about:list', 'list', 'admin', NOW(), 'admin', NOW(), '理事会文章管理菜单', '0');
+
 -- ============================================================
 -- 第五部分：CMS 默认业务数据
 -- ============================================================
@@ -973,7 +1028,7 @@ INSERT INTO `cms_banner` (`title`, `image`, `link_url`, `position`, `sort_order`
 ('右侧顶部轮播图', 'https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20240103100209A005_20240103145859A047.png', '', 'right_top', 1, '1', 'admin', 'admin', NOW(), NOW()),
 ('右侧平台轮播图', 'https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20240103100840A009 (1)_20240103145523A040.png', '', 'right_platform', 1, '1', 'admin', 'admin', NOW(), NOW());
 
--- 文章数据
+-- 文章数据（要闻动态 - category_id = 1）
 INSERT INTO `cms_article` (`title`, `category_id`, `summary`, `cover_image`, `content`, `publish_time`, `status`, `is_top`, `open_type`, `create_by`, `update_by`, `create_time`, `update_time`) VALUES
 ('习近平致中国志愿服务联合会第三届会员代表大会的贺信', 1, '习近平致中国志愿服务联合会第三届会员代表大会的贺信', 'https://www.wyzyz.org/claav-api/profile/upload/2025/11/29/要闻_20251129210255A439.png', '<p>习近平致中国志愿服务联合会第三届会员代表大会的贺信内容...</p>', '2025-11-29 12:00:00', '1', '1', 'current', 'admin', 'admin', NOW(), NOW()),
 ('习近平总书记致中国志愿服务联合会第三届会员代表大会的贺信引发热烈反响', 1, '习近平总书记致中国志愿服务联合会第三届会员代表大会的贺信引发热烈反响', 'https://www.wyzyz.org/claav-api/profile/upload/2025/11/29/要闻_20251129210446A440.png', '<p>习近平总书记致中国志愿服务联合会第三届会员代表大会的贺信引发热烈反响内容...</p>', '2025-11-29 12:00:00', '1', '0', 'current', 'admin', 'admin', NOW(), NOW()),
@@ -981,6 +1036,15 @@ INSERT INTO `cms_article` (`title`, `category_id`, `summary`, `cover_image`, `co
 ('中央宣传思想文化工作领导小组关于认定命名第七届全国文明城市、文明村镇、文明单位和第三届全国文明家庭、文明校园的决定', 1, '中央宣传思想文化工作领导小组决定', 'https://www.wyzyz.org/claav-api/profile/upload/2025/05/27/微信截图_20250527095422_20250527095430A374.png', '<p>中央宣传思想文化工作领导小组决定内容...</p>', '2025-05-27 12:00:00', '1', '0', 'current', 'admin', 'admin', NOW(), NOW()),
 ('第12个中国文艺志愿者服务日|文艺志愿者们在行动', 1, '第12个中国文艺志愿者服务日活动报道', 'https://www.wyzyz.org/claav-api/profile/upload/2025/05/27/微信截图_20250527094917_20250527094929A372.png', '<p>第12个中国文艺志愿者服务日活动内容...</p>', '2025-05-27 12:00:00', '1', '0', 'current', 'admin', 'admin', NOW(), NOW()),
 ('共唱团圆家 百花再出发|"百花迎春——中国文学艺术界2025春节大联欢"报道', 1, '春节大联欢活动报道', 'https://www.wyzyz.org/claav-api/profile/upload/2025/01/27/微信截图_20250127152109_20250127152122A187.png', '<p>春节大联欢活动内容...</p>', '2025-01-27 15:20:00', '1', '0', 'current', 'admin', 'admin', NOW(), NOW());
+
+-- 文章数据（资讯 - category_id = 2）
+INSERT INTO `cms_article` (`title`, `category_id`, `summary`, `cover_image`, `content`, `publish_time`, `status`, `is_top`, `open_type`, `create_by`, `update_by`, `create_time`, `update_time`) VALUES
+('各地文艺志愿服务队积极开展"学雷锋"主题活动', 2, '各地文艺志愿服务队积极开展"学雷锋"主题活动', NULL, '<p>各地文艺志愿服务队积极开展"学雷锋"主题活动内容...</p>', '2025-03-05 16:00:00', '1', '1', 'current', 'admin', 'admin', NOW(), NOW()),
+('中国文艺志愿者协会新增会员单位名单公布', 2, '中国文艺志愿者协会新增会员单位名单公布', NULL, '<p>中国文艺志愿者协会新增会员单位名单公布内容...</p>', '2025-03-01 10:00:00', '1', '0', 'current', 'admin', 'admin', NOW(), NOW()),
+('关于开展2024年度文艺志愿服务项目申报工作的通知', 2, '关于开展2024年度文艺志愿服务项目申报工作的通知', NULL, '<p>关于开展2024年度文艺志愿服务项目申报工作的通知内容...</p>', '2025-02-28 09:00:00', '1', '0', 'current', 'admin', 'admin', NOW(), NOW()),
+('2024年春节联欢晚会文艺志愿服务工作协调会召开', 2, '2024年春节联欢晚会文艺志愿服务工作协调会召开', NULL, '<p>2024年春节联欢晚会文艺志愿服务工作协调会召开内容...</p>', '2025-02-20 14:00:00', '1', '0', 'current', 'admin', 'admin', NOW(), NOW()),
+('文艺志愿者走进社区开展送温暖活动', 2, '文艺志愿者走进社区开展送温暖活动', NULL, '<p>文艺志愿者走进社区开展送温暖活动内容...</p>', '2025-02-15 10:30:00', '1', '0', 'current', 'admin', 'admin', NOW(), NOW()),
+('中国文艺志愿者协会举办新会员培训班', 2, '中国文艺志愿者协会举办新会员培训班', NULL, '<p>中国文艺志愿者协会举办新会员培训班内容...</p>', '2025-02-10 09:00:00', '1', '0', 'current', 'admin', 'admin', NOW(), NOW());
 
 -- 公告数据
 INSERT INTO `cms_notice` (`title`, `content`, `notice_type`, `status`, `is_top`, `sort_order`, `create_by`, `update_by`, `create_time`, `update_time`) VALUES
@@ -1022,5 +1086,19 @@ INSERT INTO `cms_special` (`title`, `cover_image`, `description`, `sort_order`, 
 ('时代风尚', 'https://www.wyzyz.org/claav-api/profile/upload/2024/01/01/时代风尚.jpg', '时代风尚专题', 1, '1', 'admin', 'admin', NOW(), NOW()),
 ('文艺志愿服务', 'https://www.wyzyz.org/claav-api/profile/upload/2024/01/01/文艺志愿服务.jpg', '文艺志愿服务专题', 2, '1', 'admin', 'admin', NOW(), NOW()),
 ('新时代文明实践', 'https://www.wyzyz.org/claav-api/profile/upload/2024/01/01/新时代文明实践.jpg', '新时代文明实践专题', 3, '1', 'admin', 'admin', NOW(), NOW());
+
+-- 协会概况栏目数据
+INSERT INTO `cms_about_section` (`section_id`, `section_key`, `section_name`, `section_type`, `content`, `sort_order`, `status`, `create_by`, `create_time`) VALUES
+(1, 'overview', '协会概况', 'richText', '<p>中国文艺志愿者协会（China Literary and Art Volunteers'' Association，CLAVA），2013年5月23日在北京成立，现任主席是殷秀梅。</p><p>中国文艺志愿者协会是在中国文联党组领导下，由文艺志愿者、文艺志愿服务组织以及关心支持文艺志愿服务事业的单位或组织自愿组成，按照章程开展活动的全国性、联合性、非营利性社会组织。</p><p>协会的宗旨是：高举中国特色社会主义伟大旗帜，以马克思列宁主义、毛泽东思想、邓小平理论、"三个代表"重要思想、科学发展观、习近平新时代中国特色社会主义思想为指导，深入学习贯彻习近平文化思想，培育和践行社会主义核心价值观，广泛动员文艺工作者、文艺爱好者投身志愿服务，弘扬奉献、友爱、互助、进步的志愿精神，丰富人民群众精神文化生活，推动文艺事业和志愿服务事业健康发展。</p>', 1, '1', 'admin', NOW()),
+(2, 'charter', '协会章程', 'richText', '<p><strong>第一章 总则</strong></p><p>第一条 中国文艺志愿者协会（简称"中国文艺志愿者协会"，英文名称：China Literary and Art Volunteers'' Association，缩写：CLAVA）是由文艺志愿者、文艺志愿服务组织以及关心支持文艺志愿服务事业的单位或组织自愿组成，按照章程开展活动的全国性、联合性、非营利性社会组织。</p><p>第二条 本会的宗旨是：高举中国特色社会主义伟大旗帜，以马克思列宁主义、毛泽东思想、邓小平理论、"三个代表"重要思想、科学发展观、习近平新时代中国特色社会主义思想为指导，深入学习贯彻习近平文化思想，培育和践行社会主义核心价值观，广泛动员文艺工作者、文艺爱好者投身志愿服务，弘扬奉献、友爱、互助、进步的志愿精神，丰富人民群众精神文化生活，推动文艺事业和志愿服务事业健康发展。</p>', 2, '1', 'admin', NOW()),
+(3, 'leadership', '协会领导', 'richText', '<p><strong>主席</strong></p><p>殷秀梅</p><p><strong>副主席</strong></p><p>（按姓氏笔画排序）</p><p>王  宏  冯双白  刘  劲  李  丹  何加林  张  凯  林  永  赵  保  姜  昆  姚建萍  黄渤  龚  宇  康  辉  寒  露</p><p><strong>秘书长</strong></p><p>李  丹（兼）</p>', 3, '1', 'admin', NOW()),
+(4, 'council', '理事会', 'list', NULL, 4, '1', 'admin', NOW()),
+(5, 'regulations', '会员工作条例', 'richText', '<p><strong>第一章 总则</strong></p><p>第一条 为加强中国文艺志愿者协会会员队伍建设，规范会员管理工作，根据《中国文艺志愿者协会章程》，制定本条例。</p><p>第二条 本会会员分为单位会员和个人会员。</p><p>第三条 会员入会自愿，退会自由。</p><p><strong>第二章 会员条件</strong></p><p>第四条 申请加入本会的会员，必须具备下列条件：</p><p>（一）拥护本会章程；</p><p>（二）有加入本会的意愿；</p><p>（三）在本会的业务领域内具有一定的影响；</p><p>（四）热心文艺志愿服务事业。</p>', 5, '1', 'admin', NOW());
+
+-- 协会概况-理事会文章数据
+INSERT INTO `cms_about_article` (`article_id`, `section_key`, `title`, `content`, `sort_order`, `status`, `create_by`, `create_time`) VALUES
+(1, 'council', '中国文艺志愿者协会第二届理事会第一次会议在京召开', '<p>中国文艺志愿者协会第二届理事会第一次会议在北京召开，会议审议通过了第一届理事会工作报告，选举产生了新一届领导机构。</p><p>会议号召广大文艺志愿者深入学习贯彻习近平新时代中国特色社会主义思想，坚持以人民为中心的工作导向，积极投身文艺志愿服务事业。</p>', 1, '1', 'admin', NOW()),
+(2, 'council', '中国文艺志愿者协会理事会审议通过2024年度工作计划', '<p>理事会审议通过了2024年度工作计划，明确了全年工作重点和目标任务。</p><p>会议强调，要紧紧围绕学习宣传贯彻党的二十大精神这条主线，组织开展形式多样的文艺志愿服务活动，为推动文艺事业高质量发展贡献力量。</p>', 2, '1', 'admin', NOW()),
+(3, 'council', '理事会关于增补理事的决定', '<p>根据工作需要，经理事会审议通过，决定增补以下同志为理事会理事。</p><p>增补理事名单：（按姓氏笔画排序）</p><p>王某、李某、张某、刘某、陈某</p>', 3, '1', 'admin', NOW());
 
 SET FOREIGN_KEY_CHECKS = 1;

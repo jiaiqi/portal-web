@@ -17,6 +17,9 @@ export class SpecialEntity {
   @Column({ name: 'cover_image', length: 255, nullable: true, comment: '封面图' })
   coverImage: string;
 
+  @Column({ name: 'cover_image_source_type', length: 20, default: 'upload', comment: '封面图片来源类型：upload上传 link链接' })
+  coverImageSourceType: string;
+
   @Column({ name: 'description', length: 500, nullable: true, comment: '专题描述' })
   description: string;
 

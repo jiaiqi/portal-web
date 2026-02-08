@@ -72,7 +72,7 @@ const { form, rules } = toRefs(data)
 function getList() {
   loading.value = true
   listLink().then(res => {
-    linkList.value = res.list || []
+    linkList.value = res.data || res.list || []
     loading.value = false
   })
 }

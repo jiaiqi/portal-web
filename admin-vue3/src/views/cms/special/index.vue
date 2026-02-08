@@ -70,7 +70,7 @@ const { form, rules } = toRefs(data)
 function getList() {
   loading.value = true
   listSpecial().then(res => {
-    specialList.value = res.list || []
+    specialList.value = res.data || res.list|| []
     loading.value = false
   })
 }

@@ -1,78 +1,52 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useCategory } from '~/composables/useCategory'
+
+const { getArticlesByCategory } = useCategory()
+
+const loading = ref(false)
+const error = ref<string | null>(null)
+const articles = ref<any[]>([])
+const total = ref(0)
+const pageNum = ref(1)
+const pageSize = ref(10)
 
 const breadcrumbs = [
   { name: '首页', path: '/' },
   { name: '全国联动', path: '/cooperation' }
 ]
 
-const sideMenuItems = [
-  { name: '全国联动', active: true },
-  { name: '省级动态', active: false },
-  { name: '地市级动态', active: false }
-]
-
-const newsItems = ref([
-  {
-    id: 1,
-    title: '北京市文联文艺志愿服务团开展"走进社区"系列活动',
-    date: '2024-01-15 10:00'
-  },
-  {
-    id: 2,
-    title: '上海市文艺志愿者协会召开年度工作总结会',
-    date: '2024-01-10 14:00'
-  },
-  {
-    id: 3,
-    title: '广东省文艺志愿服务工作经验交流会在广州召开',
-    date: '2024-01-05 09:00'
-  },
-  {
-    id: 4,
-    title: '浙江省"文艺送万家"志愿服务活动启动',
-    date: '2024-01-01 16:00'
-  },
-  {
-    id: 5,
-    title: '江苏省文艺志愿服务队赴基层开展慰问演出',
-    date: '2023-12-28 11:00'
-  },
-  {
-    id: 6,
-    title: '四川省文艺志愿服务助力乡村振兴活动纪实',
-    date: '2023-12-25 15:00'
-  },
-  {
-    id: 7,
-    title: '山东省文艺志愿服务工作推进会在济南召开',
-    date: '2023-12-20 10:00'
+async function loadData() {
+  loading.value = true
+  try {
+    const response = await getArticlesByCategory('cooperation', pageNum.value, pageSize.value)
+    articles.value = response.list
+    total.value = response.total
+  } catch (err) {
+    console.error('获取全国联动数据失败:', err)
+    error.value = '获取数据失败，显示默认内容'
+  } finally {
+    loading.value = false
   }
-])
+}
+
+function handlePageChange(page: number) {
+  pageNum.value = page
+  loadData()
+}
+
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <template>
   <div class="cooperation-page">
     <Breadcrumb :items="breadcrumbs" />
-    
+
     <div class="mx-auto px-4 max-w-[1200px] list-wrap">
       <div class="list">
-        <!-- 左侧栏目导航 -->
-        <div class="second-menu">
-          <h1 class="menu-title">栏目导航</h1>
-          <ul class="menu-list">
-            <li
-              v-for="(item, index) in sideMenuItems"
-              :key="index"
-              :class="{ active: item.active }"
-            >
-              {{ item.name }}
-            </li>
-          </ul>
-        </div>
-        
-        <!-- 右侧内容区域 -->
-        <div class="content">
+        <div class="content full-width">
           <div class="ant-tabs">
             <div class="ant-tabs-nav">
               <div class="ant-tabs-tab active">
@@ -80,8 +54,47 @@ const newsItems = ref([
               </div>
             </div>
           </div>
-          
-          <ContentList :items="newsItems" />
+
+          <div v-if="loading" class="flex justify-center items-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c31f1f]"></div>
+          </div>
+
+          <div v-else-if="error" class="text-center py-10 text-gray-500">
+            <p>{{ error }}</p>
+          </div>
+
+          <div v-else class="article-list">
+            <NuxtLink
+              v-for="article in articles"
+              :key="article.articleId"
+              :to="`/cooperation/${article.articleId}`"
+              class="article-item"
+            >
+              <div v-if="article.coverImage" class="article-image">
+                <img :src="article.coverImage" :alt="article.title" />
+              </div>
+              <div class="article-content">
+                <h3 class="article-title">{{ article.title }}</h3>
+                <p class="article-summary">{{ article.summary }}</p>
+                <p class="article-date">{{ article.publishTime || article.createTime }}</p>
+              </div>
+            </NuxtLink>
+            
+            <div v-if="articles.length === 0" class="text-gray-500 text-center py-10">
+              暂无内容
+            </div>
+
+            <div v-if="total > pageSize" class="pagination mt-6 flex justify-center gap-2">
+              <button
+                v-for="page in Math.ceil(total / pageSize)"
+                :key="page"
+                :class="['px-3 py-1 rounded', page === pageNum ? 'bg-[#c31f1f] text-white' : 'bg-gray-200']"
+                @click="handlePageChange(page)"
+              >
+                {{ page }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -91,5 +104,103 @@ const newsItems = ref([
 <style scoped>
 .cooperation-page {
   background: #ffffff;
+  min-height: 100vh;
+}
+
+.article-list {
+  padding: 20px 0;
+}
+
+.article-item {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.article-item:hover {
+  background: #f9f9f9;
+  padding-left: 10px;
+}
+
+.article-item:last-child {
+  border-bottom: none;
+}
+
+.article-image {
+  width: 200px;
+  height: 120px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.article-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.article-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.article-item:hover .article-title {
+  color: #c31f1f;
+}
+
+.article-summary {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-date {
+  font-size: 14px;
+  color: #999;
+  margin-top: 10px;
+}
+
+.pagination button {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.pagination button:hover:not(.bg-\[#c31f1f\]) {
+  background: #ddd;
+}
+
+@media (max-width: 768px) {
+  .article-item {
+    flex-direction: column;
+  }
+  
+  .article-image {
+    width: 100%;
+    height: 180px;
+  }
 }
 </style>

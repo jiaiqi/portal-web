@@ -45,7 +45,7 @@ export class LinkService {
 
   async findList(query: LinkListDto) {
     const { pageNum = 1, pageSize = 10, linkName, status } = query;
-    
+
     const where: any = { delFlag: '0' };
     if (linkName) where.linkName = Like(`%${linkName}%`);
     if (status) where.status = status;
@@ -58,5 +58,12 @@ export class LinkService {
     });
 
     return { list, total, pageNum, pageSize };
+  }
+
+  async findAll(): Promise<LinkEntity[]> {
+    return this.linkRepository.find({
+      where: { delFlag: '0', status: '1' },
+      order: { sortOrder: 'ASC', createTime: 'DESC' },
+    });
   }
 }

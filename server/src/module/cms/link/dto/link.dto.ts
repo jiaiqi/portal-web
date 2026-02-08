@@ -18,6 +18,11 @@ export class CreateLinkDto {
   @IsString()
   linkLogo?: string;
 
+  @ApiPropertyOptional({ description: 'Logo图片来源类型：upload上传 link链接', default: 'upload' })
+  @IsOptional()
+  @IsIn(['upload', 'link'])
+  linkLogoSourceType?: string;
+
   @ApiPropertyOptional({ description: '排序', default: 0 })
   @IsOptional()
   @Type(() => Number)

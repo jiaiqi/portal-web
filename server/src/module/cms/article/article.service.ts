@@ -2,25 +2,30 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { ArticleEntity } from './entities/article.entity';
+import { CategoryEntity } from '../category/entities/category.entity';
 import { CreateArticleDto, UpdateArticleDto, ArticleListDto } from './dto/article.dto';
+import { ResultData } from 'src/common/utils/result';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(ArticleEntity)
     private articleRepository: Repository<ArticleEntity>,
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
   ) {}
 
-  async create(createDto: CreateArticleDto, userName: string): Promise<ArticleEntity> {
+  async create(createDto: CreateArticleDto, userName: string): Promise<ResultData> {
     const article = this.articleRepository.create({
       ...createDto,
       createBy: userName,
       publishTime: createDto.publishTime || new Date(),
     });
-    return this.articleRepository.save(article);
+    const result = await this.articleRepository.save(article);
+    return ResultData.ok(result);
   }
 
-  async update(updateDto: UpdateArticleDto, userName: string): Promise<ArticleEntity> {
+  async update(updateDto: UpdateArticleDto, userName: string): Promise<ResultData> {
     const article = await this.articleRepository.findOne({
       where: { articleId: updateDto.articleId, delFlag: '0' },
     });
@@ -28,30 +33,43 @@ export class ArticleService {
       throw new Error('文章不存在');
     }
     Object.assign(article, updateDto, { updateBy: userName });
-    return this.articleRepository.save(article);
+    const result = await this.articleRepository.save(article);
+    return ResultData.ok(result);
   }
 
-  async delete(articleId: number, userName: string): Promise<void> {
+  async delete(articleId: number, userName: string): Promise<ResultData> {
     await this.articleRepository.update(
       { articleId },
       { delFlag: '1', updateBy: userName },
     );
+    return ResultData.ok();
   }
 
-  async findOne(articleId: number): Promise<ArticleEntity> {
-    return this.articleRepository.findOne({
+  async findOne(articleId: number): Promise<ResultData> {
+    const article = await this.articleRepository.findOne({
       where: { articleId, delFlag: '0' },
       relations: ['category'],
     });
+    return ResultData.ok(article);
   }
 
-  async findList(query: ArticleListDto) {
-    const { pageNum = 1, pageSize = 10, categoryId, title, status } = query;
-    
+  async findList(query: ArticleListDto): Promise<ResultData> {
+    const { pageNum = 1, pageSize = 10, categoryId, categoryCode, title, status } = query;
+
     const where: any = { delFlag: '0' };
     if (categoryId) where.categoryId = categoryId;
     if (title) where.title = Like(`%${title}%`);
     if (status) where.status = status;
+
+    // 如果提供了分类编码，先查询分类ID
+    if (categoryCode) {
+      const category = await this.categoryRepository.findOne({
+        where: { categoryCode, status: '1', delFlag: '0' }
+      });
+      if (category) {
+        where.categoryId = category.categoryId;
+      }
+    }
 
     const [list, total] = await this.articleRepository.findAndCount({
       where,
@@ -61,14 +79,15 @@ export class ArticleService {
       take: pageSize,
     });
 
-    return { list, total, pageNum, pageSize };
+    return ResultData.ok({ list, total, pageNum, pageSize });
   }
 
-  async updateStatus(articleId: number, status: string, userName: string): Promise<void> {
+  async updateStatus(articleId: number, status: string, userName: string): Promise<ResultData> {
     await this.articleRepository.update(
       { articleId },
       { status, updateBy: userName },
     );
+    return ResultData.ok();
   }
 
   async incrementViewCount(articleId: number): Promise<void> {

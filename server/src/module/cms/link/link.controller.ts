@@ -31,6 +31,14 @@ export class LinkController {
     return this.linkService.findList(query);
   }
 
+  @ApiOperation({ summary: '获取所有启用的友情链接' })
+  @ApiDataResponse(LinkEntity, true)
+  @Public()
+  @Get('/all')
+  findAll() {
+    return this.linkService.findAll();
+  }
+
   @ApiOperation({ summary: '获取友情链接详情' })
   @ApiDataResponse(LinkEntity)
   @Public()

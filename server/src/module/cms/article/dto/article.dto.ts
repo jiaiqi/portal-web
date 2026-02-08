@@ -25,6 +25,11 @@ export class CreateArticleDto {
   @MaxLength(255)
   coverImage?: string;
 
+  @ApiPropertyOptional({ description: '封面图片来源类型：upload上传 link链接', default: 'upload' })
+  @IsOptional()
+  @IsIn(['upload', 'link'])
+  coverImageSourceType?: string;
+
   @ApiPropertyOptional({ description: '文章内容' })
   @IsOptional()
   @IsString()
@@ -117,6 +122,11 @@ export class ArticleListDto {
   @IsOptional()
   @IsIn(['0', '1'])
   status?: string;
+
+  @ApiPropertyOptional({ description: '分类编码' })
+  @IsOptional()
+  @IsString()
+  categoryCode?: string;
 }
 
 export class ArticleStatusDto {

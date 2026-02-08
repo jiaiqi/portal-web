@@ -1,85 +1,174 @@
 <script setup lang="ts">
-const articleTitle = '四个100 | 2015—2022年度由中国文联推荐并荣获全国学雷锋志愿服务"四个100"先进典型名单'
+import { ref, onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useCategory } from '~/composables/useCategory'
+
+const route = useRoute()
+const { getArticleById } = useCategory()
+
+const articleId = computed(() => Number(route.params.id))
+const loading = ref(false)
+const article = ref<any>(null)
+
+const breadcrumbs = computed(() => [
+  { name: '首页', path: '/' },
+  { name: '表彰激励', path: '/awards' },
+  { name: article.value?.title || '文章详情', path: '' }
+])
+
+async function loadData() {
+  if (!articleId.value) return
+  
+  loading.value = true
+  try {
+    article.value = await getArticleById(articleId.value)
+  } catch (error) {
+    console.error('加载数据失败:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <template>
-  <div>
-    <Breadcrumb :items="[{ name: '表彰激励', path: '/awards' }, { name: '列表页', path: '/awards' }, { name: '详情' }]" />
+  <div class="article-detail-page">
+    <Breadcrumb :items="breadcrumbs" />
 
-    <div class="mx-auto px-4 py-8 max-w-7xl lg:px-8 sm:px-6">
-      <ArticleDetail :title="articleTitle">
-        <div class="text-gray-700 leading-relaxed space-y-6">
-          <h2 class="text-xl text-gray-900 font-bold">
-            2015年度
-          </h2>
-          <div class="space-y-4">
-            <div>
-              <h3 class="text-gray-800 font-bold mb-2">
-                最美志愿者 (5名)
-              </h3>
-              <ul class="text-sm list-disc list-inside space-y-1">
-                <li>黄豆豆 中国舞协副主席</li>
-                <li>刘全利 中国杂协副主席</li>
-                <li>李丹阳 中国文艺志愿者协会理事</li>
-                <li>吕薇 中国文艺志愿者协会理事</li>
-                <li>刘和刚 中国文艺志愿者协会理事</li>
-              </ul>
-            </div>
-            <div>
-              <h3 class="text-gray-800 font-bold mb-2">
-                最佳志愿服务组织 (7个)
-              </h3>
-              <ul class="text-sm list-disc list-inside space-y-1">
-                <li>中国文联文艺志愿服务团</li>
-                <li>中国剧协梅花奖艺术团</li>
-                <li>中国影协百花奖艺术团</li>
-                <li>中国音协金钟奖艺术团</li>
-                <li>中国曲协牡丹奖艺术团</li>
-                <li>中国舞协荷花奖艺术团</li>
-                <li>中国民协山花奖艺术团</li>
-              </ul>
-            </div>
+    <div class="mx-auto px-4 max-w-[1200px] list-wrap">
+      <div class="list">
+        <div class="content full-width">
+          <div v-if="loading" class="flex justify-center items-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c31f1f]"></div>
           </div>
 
-          <h2 class="text-xl text-gray-900 font-bold mt-8">
-            2016年度
-          </h2>
-          <div class="space-y-4">
-            <div>
-              <h3 class="text-gray-800 font-bold mb-2">
-                最美志愿者 (6名)
-              </h3>
-              <ul class="text-sm list-disc list-inside space-y-1">
-                <li>张保和 中国曲协副主席</li>
-                <li>李菁 中国曲协理事</li>
-                <li>何加林 中国美协理事</li>
-                <li>张红春 中国书协理事</li>
-                <li>王蓉蓉 中国剧协理事</li>
-                <li>吴正丹 中国杂协理事</li>
-              </ul>
+          <div v-else class="article-detail">
+            <h1 class="article-title">{{ article?.title }}</h1>
+            
+            <div class="article-meta">
+              <span v-if="article?.author">作者：{{ article.author }}</span>
+              <span v-if="article?.source">来源：{{ article.source }}</span>
+              <span v-if="article?.publishTime || article?.createTime">
+                发布时间：{{ article?.publishTime || article?.createTime }}
+              </span>
+              <span v-if="article?.viewCount">浏览量：{{ article.viewCount }}</span>
             </div>
-          </div>
 
-          <h2 class="text-xl text-gray-900 font-bold mt-8">
-            2017年度
-          </h2>
-          <div class="space-y-4">
-            <div>
-              <h3 class="text-gray-800 font-bold mb-2">
-                最美志愿者 (6名)
-              </h3>
-              <ul class="text-sm list-disc list-inside space-y-1">
-                <li>朱迅 中国视协理事</li>
-                <li>王二妮 中国音协理事</li>
-                <li>乌兰图雅 中国文艺志愿者协会理事</li>
-                <li>平安 中国文艺志愿者协会理事</li>
-                <li>降央卓玛 中国文艺志愿者协会理事</li>
-                <li>丁柳元 中国文艺志愿者协会理事</li>
-              </ul>
+            <div v-if="article?.coverImage" class="article-cover">
+              <img :src="article.coverImage" :alt="article.title" />
+            </div>
+
+            <div v-if="article?.content" class="article-content rich-text" v-html="article.content"></div>
+            
+            <div v-else class="text-gray-500 text-center py-10">
+              暂无内容
+            </div>
+
+            <div class="article-footer">
+              <NuxtLink to="/awards" class="back-link">
+                ← 返回列表
+              </NuxtLink>
             </div>
           </div>
         </div>
-      </ArticleDetail>
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.article-detail-page {
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.article-detail {
+  padding: 30px;
+}
+
+.article-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 30px;
+  font-size: 14px;
+  color: #666;
+}
+
+.article-cover {
+  width: 100%;
+  max-height: 400px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.article-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-content {
+  line-height: 1.8;
+  color: #333;
+  font-size: 16px;
+}
+
+.article-content :deep(p) {
+  margin-bottom: 16px;
+}
+
+.article-content :deep(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.article-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  color: #c31f1f;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .article-detail {
+    padding: 20px;
+  }
+  
+  .article-title {
+    font-size: 22px;
+  }
+  
+  .article-meta {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+</style>

@@ -53,8 +53,8 @@ async function bootstrap() {
     }),
   );
   const swaggerOptions = new DocumentBuilder()
-    .setTitle('Nest-Admin')
-    .setDescription('Nest-Admin 接口文档')
+    .setTitle('CMS 后台管理系统')
+    .setDescription('CMS 后台管理系统接口文档')
     .setVersion('2.0.0')
     .addBearerAuth(
       {
@@ -80,7 +80,7 @@ async function bootstrap() {
     swaggerOptions: {
       persistAuthorization: true,
     },
-    customSiteTitle: 'Nest-Admin API Docs',
+    customSiteTitle: 'CMS 后台管理系统 API Docs',
   });
 
   // 获取真实 ip
@@ -89,6 +89,6 @@ async function bootstrap() {
   const port = config.get<number>('app.port') || 8080;
   await app.listen(port);
 
-  console.log(`Nest-Admin 服务启动成功`, '\n', '服务地址', `http://localhost:${port}${prefix}/`, '\n', 'swagger 文档地址', `http://localhost:${port}${prefix}/swagger-ui/`);
+  console.log(`CMS 后台管理系统服务启动成功`, '\n', '服务地址', `http://localhost:${port}${prefix}/`, '\n', 'swagger 文档地址', `http://localhost:${port}${prefix}/swagger-ui/`);
 }
 bootstrap();

@@ -81,7 +81,7 @@ const { form, rules } = toRefs(data)
 function getList() {
   loading.value = true
   listQuickLink().then(res => {
-    quickLinkList.value = res.list || []
+    quickLinkList.value = res.data || res.list || []
     loading.value = false
   })
 }

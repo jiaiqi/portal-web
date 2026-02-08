@@ -116,7 +116,7 @@ const { queryParams, form, rules } = toRefs(data)
 function getList() {
   loading.value = true
   listCategory(queryParams.value).then(res => {
-    categoryList.value = res || []
+    categoryList.value = res.data || res.list || []
     loading.value = false
   })
 }

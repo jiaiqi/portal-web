@@ -14,6 +14,17 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   basePath: '/news'
 })
+
+// 获取完整图片URL
+function getFullImageUrl(url: string | undefined) {
+  if (!url) return ''
+  if (url.startsWith('http')) return url
+  if (url.startsWith('/')) {
+    const config = useRuntimeConfig()
+    return (config.public.apiBase || 'http://localhost:8080') + url
+  }
+  return url
+}
 </script>
 
 <template>
@@ -28,7 +39,7 @@ withDefaults(defineProps<Props>(), {
         <div class="ant-list-item-meta">
           <div class="ant-list-item-meta-avatar">
             <div v-if="item.image" class="image-wrapper">
-              <img :src="item.image" :alt="item.title" />
+              <img :src="getFullImageUrl(item.image)" :alt="item.title" />
             </div>
             <div v-else class="image-placeholder"></div>
           </div>

@@ -79,7 +79,7 @@
 ## 重启步骤
 
 ```bash
-cd /Users/jiaqi/Downloads/nest-admin-master/server
+cd /Users/jiaqi/Downloads/cms-admin-master/server
 
 # 停止当前运行的服务（如果有）
 # Ctrl+C

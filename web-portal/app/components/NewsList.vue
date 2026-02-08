@@ -12,6 +12,17 @@ defineProps<{
   items: NewsItem[]
   moreLink: string
 }>()
+
+// 获取完整图片URL
+function getFullImageUrl(url: string | undefined) {
+  if (!url) return ''
+  if (url.startsWith('http')) return url
+  if (url.startsWith('/')) {
+    const config = useRuntimeConfig()
+    return (config.public.apiBase || 'http://localhost:8080') + url
+  }
+  return url
+}
 </script>
 
 <template>
@@ -36,7 +47,7 @@ defineProps<{
         class="group flex gap-4"
       >
         <div v-if="item.image" class="rounded flex-shrink-0 h-20 w-32 overflow-hidden">
-          <img :src="item.image" :alt="item.title" class="h-full w-full transition-transform duration-300 object-cover group-hover:scale-105">
+          <img :src="getFullImageUrl(item.image)" :alt="item.title" class="h-full w-full transition-transform duration-300 object-cover group-hover:scale-105">
         </div>
         <div class="flex-1 min-w-0">
           <h3 class="text-sm text-gray-800 mb-2 transition-colors line-clamp-2 group-hover:text-red-700">

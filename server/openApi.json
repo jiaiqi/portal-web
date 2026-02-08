@@ -3818,8 +3818,8 @@
     }
   },
   "info": {
-    "title": "Nest-Admin",
-    "description": "Nest-Admin 接口文档",
+    "title": "CMS 后台管理系统",
+    "description": "CMS 后台管理系统接口文档",
     "version": "2.0.0",
     "contact": {}
   },

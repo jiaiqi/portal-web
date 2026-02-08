@@ -3,8 +3,8 @@
 layout: home
 
 hero:
-  name: "nest-admin"
-  # text: "更好的使用nest-admin"
+  name: "CMS 后台管理系统"
+  # text: "更好的使用CMS 后台管理系统"
   tagline: 让开发，部署更简单
   # actions:
   #   - theme: brand

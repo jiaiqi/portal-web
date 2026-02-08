@@ -1,96 +1,52 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useCategory } from '~/composables/useCategory'
+
+const { getArticlesByCategory } = useCategory()
+
+const loading = ref(false)
+const error = ref<string | null>(null)
+const articles = ref<any[]>([])
+const total = ref(0)
+const pageNum = ref(1)
+const pageSize = ref(10)
 
 const breadcrumbs = [
   { name: '首页', path: '/' },
   { name: '要闻动态', path: '/news' }
 ]
 
-const sideMenuItems = [
-  { name: '要闻动态', active: true },
-  { name: '各地动态', active: false },
-  { name: '媒体报道', active: false }
-]
-
-const newsItems = ref([
-  {
-    id: 1,
-    title: '中国文联、中国文艺志愿者协会深入学习宣传贯彻党的二十届三中全会精神',
-    date: '2024-07-22 10:20',
-    image: '/origin-html/中国文艺志愿者-要闻动态_files/640_20250408153932A231.jpg'
-  },
-  {
-    id: 2,
-    title: '中国文艺志愿者协会工作年中推进会强调：在新征程上推动文艺志愿服务高质量发展',
-    date: '2024-07-15 09:30',
-    image: '/origin-html/中国文艺志愿者-要闻动态_files/640_20250408154210A232.jpg'
-  },
-  {
-    id: 3,
-    title: '与人民同行——新时代文明实践文艺志愿服务｜2023年中国文联文艺志愿服务工作会暨新时代文明实践文艺志愿服务项目年度总结会召开',
-    date: '2023-09-02 14:44:18'
-  },
-  {
-    id: 4,
-    title: '时代风尚｜中国文艺志愿者走进中车松原新能源装备产业基地',
-    date: '2023-09-02 14:44:22'
-  },
-  {
-    id: 5,
-    title: '中国文联、中国文艺志愿者协会召开"强基工程"项目工作推进会',
-    date: '2023-08-31 14:25:10'
-  },
-  {
-    id: 6,
-    title: '中国文联、中央精神文明建设办公室联合印发《"强基工程"——文艺助力基层精神文明建设行动（2023-2025年）实施方案》',
-    date: '2023-09-02 14:44:15'
-  },
-  {
-    id: 7,
-    title: '时代风尚——中国文艺志愿者走进中车松原新能源装备产业基地',
-    date: '2023-09-02 14:44:25'
-  },
-  {
-    id: 8,
-    title: '"强基工程"——文艺助力基层精神文明建设行动工作推进会召开',
-    date: '2023-12-13 20:09',
-    image: '/origin-html/中国文艺志愿者-要闻动态_files/1213_20240105162701A012.jpg'
-  },
-  {
-    id: 9,
-    title: '庆祝中国共产党成立102周年｜文艺志愿者向党致敬 祝愿祖国繁荣昌盛',
-    date: '2023-09-02 14:44:27'
-  },
-  {
-    id: 10,
-    title: '与人民同行——新时代文明实践文艺志愿服务特别节目在全国四级媒体平台播出 央媒广泛报道 反响热烈',
-    date: '2023-09-02 14:44:30'
+async function loadData() {
+  loading.value = true
+  try {
+    const response = await getArticlesByCategory('news', pageNum.value, pageSize.value)
+    articles.value = response.list
+    total.value = response.total
+  } catch (err) {
+    console.error('获取要闻数据失败:', err)
+    error.value = '获取数据失败，显示默认内容'
+  } finally {
+    loading.value = false
   }
-])
+}
+
+function handlePageChange(page: number) {
+  pageNum.value = page
+  loadData()
+}
+
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <template>
   <div class="news-page">
     <Breadcrumb :items="breadcrumbs" />
-    
+
     <div class="mx-auto px-4 max-w-[1200px] list-wrap">
       <div class="list">
-        <!-- 左侧栏目导航 -->
-        <div class="second-menu">
-          <h1 class="menu-title">栏目导航</h1>
-          <ul class="menu-list">
-            <li
-              v-for="(item, index) in sideMenuItems"
-              :key="index"
-              :class="{ active: item.active }"
-            >
-              {{ item.name }}
-            </li>
-          </ul>
-        </div>
-        
-        <!-- 右侧内容区域 -->
-        <div class="content">
+        <div class="content full-width">
           <div class="ant-tabs">
             <div class="ant-tabs-nav">
               <div class="ant-tabs-tab active">
@@ -98,8 +54,47 @@ const newsItems = ref([
               </div>
             </div>
           </div>
-          
-          <ContentList :items="newsItems" />
+
+          <div v-if="loading" class="flex justify-center items-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c31f1f]"></div>
+          </div>
+
+          <div v-else-if="error" class="text-center py-10 text-gray-500">
+            <p>{{ error }}</p>
+          </div>
+
+          <div v-else class="article-list">
+            <NuxtLink
+              v-for="article in articles"
+              :key="article.articleId"
+              :to="`/news/${article.articleId}`"
+              class="article-item"
+            >
+              <div v-if="article.coverImage" class="article-image">
+                <img :src="article.coverImage" :alt="article.title" />
+              </div>
+              <div class="article-content">
+                <h3 class="article-title">{{ article.title }}</h3>
+                <p class="article-summary">{{ article.summary }}</p>
+                <p class="article-date">{{ article.publishTime || article.createTime }}</p>
+              </div>
+            </NuxtLink>
+            
+            <div v-if="articles.length === 0" class="text-gray-500 text-center py-10">
+              暂无内容
+            </div>
+
+            <div v-if="total > pageSize" class="pagination mt-6 flex justify-center gap-2">
+              <button
+                v-for="page in Math.ceil(total / pageSize)"
+                :key="page"
+                :class="['px-3 py-1 rounded', page === pageNum ? 'bg-[#c31f1f] text-white' : 'bg-gray-200']"
+                @click="handlePageChange(page)"
+              >
+                {{ page }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -109,5 +104,103 @@ const newsItems = ref([
 <style scoped>
 .news-page {
   background: #ffffff;
+  min-height: 100vh;
+}
+
+.article-list {
+  padding: 20px 0;
+}
+
+.article-item {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.article-item:hover {
+  background: #f9f9f9;
+  padding-left: 10px;
+}
+
+.article-item:last-child {
+  border-bottom: none;
+}
+
+.article-image {
+  width: 200px;
+  height: 120px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.article-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.article-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.article-item:hover .article-title {
+  color: #c31f1f;
+}
+
+.article-summary {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-date {
+  font-size: 14px;
+  color: #999;
+  margin-top: 10px;
+}
+
+.pagination button {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.pagination button:hover:not(.bg-\[#c31f1f\]) {
+  background: #ddd;
+}
+
+@media (max-width: 768px) {
+  .article-item {
+    flex-direction: column;
+  }
+  
+  .article-image {
+    width: 100%;
+    height: 180px;
+  }
 }
 </style>

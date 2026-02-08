@@ -1,29 +1,76 @@
 <script setup lang="ts">
-const links = [
-  { name: '中国文联', url: 'https://www.cflac.org.cn/' },
-  { name: '中国作协', url: 'https://www.chinawriter.com.cn/' },
-  { name: '中国剧协', url: 'https://www.chinatheatre.org.cn/' },
-  { name: '中国影协', url: 'http://www.cfa1949.com/' },
-  { name: '中国音协', url: 'https://www.chnmusic.org/' },
-  { name: '中国美协', url: 'https://www.caanet.org.cn/' },
-  { name: '中国曲协', url: 'http://www.zhongguoquyi.cn/' },
-  { name: '中国舞协', url: 'https://www.cdanet.org/index' },
-  { name: '中国民协', url: 'http://www.cflas.com.cn/mx/index.html' },
-  { name: '中国摄协', url: 'https://www.cpanet.org.cn/' },
-  { name: '中国书协', url: 'http://www.cca1981.org.cn/' },
-  { name: '中国杂协', url: 'https://zhuanti.artnchina.com/zgzjw/zgzx/index.html' },
-  { name: '中国视协', url: 'https://www.ctaa.org.cn/' },
-  { name: '中国文学艺术基金会', url: 'http://www.claf.org.cn/' },
+import { ref, onMounted } from 'vue'
+
+// 默认友情链接
+const defaultLinks = [
+  { linkName: '中国文联', linkUrl: 'https://www.cflac.org.cn/' },
+  { linkName: '中国作协', linkUrl: 'https://www.chinawriter.com.cn/' },
+  { linkName: '中国剧协', linkUrl: 'https://www.chinatheatre.org.cn/' },
+  { linkName: '中国影协', linkUrl: 'http://www.cfa1949.com/' },
+  { linkName: '中国音协', linkUrl: 'https://www.chnmusic.org/' },
+  { linkName: '中国美协', linkUrl: 'https://www.caanet.org.cn/' },
+  { linkName: '中国曲协', linkUrl: 'http://www.zhongguoquyi.cn/' },
+  { linkName: '中国舞协', linkUrl: 'https://www.cdanet.org/index' },
+  { linkName: '中国民协', linkUrl: 'http://www.cflas.com.cn/mx/index.html' },
+  { linkName: '中国摄协', linkUrl: 'https://www.cpanet.org.cn/' },
+  { linkName: '中国书协', linkUrl: 'http://www.cca1981.org.cn/' },
+  { linkName: '中国杂协', linkUrl: 'https://zhuanti.artnchina.com/zgzjw/zgzx/index.html' },
+  { linkName: '中国视协', linkUrl: 'https://www.ctaa.org.cn/' },
+  { linkName: '中国文学艺术基金会', linkUrl: 'http://www.claf.org.cn/' },
 ]
 
-const bottomLinks = [
-  { name: '联系咨询', url: '#' },
-  { name: '投诉建议', url: '#' },
-  { name: '文艺论坛', url: '#' },
-  { name: '职能部门', url: '#' },
-  { name: '团体会员', url: '#' },
-  { name: '组织机构', url: '#' },
-]
+// 友情链接数据
+const links = ref([...defaultLinks])
+
+// 默认配置
+const defaultConfig = {
+  siteIcp: '京ICP备14001194号-1',
+  sitePolice: '京公网安备11010502025171',
+  siteCopyright: '中国文艺志愿者协会 版权所有',
+  siteContact: '联系咨询',
+  siteComplaint: '投诉建议',
+  siteForum: '文艺论坛',
+  siteDepartment: '职能部门',
+  siteMember: '团体会员',
+  siteOrganization: '组织机构',
+  qrcodeUrl: 'https://www.wyzyz.org/claav-api/profile/upload/2024/01/03/20231017112056A013_20240103101656A013_20240103145652A042.png'
+}
+
+// 响应式配置数据
+const config = ref({ ...defaultConfig })
+const api = useApi()
+
+onMounted(async () => {
+  try {
+    // 从后台获取友情链接
+    const linksRes = await api.get('/cms/link/all').catch(() => null)
+    if (linksRes && Array.isArray(linksRes) && linksRes.length > 0) {
+      links.value = linksRes
+    } else if (linksRes?.data && Array.isArray(linksRes.data) && linksRes.data.length > 0) {
+      links.value = linksRes.data
+    }
+
+    // 从后台获取网站配置
+    const response = await api.get('/cms/site-config/all').catch(() => null)
+    if (response) {
+      config.value = {
+        siteIcp: response.site_icp || defaultConfig.siteIcp,
+        sitePolice: response.site_police || defaultConfig.sitePolice,
+        siteCopyright: response.site_copyright || defaultConfig.siteCopyright,
+        siteContact: response.site_contact || defaultConfig.siteContact,
+        siteComplaint: response.site_complaint || defaultConfig.siteComplaint,
+        siteForum: response.site_forum || defaultConfig.siteForum,
+        siteDepartment: response.site_department || defaultConfig.siteDepartment,
+        siteMember: response.site_member || defaultConfig.siteMember,
+        siteOrganization: response.site_organization || defaultConfig.siteOrganization,
+        qrcodeUrl: response.site_qrcode || defaultConfig.qrcodeUrl
+      }
+    }
+  } catch (err) {
+    console.error('获取网站配置失败:', err)
+    // 使用默认配置
+  }
+})
 </script>
 
 <template>
@@ -35,8 +82,8 @@ const bottomLinks = [
           <div class="leftBox">
             <h2>链接</h2>
             <div class="links-list">
-              <template v-for="(link, index) in links" :key="link.name">
-                <a :href="link.url" target="_blank">{{ link.name }}</a>
+              <template v-for="(link, index) in links" :key="link.linkName">
+                <a :href="link.linkUrl" target="_blank">{{ link.linkName }}</a>
                 <span v-if="index < links.length - 1">|</span>
               </template>
             </div>
@@ -49,22 +96,30 @@ const bottomLinks = [
             <p>中国文艺志愿者微信公众号</p>
           </div>
         </div>
-        
+
         <!-- 版权信息区域 -->
         <div class="copyright-box">
           <div class="copyright">
             <p class="visit-count">网站总访问量 : 103364</p>
             <p class="bottom-links">
-              <template v-for="(link, index) in bottomLinks" :key="link.name">
-                <a :href="link.url">{{ link.name }}</a>
-                <span v-if="index < bottomLinks.length - 1">|</span>
-              </template>
+              <a href="#">{{ config.siteContact }}</a>
+              <span>|</span>
+              <a href="#">{{ config.siteComplaint }}</a>
+              <span>|</span>
+              <a href="#">{{ config.siteForum }}</a>
+              <span>|</span>
+              <a href="#">{{ config.siteDepartment }}</a>
+              <span>|</span>
+              <a href="#">{{ config.siteMember }}</a>
+              <span>|</span>
+              <a href="#">{{ config.siteOrganization }}</a>
+              <span>|</span>
             </p>
             <p class="icp-info">
               <a id="beian" target="_blank" href="https://beian.miit.gov.cn/">
-                工信部ICP备案号 京ICP备14001194号-1 京公网安备11010502025171
+                工信部ICP备案号 {{ config.siteIcp }} {{ config.sitePolice }}
               </a>
-              中国文艺志愿者协会 版权所有
+              {{ config.siteCopyright }}
             </p>
           </div>
         </div>
@@ -226,22 +281,22 @@ const bottomLinks = [
     flex-direction: column;
     align-items: center;
   }
-  
+
   .leftBox {
     padding-right: 0;
     margin-bottom: 30px;
     text-align: center;
   }
-  
+
   .links-list {
     justify-content: center;
   }
-  
+
   .bottom-links {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .bottom-links span {
     display: none;
   }

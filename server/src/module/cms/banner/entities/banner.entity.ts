@@ -14,10 +14,13 @@ export class BannerEntity {
   @Column({ name: 'title', length: 200, nullable: true, comment: '标题' })
   title: string;
 
-  @Column({ name: 'image', length: 255, comment: '图片' })
+  @Column({ name: 'image', length: 500, comment: '图片' })
   image: string;
 
-  @Column({ name: 'link_url', length: 255, nullable: true, comment: '链接地址' })
+  @Column({ name: 'image_source_type', length: 20, default: 'upload', comment: '图片来源类型：upload上传 link链接' })
+  imageSourceType: string;
+
+  @Column({ name: 'link_url', length: 500, nullable: true, comment: '链接地址' })
   linkUrl: string;
 
   @Column({ name: 'position', length: 50, default: 'home', comment: '位置：home首页 focus首页焦点 right_top右侧顶部 right_platform右侧平台' })

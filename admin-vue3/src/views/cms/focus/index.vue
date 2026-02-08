@@ -1,232 +1,299 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="图片类型" prop="imageType">
-        <el-select v-model="queryParams.imageType" placeholder="请选择图片类型" clearable style="width: 240px">
-          <el-option label="大图" value="big" />
-          <el-option label="小图" value="small" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable style="width: 240px">
-          <el-option label="正常" value="0" />
-          <el-option label="停用" value="1" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+    <el-row :gutter="20">
+      <el-col :span="24">
+        <el-card class="focus-card" v-for="item in focusList" :key="item.focusId">
+          <template #header>
+            <div class="card-header">
+              <span class="focus-name">{{ item.focusName }}</span>
+              <el-tag size="small" type="info">{{ item.focusKey }}</el-tag>
+            </div>
+          </template>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['cms:focus:add']">新增</el-button>
+          <div class="focus-content">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <div class="image-preview">
+                  <el-image
+                    v-if="item.imageUrl"
+                    :src="getFullImageUrl(item.imageUrl)"
+                    fit="cover"
+                    style="width: 100%; height: 150px; border-radius: 4px;"
+                  />
+                  <div v-else class="no-image">暂无图片</div>
+                </div>
+              </el-col>
+              <el-col :span="12">
+                <div class="focus-info">
+                  <p><strong>图片来源：</strong>{{ item.imageSourceType === 'upload' ? '本地上传' : '外部链接' }}</p>
+                  <p><strong>链接类型：</strong>{{ item.linkType === 'internal' ? '内部文章' : '外部地址' }}</p>
+                  <p><strong>链接值：</strong>{{ item.linkValue || '-' }}</p>
+                  <p><strong>打开方式：</strong>{{ item.openType === 'new' ? '新标签页' : '当前页' }}</p>
+                </div>
+              </el-col>
+            </el-row>
+          </div>
+
+          <div class="card-footer">
+            <el-button type="primary" @click="handleUpdate(item)">编辑</el-button>
+            <el-button @click="handleHistory(item)">历史记录</el-button>
+          </div>
+        </el-card>
       </el-col>
-      <el-col :span="1.5">
-        <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate" v-hasPermi="['cms:focus:edit']">修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['cms:focus:remove']">删除</el-button>
-      </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="focusList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="ID" align="center" prop="focusId" width="80" />
-      <el-table-column label="标题" align="center" prop="title" width="150" />
-      <el-table-column label="图片" align="center" prop="imageUrl" width="200">
-        <template #default="scope">
-          <el-image v-if="scope.row.imageUrl" :src="scope.row.imageUrl" style="width: 100px; height: 60px; object-fit: cover;" />
-          <span v-else>-</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="图片类型" align="center" prop="imageType" width="100">
-        <template #default="scope">
-          <el-tag v-if="scope.row.imageType === 'big'" type="danger">大图</el-tag>
-          <el-tag v-else type="success">小图</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" align="center" prop="status" width="100">
-        <template #default="scope">
-          <el-tag v-if="scope.row.status === '0'" type="success">正常</el-tag>
-          <el-tag v-else type="info">停用</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="排序" align="center" prop="sortOrder" width="80" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="160">
-        <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
-        <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['cms:focus:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['cms:focus:remove']">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <!-- 编辑对话框 -->
+    <el-dialog :title="'编辑 - ' + form.focusName" v-model="open" width="700px" append-to-body>
+      <el-form ref="focusRef" :model="form" :rules="rules" label-width="120px">
+        <el-form-item label="图片来源" prop="imageSourceType">
+          <el-radio-group v-model="form.imageSourceType" @change="handleImageSourceTypeChange">
+            <el-radio label="upload">本地上传</el-radio>
+            <el-radio label="link">外部链接</el-radio>
+          </el-radio-group>
+        </el-form-item>
 
-    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
+        <el-form-item label="图片" prop="imageUrl">
+          <image-upload v-if="form.imageSourceType === 'upload'" v-model="form.imageUrl" />
+          <el-input v-else v-model="form.imageUrl" placeholder="请输入图片URL地址" />
+        </el-form-item>
 
-    <!-- 添加或修改焦点图对话框 -->
-    <el-dialog :title="title" v-model="open" width="600px" append-to-body>
-      <el-form ref="focusRef" :model="form" :rules="rules" label-width="100px">
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="标题" prop="title">
-              <el-input v-model="form.title" placeholder="请输入标题" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="图片类型" prop="imageType">
-              <el-radio-group v-model="form.imageType">
-                <el-radio label="big">大图</el-radio>
-                <el-radio label="small">小图</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="图片" prop="imageUrl">
-              <image-upload v-model="form.imageUrl" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="跳转链接" prop="linkUrl">
-              <el-input v-model="form.linkUrl" placeholder="请输入跳转链接" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="排序" prop="sortOrder">
-              <el-input-number v-model="form.sortOrder" :min="0" controls-position="right" style="width: 100%" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="状态" prop="status">
-              <el-radio-group v-model="form.status">
-                <el-radio label="0">正常</el-radio>
-                <el-radio label="1">停用</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <el-form-item label="链接类型" prop="linkType">
+          <el-radio-group v-model="form.linkType" @change="handleLinkTypeChange">
+            <el-radio label="external">外部地址</el-radio>
+            <el-radio label="internal">内部文章</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="链接值" prop="linkValue">
+          <el-input
+            v-if="form.linkType === 'external'"
+            v-model="form.linkValue"
+            placeholder="请输入外部URL地址"
+          />
+          <el-select
+            v-else
+            v-model="form.linkValue"
+            filterable
+            remote
+            :remote-method="searchArticles"
+            placeholder="搜索并选择文章"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="article in articleOptions"
+              :key="article.articleId"
+              :label="article.title"
+              :value="String(article.articleId)"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="打开方式" prop="openType">
+          <el-radio-group v-model="form.openType">
+            <el-radio label="new">新标签页</el-radio>
+            <el-radio label="current">当前页</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="修改备注" prop="remark">
+          <el-input v-model="form.remark" type="textarea" :rows="2" placeholder="请输入修改备注（可选）" />
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </template>
     </el-dialog>
+
+    <!-- 历史记录对话框 -->
+    <el-dialog title="历史记录" v-model="historyOpen" width="900px" append-to-body>
+      <el-table :data="historyList" v-loading="historyLoading">
+        <el-table-column label="图片" align="center" width="150">
+          <template #default="scope">
+            <el-image :src="getFullImageUrl(scope.row.imageUrl)" style="width: 100px; height: 60px; object-fit: cover;" />
+          </template>
+        </el-table-column>
+        <el-table-column label="链接类型" align="center" width="100">
+          <template #default="scope">
+            <el-tag v-if="scope.row.linkType === 'internal'" type="success">内部文章</el-tag>
+            <el-tag v-else type="warning">外部地址</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="链接值" prop="linkValue" :show-overflow-tooltip="true" />
+        <el-table-column label="打开方式" align="center" width="100">
+          <template #default="scope">
+            {{ scope.row.openType === 'new' ? '新标签页' : '当前页' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="备注" prop="remark" width="150" :show-overflow-tooltip="true" />
+        <el-table-column label="修改时间" align="center" width="160">
+          <template #default="scope">
+            {{ parseTime(scope.row.createTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="120">
+          <template #default="scope">
+            <el-button link type="primary" @click="handleRestore(scope.row)">恢复</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        v-show="historyTotal > 0"
+        :total="historyTotal"
+        v-model:page="historyQuery.pageNum"
+        v-model:limit="historyQuery.pageSize"
+        @pagination="getHistoryList"
+      />
+    </el-dialog>
   </div>
 </template>
 
 <script setup name="Focus">
-import { listFocus, getFocus, delFocus, addFocus, updateFocus } from '@/api/cms/focus'
+import { listFocus, updateFocus, listHistory, restoreHistory } from '@/api/cms/focus'
+import { listArticle } from '@/api/cms/article'
 
 const { proxy } = getCurrentInstance()
 
 const focusList = ref([])
-const open = ref(false)
 const loading = ref(true)
-const showSearch = ref(true)
-const ids = ref([])
-const single = ref(true)
-const multiple = ref(true)
-const total = ref(0)
+const open = ref(false)
+const historyOpen = ref(false)
+const historyLoading = ref(false)
 const title = ref('')
-const queryRef = ref(null)
+const articleOptions = ref([])
 
-const queryParams = ref({
+const historyList = ref([])
+const historyTotal = ref(0)
+const currentFocusId = ref(null)
+
+const historyQuery = ref({
   pageNum: 1,
   pageSize: 10,
-  imageType: undefined,
-  status: undefined,
+  focusId: null
 })
 
 const form = ref({})
+const focusRef = ref(null)
+
+// 基础URL
+const baseUrl = import.meta.env.VITE_APP_BASE_API
+
+// 获取完整图片URL
+function getFullImageUrl(url) {
+  if (!url) return ''
+  if (url.startsWith('http')) return url
+  return baseUrl + url
+}
 
 const rules = ref({
-  title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
-  imageType: [{ required: true, message: '图片类型不能为空', trigger: 'change' }],
+  imageSourceType: [{ required: true, message: '图片来源不能为空', trigger: 'change' }],
   imageUrl: [{ required: true, message: '图片不能为空', trigger: 'blur' }],
-  sortOrder: [{ required: true, message: '排序不能为空', trigger: 'blur' }],
-  status: [{ required: true, message: '状态不能为空', trigger: 'change' }],
+  linkType: [{ required: true, message: '链接类型不能为空', trigger: 'change' }],
+  linkValue: [{ required: true, message: '链接值不能为空', trigger: 'blur' }],
+  openType: [{ required: true, message: '打开方式不能为空', trigger: 'change' }],
 })
-
-const focusRef = ref(null)
 
 function getList() {
   loading.value = true
-  listFocus(queryParams.value).then(response => {
-    focusList.value = response.data.list
-    total.value = response.data.total
+  listFocus().then(response => {
+    focusList.value = response.data || response.list || []
     loading.value = false
   })
 }
 
-function handleQuery() {
-  queryParams.value.pageNum = 1
-  getList()
-}
-
-function resetQuery() {
-  queryRef.value.resetFields()
-  handleQuery()
-}
-
-function handleSelectionChange(selection) {
-  ids.value = selection.map(item => item.focusId)
-  single.value = selection.length !== 1
-}
-
-function handleAdd() {
-  reset()
-  open.value = true
-  title.value = '添加焦点图'
-}
-
 function handleUpdate(row) {
   reset()
-  form.value = { ...row }
+  form.value = {
+    focusId: row.focusId,
+    focusName: row.focusName,
+    focusKey: row.focusKey,
+    imageUrl: row.imageUrl,
+    imageSourceType: row.imageSourceType || 'upload',
+    linkType: row.linkType || 'external',
+    linkValue: row.linkValue,
+    openType: row.openType || 'new',
+    remark: ''
+  }
   open.value = true
-  title.value = '修改焦点图'
+  title.value = '编辑焦点图'
+
+  // 如果是内部文章，加载文章列表
+  if (form.value.linkType === 'internal' && form.value.linkValue) {
+    loadArticleById(form.value.linkValue)
+  }
 }
 
-function handleDelete(row) {
-  proxy.$modal.confirm('是否确认删除焦点图"' + row.title + '"?', function() {
-    delFocus(row.focusId).then(() => {
+function handleHistory(row) {
+  currentFocusId.value = row.focusId
+  historyQuery.value.focusId = row.focusId
+  historyOpen.value = true
+  getHistoryList()
+}
+
+function getHistoryList() {
+  historyLoading.value = true
+  listHistory(historyQuery.value).then(response => {
+    historyList.value = response.data?.list || []
+    historyTotal.value = response.data?.total || 0
+    historyLoading.value = false
+  })
+}
+
+function handleRestore(row) {
+  proxy.$modal.confirm('确定要恢复到该历史版本吗？').then(() => {
+    restoreHistory({
+      historyId: row.historyId,
+      remark: '手动恢复'
+    }).then(() => {
+      proxy.$modal.msgSuccess('恢复成功')
       getList()
-      proxy.$modal.msg('删除成功')
+      getHistoryList()
     })
+  })
+}
+
+function handleImageSourceTypeChange(val) {
+  form.value.imageUrl = ''
+}
+
+function handleLinkTypeChange(val) {
+  form.value.linkValue = ''
+  if (val === 'internal') {
+    searchArticles('')
+  }
+}
+
+function searchArticles(query) {
+  listArticle({
+    pageNum: 1,
+    pageSize: 20,
+    title: query,
+    status: '1'
+  }).then(response => {
+    articleOptions.value = response.data?.list || []
+  })
+}
+
+function loadArticleById(articleId) {
+  listArticle({
+    pageNum: 1,
+    pageSize: 1,
+    articleId: articleId
+  }).then(response => {
+    if (response.data?.list && response.data.list.length > 0) {
+      articleOptions.value = [response.data.list[0]]
+    }
   })
 }
 
 function submitForm() {
   focusRef.value.validate(valid => {
     if (valid) {
-      if (form.value.focusId != undefined) {
-        updateFocus(form.value).then(() => {
-          proxy.$modal.msg('修改成功')
-          open.value = false
-          getList()
-        })
-      } else {
-        addFocus(form.value).then(() => {
-          proxy.$modal.msg('新增成功')
-          open.value = false
-          getList()
-        })
-      }
+      updateFocus(form.value).then(() => {
+        proxy.$modal.msgSuccess('修改成功')
+        open.value = false
+        getList()
+      })
     }
   })
 }
@@ -238,11 +305,17 @@ function cancel() {
 
 function reset() {
   form.value = {
-    imageType: 'big',
-    status: '0',
-    sortOrder: 0,
+    focusId: undefined,
+    focusName: '',
+    focusKey: '',
+    imageUrl: '',
+    imageSourceType: 'upload',
+    linkType: 'external',
+    linkValue: '',
+    openType: 'new',
+    remark: ''
   }
-  focusRef.value?.resetFields()
+  articleOptions.value = []
 }
 
 function parseTime(time) {
@@ -258,3 +331,58 @@ function parseTime(time) {
 
 getList()
 </script>
+
+<style scoped>
+.focus-card {
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.focus-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.focus-content {
+  padding: 10px 0;
+}
+
+.image-preview {
+  background: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.no-image {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.focus-info {
+  font-size: 14px;
+  line-height: 2;
+}
+
+.focus-info p {
+  margin: 5px 0;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+</style>

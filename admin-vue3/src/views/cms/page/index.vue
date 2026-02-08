@@ -56,7 +56,7 @@ const { form, rules } = toRefs(data)
 function getList() {
   loading.value = true
   listPage().then(res => {
-    pageList.value = res.list || []
+    pageList.value = res.data || res.list || []
     loading.value = false
   })
 }

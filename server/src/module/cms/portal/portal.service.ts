@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ArticleService } from '../article/article.service';
-import { BannerService } from '../banner/banner.service';
 import { FocusService } from '../focus/focus.service';
 import { NoticeService } from '../notice/notice.service';
 import { PageService } from '../page/page.service';
@@ -10,33 +9,40 @@ import { ResultData } from 'src/common/utils/result';
 export class PortalService {
   constructor(
     private readonly articleService: ArticleService,
-    private readonly bannerService: BannerService,
     private readonly focusService: FocusService,
     private readonly noticeService: NoticeService,
     private readonly pageService: PageService,
   ) {}
 
   async getHomeData() {
-    const focusData = await this.focusService.getHomeFocus();
-    const focusBanner = await this.getFocusBanner();
+    const focusList = await this.focusService.findAll();
     const newsItems = await this.getNewsItems();
     const informationItems = await this.getInformationItems();
-    const rightBanners = await this.getRightBanners();
     const noticeList = await this.getNoticeList();
 
+    // 将焦点图按key分组
+    const focusImages = {
+      big: focusList.find(f => f.focusKey === 'focus_big')?.imageUrl || '',
+      small1: focusList.find(f => f.focusKey === 'focus_small_1')?.imageUrl || '',
+      small2: focusList.find(f => f.focusKey === 'focus_small_2')?.imageUrl || '',
+      small3: focusList.find(f => f.focusKey === 'focus_small_3')?.imageUrl || '',
+    };
+
+    const focusBanner = focusList.find(f => f.focusKey === 'focus_banner')?.imageUrl || '';
+
+    const rightBanners = {
+      top: focusList.find(f => f.focusKey === 'notice_banner')?.imageUrl || '',
+      platform: focusList.find(f => f.focusKey === 'overview_banner')?.imageUrl || '',
+    };
+
     return ResultData.ok({
-      focusImages: focusData.data,
+      focusImages,
       focusBanner,
       newsItems,
       informationItems,
       rightBanners,
       noticeList,
     });
-  }
-
-  private async getFocusBanner() {
-    const banners = await this.bannerService.findByPosition('focus');
-    return banners[0]?.image || '';
   }
 
   private async getNewsItems() {
@@ -46,7 +52,8 @@ export class PortalService {
       categoryId: 1,
       status: '1',
     });
-    return result.list.map(item => ({
+    const list = result.data?.list || [];
+    return list.map(item => ({
       id: item.articleId,
       title: item.title,
       date: this.formatDate(item.publishTime),
@@ -62,7 +69,8 @@ export class PortalService {
       categoryId: 2,
       status: '1',
     });
-    return result.list.map(item => ({
+    const list = result.data?.list || [];
+    return list.map(item => ({
       id: item.articleId,
       title: item.title,
       date: this.formatDate(item.publishTime),
@@ -71,23 +79,13 @@ export class PortalService {
     }));
   }
 
-  private async getRightBanners() {
-    const topBanners = await this.bannerService.findByPosition('right_top');
-    const platformBanners = await this.bannerService.findByPosition('right_platform');
-
-    return {
-      top: topBanners[0]?.image || '',
-      platform: platformBanners[0]?.image || '',
-    };
-  }
-
   private async getNoticeList() {
     const result = await this.noticeService.findList({
       pageNum: 1,
       pageSize: 5,
       status: '0',
     });
-    return result.data.list.map(item => item.title);
+    return result.data?.list?.map(item => item.title) || [];
   }
 
   private formatDate(date: Date): string {

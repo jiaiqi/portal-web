@@ -2,8 +2,8 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "nest-admin使用指南",
-  description: "帮助你更好的使用nest-admin",
+  title: "CMS 后台管理系统使用指南",
+  description: "帮助你更好的使用CMS 后台管理系统",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -24,7 +24,6 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/taozhi1010/nest-admin' }
     ]
   }
 })

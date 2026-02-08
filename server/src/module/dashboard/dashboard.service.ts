@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { ArticleEntity } from '../cms/article/entities/article.entity';
 import { NoticeEntity } from '../cms/notice/entities/notice.entity';
 import { FocusEntity } from '../cms/focus/entities/focus.entity';
-import { BannerEntity } from '../cms/banner/entities/banner.entity';
 import { CategoryEntity } from '../cms/category/entities/category.entity';
 
 @Injectable()
@@ -16,8 +15,6 @@ export class DashboardService {
     private readonly noticeRepository: Repository<NoticeEntity>,
     @InjectRepository(FocusEntity)
     private readonly focusRepository: Repository<FocusEntity>,
-    @InjectRepository(BannerEntity)
-    private readonly bannerRepository: Repository<BannerEntity>,
     @InjectRepository(CategoryEntity)
     private readonly categoryRepository: Repository<CategoryEntity>,
   ) {}
@@ -29,15 +26,13 @@ export class DashboardService {
       draftArticles,
       totalNotices,
       totalFocus,
-      totalBanner,
       totalCategory,
     ] = await Promise.all([
       this.articleRepository.count(),
       this.articleRepository.count({ where: { status: '1' } }),
       this.articleRepository.count({ where: { status: '0' } }),
       this.noticeRepository.count(),
-      this.focusRepository.count({ where: { status: '0' } }),
-      this.bannerRepository.count({ where: { status: '0' } }),
+      this.focusRepository.count(),
       this.categoryRepository.count(),
     ]);
 
@@ -53,7 +48,6 @@ export class DashboardService {
         content: {
           notice: totalNotices,
           focus: totalFocus,
-          banner: totalBanner,
           category: totalCategory,
         },
         system: {
@@ -100,11 +94,11 @@ export class DashboardService {
       },
       {
         id: 2,
-        title: '更新轮播图',
-        type: 'banner',
+        title: '更新焦点图',
+        type: 'focus',
         count: 0,
         priority: 'medium',
-        link: '/cms/banner',
+        link: '/cms/focus',
       },
       {
         id: 3,

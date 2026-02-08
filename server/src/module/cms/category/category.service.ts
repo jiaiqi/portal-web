@@ -62,4 +62,39 @@ export class CategoryService {
       order: { sortOrder: 'ASC' },
     });
   }
+
+  async findByCode(categoryCode: string): Promise<CategoryEntity> {
+    return this.categoryRepository.findOne({
+      where: { categoryCode, delFlag: '0', status: '1' },
+    });
+  }
+
+  async findTree(): Promise<CategoryEntity[]> {
+    const categories = await this.categoryRepository.find({
+      where: { delFlag: '0', status: '1' },
+      order: { sortOrder: 'ASC' },
+    });
+    return this.buildTree(categories, 0);
+  }
+
+  async findChildren(parentId: number): Promise<CategoryEntity[]> {
+    return this.categoryRepository.find({
+      where: { parentId, delFlag: '0', status: '1' },
+      order: { sortOrder: 'ASC' },
+    });
+  }
+
+  private buildTree(categories: CategoryEntity[], parentId: number): CategoryEntity[] {
+    const tree: CategoryEntity[] = [];
+    for (const category of categories) {
+      if (category.parentId === parentId) {
+        const children = this.buildTree(categories, category.categoryId);
+        if (children.length > 0) {
+          (category as any).children = children;
+        }
+        tree.push(category);
+      }
+    }
+    return tree;
+  }
 }

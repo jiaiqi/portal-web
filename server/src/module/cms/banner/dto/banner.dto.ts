@@ -11,8 +11,13 @@ export class CreateBannerDto {
 
   @ApiProperty({ description: '图片' })
   @IsString()
-  @Length(1, 255)
+  @Length(1, 500)
   image: string;
+
+  @ApiPropertyOptional({ description: '图片来源类型：upload上传 link链接', default: 'upload' })
+  @IsOptional()
+  @IsIn(['upload', 'link'])
+  imageSourceType?: string;
 
   @ApiPropertyOptional({ description: '链接地址' })
   @IsOptional()

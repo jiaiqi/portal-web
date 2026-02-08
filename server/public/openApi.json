@@ -4432,6 +4432,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "categoryCode",
+            "required": false,
+            "in": "query",
+            "description": "分类编码",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -4858,6 +4867,144 @@
         ]
       }
     },
+    "/cms/category/tree": {
+      "get": {
+        "operationId": "CategoryController_findTree",
+        "summary": "获取分类树",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/CategoryEntity"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-分类管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/category/code/{code}": {
+      "get": {
+        "operationId": "CategoryController_findByCode",
+        "summary": "根据编码获取分类",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CategoryEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-分类管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/category/children/{parentId}": {
+      "get": {
+        "operationId": "CategoryController_findChildren",
+        "summary": "获取子分类",
+        "parameters": [
+          {
+            "name": "parentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/CategoryEntity"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-分类管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/cms/category/{id}": {
       "get": {
         "operationId": "CategoryController_findOne",
@@ -5054,322 +5201,6 @@
         },
         "tags": [
           "CMS-分类管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/cms/banner/list": {
-      "get": {
-        "operationId": "BannerController_findList",
-        "summary": "获取轮播图列表",
-        "parameters": [
-          {
-            "name": "pageNum",
-            "required": false,
-            "in": "query",
-            "description": "页码",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": false,
-            "in": "query",
-            "description": "每页条数",
-            "schema": {
-              "default": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "description": "状态：0禁用 1启用",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/BannerEntity"
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "CMS-轮播图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/cms/banner/all": {
-      "get": {
-        "operationId": "BannerController_findAll",
-        "summary": "获取所有启用轮播图",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/BannerEntity"
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "CMS-轮播图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/cms/banner/{id}": {
-      "get": {
-        "operationId": "BannerController_findOne",
-        "summary": "获取轮播图详情",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "$ref": "#/components/schemas/BannerEntity"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "CMS-轮播图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      },
-      "delete": {
-        "operationId": "BannerController_delete",
-        "summary": "删除轮播图",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "value": {
-                              "type": "boolean",
-                              "default": true
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "CMS-轮播图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/cms/banner": {
-      "post": {
-        "operationId": "BannerController_create",
-        "summary": "新增轮播图",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateBannerDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "value": {
-                              "type": "boolean",
-                              "default": true
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "CMS-轮播图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      },
-      "put": {
-        "operationId": "BannerController_update",
-        "summary": "修改轮播图",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateBannerDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "value": {
-                              "type": "boolean",
-                              "default": true
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "CMS-轮播图管理"
         ],
         "security": [
           {
@@ -5740,6 +5571,47 @@
                               "type": "number",
                               "default": 0
                             }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-友情链接管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/link/all": {
+      "get": {
+        "operationId": "LinkController_findAll",
+        "summary": "获取所有启用的友情链接",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/LinkEntity"
                           }
                         }
                       }
@@ -6854,7 +6726,7 @@
     },
     "/cms/focus/list": {
       "get": {
-        "operationId": "FocusController_findList",
+        "operationId": "FocusController_list",
         "summary": "获取焦点图列表",
         "parameters": [
           {
@@ -6875,24 +6747,6 @@
             "schema": {
               "default": 10,
               "type": "number"
-            }
-          },
-          {
-            "name": "imageType",
-            "required": false,
-            "in": "query",
-            "description": "图片类型：big大图 small小图",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "description": "状态：0正常 1停用",
-            "schema": {
-              "type": "string"
             }
           }
         ],
@@ -6932,62 +6786,28 @@
           }
         },
         "tags": [
-          "CMS-焦点图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
+          "焦点图管理"
         ]
       }
     },
-    "/cms/focus/home": {
+    "/cms/focus/all": {
       "get": {
-        "operationId": "FocusController_getHomeFocus",
-        "summary": "获取首页焦点图",
+        "operationId": "FocusController_all",
+        "summary": "获取所有焦点图（用于前端）",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "value": {
-                              "type": "boolean",
-                              "default": true
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
+            "description": ""
           }
         },
         "tags": [
-          "CMS-焦点图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
+          "焦点图管理"
         ]
       }
     },
     "/cms/focus/{id}": {
       "get": {
-        "operationId": "FocusController_findOne",
+        "operationId": "FocusController_detail",
         "summary": "获取焦点图详情",
         "parameters": [
           {
@@ -7001,141 +6821,15 @@
         ],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "$ref": "#/components/schemas/FocusEntity"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
+            "description": ""
           }
         },
         "tags": [
-          "CMS-焦点图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      },
-      "delete": {
-        "operationId": "FocusController_delete",
-        "summary": "删除焦点图",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "value": {
-                              "type": "boolean",
-                              "default": true
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "CMS-焦点图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
+          "焦点图管理"
         ]
       }
     },
     "/cms/focus": {
-      "post": {
-        "operationId": "FocusController_create",
-        "summary": "新增焦点图",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateFocusDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "value": {
-                              "type": "boolean",
-                              "default": true
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "CMS-焦点图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      },
       "put": {
         "operationId": "FocusController_update",
         "summary": "修改焦点图",
@@ -7152,6 +6846,51 @@
         },
         "responses": {
           "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "焦点图管理"
+        ]
+      }
+    },
+    "/cms/focus/history/list": {
+      "get": {
+        "operationId": "FocusController_historyList",
+        "summary": "获取历史记录列表",
+        "parameters": [
+          {
+            "name": "focusId",
+            "required": true,
+            "in": "query",
+            "description": "焦点图ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "每页条数",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
@@ -7165,9 +6904,15 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "value": {
-                              "type": "boolean",
-                              "default": true
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/FocusEntity"
+                              }
+                            },
+                            "total": {
+                              "type": "number",
+                              "default": 0
                             }
                           }
                         }
@@ -7180,12 +6925,56 @@
           }
         },
         "tags": [
-          "CMS-焦点图管理"
-        ],
-        "security": [
-          {
-            "bearer": []
+          "焦点图管理"
+        ]
+      }
+    },
+    "/cms/focus/history/restore": {
+      "put": {
+        "operationId": "FocusController_restoreFromHistory",
+        "summary": "从历史记录恢复",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestoreFocusDto"
+              }
+            }
           }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "焦点图管理"
+        ]
+      }
+    },
+    "/cms/focus/history/{id}": {
+      "delete": {
+        "operationId": "FocusController_deleteHistory",
+        "summary": "删除历史记录",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "焦点图管理"
         ]
       }
     },
@@ -7225,6 +7014,902 @@
         },
         "tags": [
           "CMS-门户"
+        ]
+      }
+    },
+    "/cms/site-config/list": {
+      "get": {
+        "operationId": "SiteConfigController_list",
+        "summary": "获取配置列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "每页条数",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "configKey",
+            "required": false,
+            "in": "query",
+            "description": "配置键",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "configName",
+            "required": false,
+            "in": "query",
+            "description": "配置名称",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "网站配置管理"
+        ]
+      }
+    },
+    "/cms/site-config/all": {
+      "get": {
+        "operationId": "SiteConfigController_all",
+        "summary": "获取所有配置（键值对形式）",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "网站配置管理"
+        ]
+      }
+    },
+    "/cms/site-config/value/{key}": {
+      "get": {
+        "operationId": "SiteConfigController_getValue",
+        "summary": "根据key获取配置值",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "网站配置管理"
+        ]
+      }
+    },
+    "/cms/site-config/{id}": {
+      "get": {
+        "operationId": "SiteConfigController_detail",
+        "summary": "获取配置详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "网站配置管理"
+        ]
+      },
+      "delete": {
+        "operationId": "SiteConfigController_delete",
+        "summary": "删除配置",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "网站配置管理"
+        ]
+      }
+    },
+    "/cms/site-config": {
+      "post": {
+        "operationId": "SiteConfigController_add",
+        "summary": "新增配置",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSiteConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "网站配置管理"
+        ]
+      },
+      "put": {
+        "operationId": "SiteConfigController_update",
+        "summary": "修改配置",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSiteConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "网站配置管理"
+        ]
+      }
+    },
+    "/cms/about/section": {
+      "post": {
+        "operationId": "AboutController_createSection",
+        "summary": "创建栏目",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSectionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AboutSectionEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "AboutController_updateSection",
+        "summary": "修改栏目",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSectionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AboutSectionEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/about/section/{id}": {
+      "delete": {
+        "operationId": "AboutController_deleteSection",
+        "summary": "删除栏目",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "AboutController_findOneSection",
+        "summary": "获取栏目详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AboutSectionEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/about/section/all": {
+      "get": {
+        "operationId": "AboutController_findAllSections",
+        "summary": "获取所有启用的栏目",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/AboutSectionEntity"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/about/section/key/{sectionKey}": {
+      "get": {
+        "operationId": "AboutController_findSectionByKey",
+        "summary": "根据key获取栏目",
+        "parameters": [
+          {
+            "name": "sectionKey",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AboutSectionEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/about/section/list": {
+      "get": {
+        "operationId": "AboutController_findSectionList",
+        "summary": "获取栏目列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "每页条数",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sectionName",
+            "required": false,
+            "in": "query",
+            "description": "栏目名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "状态：0禁用 1启用",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/AboutSectionEntity"
+                              }
+                            },
+                            "total": {
+                              "type": "number",
+                              "default": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/about/article": {
+      "post": {
+        "operationId": "AboutController_createArticle",
+        "summary": "创建文章",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAboutArticleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AboutArticleEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "AboutController_updateArticle",
+        "summary": "修改文章",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAboutArticleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AboutArticleEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/about/article/{id}": {
+      "delete": {
+        "operationId": "AboutController_deleteArticle",
+        "summary": "删除文章",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "AboutController_findOneArticle",
+        "summary": "获取文章详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AboutArticleEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/about/article/section/{sectionKey}": {
+      "get": {
+        "operationId": "AboutController_findArticlesBySectionKey",
+        "summary": "根据栏目key获取文章列表",
+        "parameters": [
+          {
+            "name": "sectionKey",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/AboutArticleEntity"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/about/article/list": {
+      "get": {
+        "operationId": "AboutController_findArticleList",
+        "summary": "获取文章列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "每页条数",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sectionKey",
+            "required": false,
+            "in": "query",
+            "description": "栏目标识",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "description": "文章标题",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "状态：0禁用 1启用",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/AboutArticleEntity"
+                              }
+                            },
+                            "total": {
+                              "type": "number",
+                              "default": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-协会概况管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
         ]
       }
     },
@@ -7362,8 +8047,8 @@
     }
   },
   "info": {
-    "title": "Nest-Admin",
-    "description": "Nest-Admin 接口文档",
+    "title": "CMS 后台管理系统",
+    "description": "CMS 后台管理系统接口文档",
     "version": "2.0.0",
     "contact": {}
   },
@@ -8795,6 +9480,11 @@
             "type": "string",
             "description": "封面图"
           },
+          "coverImageSourceType": {
+            "type": "string",
+            "description": "封面图片来源类型：upload上传 link链接",
+            "default": "upload"
+          },
           "content": {
             "type": "string",
             "description": "文章内容"
@@ -8863,6 +9553,11 @@
           "coverImage": {
             "type": "string",
             "description": "封面图"
+          },
+          "coverImageSourceType": {
+            "type": "string",
+            "description": "封面图片来源类型：upload上传 link链接",
+            "default": "upload"
           },
           "content": {
             "type": "string",
@@ -9017,85 +9712,6 @@
           "categoryId"
         ]
       },
-      "BannerEntity": {
-        "type": "object",
-        "properties": {}
-      },
-      "CreateBannerDto": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "标题"
-          },
-          "image": {
-            "type": "string",
-            "description": "图片"
-          },
-          "linkUrl": {
-            "type": "string",
-            "description": "链接地址"
-          },
-          "position": {
-            "type": "string",
-            "description": "位置：home首页 focus首页焦点 right_top右侧顶部 right_platform右侧平台",
-            "default": "home"
-          },
-          "sortOrder": {
-            "type": "number",
-            "description": "排序",
-            "default": 0
-          },
-          "status": {
-            "type": "string",
-            "description": "状态：0禁用 1启用",
-            "default": "1"
-          }
-        },
-        "required": [
-          "image"
-        ]
-      },
-      "UpdateBannerDto": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "标题"
-          },
-          "image": {
-            "type": "string",
-            "description": "图片"
-          },
-          "linkUrl": {
-            "type": "string",
-            "description": "链接地址"
-          },
-          "position": {
-            "type": "string",
-            "description": "位置：home首页 focus首页焦点 right_top右侧顶部 right_platform右侧平台",
-            "default": "home"
-          },
-          "sortOrder": {
-            "type": "number",
-            "description": "排序",
-            "default": 0
-          },
-          "status": {
-            "type": "string",
-            "description": "状态：0禁用 1启用",
-            "default": "1"
-          },
-          "bannerId": {
-            "type": "number",
-            "description": "轮播图ID"
-          }
-        },
-        "required": [
-          "image",
-          "bannerId"
-        ]
-      },
       "SpecialEntity": {
         "type": "object",
         "properties": {}
@@ -9114,6 +9730,11 @@
           "coverImage": {
             "type": "string",
             "description": "封面图"
+          },
+          "coverImageSourceType": {
+            "type": "string",
+            "description": "封面图片来源类型：upload上传 link链接",
+            "default": "upload"
           },
           "sortOrder": {
             "type": "number",
@@ -9144,6 +9765,11 @@
           "coverImage": {
             "type": "string",
             "description": "封面图"
+          },
+          "coverImageSourceType": {
+            "type": "string",
+            "description": "封面图片来源类型：upload上传 link链接",
+            "default": "upload"
           },
           "sortOrder": {
             "type": "number",
@@ -9184,6 +9810,11 @@
             "type": "string",
             "description": "链接Logo"
           },
+          "linkLogoSourceType": {
+            "type": "string",
+            "description": "Logo图片来源类型：upload上传 link链接",
+            "default": "upload"
+          },
           "sortOrder": {
             "type": "number",
             "description": "排序",
@@ -9214,6 +9845,11 @@
           "linkLogo": {
             "type": "string",
             "description": "链接Logo"
+          },
+          "linkLogoSourceType": {
+            "type": "string",
+            "description": "Logo图片来源类型：upload上传 link链接",
+            "default": "upload"
           },
           "sortOrder": {
             "type": "number",
@@ -9368,61 +10004,152 @@
         "type": "object",
         "properties": {}
       },
-      "CreateFocusDto": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "焦点图标题"
-          },
-          "imageUrl": {
-            "type": "string",
-            "description": "图片URL"
-          },
-          "imageType": {
-            "type": "string",
-            "description": "图片类型：big大图 small小图",
-            "default": "big"
-          },
-          "linkUrl": {
-            "type": "string",
-            "description": "跳转链接"
-          },
-          "sortOrder": {
-            "type": "number",
-            "description": "排序",
-            "default": 0
-          },
-          "status": {
-            "type": "string",
-            "description": "状态：0正常 1停用",
-            "default": "0"
-          }
-        },
-        "required": [
-          "title",
-          "imageUrl"
-        ]
-      },
       "UpdateFocusDto": {
         "type": "object",
         "properties": {
-          "title": {
-            "type": "string",
-            "description": "焦点图标题"
+          "focusId": {
+            "type": "number",
+            "description": "焦点图ID"
           },
           "imageUrl": {
             "type": "string",
             "description": "图片URL"
           },
-          "imageType": {
+          "imageSourceType": {
             "type": "string",
-            "description": "图片类型：big大图 small小图",
-            "default": "big"
+            "description": "图片来源类型：upload上传 link链接",
+            "default": "upload"
           },
-          "linkUrl": {
+          "linkType": {
             "type": "string",
-            "description": "跳转链接"
+            "description": "链接类型：internal内部文章 external外部地址",
+            "default": "external"
+          },
+          "linkValue": {
+            "type": "string",
+            "description": "链接值（文章ID或外部URL）"
+          },
+          "openType": {
+            "type": "string",
+            "description": "打开方式：current当前页 new新标签页",
+            "default": "new"
+          },
+          "remark": {
+            "type": "string",
+            "description": "修改备注"
+          }
+        },
+        "required": [
+          "focusId",
+          "imageUrl"
+        ]
+      },
+      "RestoreFocusDto": {
+        "type": "object",
+        "properties": {
+          "historyId": {
+            "type": "number",
+            "description": "历史记录ID"
+          },
+          "remark": {
+            "type": "string",
+            "description": "恢复备注"
+          }
+        },
+        "required": [
+          "historyId"
+        ]
+      },
+      "CreateSiteConfigDto": {
+        "type": "object",
+        "properties": {
+          "configKey": {
+            "type": "string",
+            "description": "配置键"
+          },
+          "configValue": {
+            "type": "string",
+            "description": "配置值"
+          },
+          "configName": {
+            "type": "string",
+            "description": "配置名称"
+          },
+          "configType": {
+            "type": "string",
+            "description": "配置类型：text文本 textarea多行文本 rich富文本 image图片",
+            "default": "text"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          }
+        },
+        "required": [
+          "configKey",
+          "configName"
+        ]
+      },
+      "UpdateSiteConfigDto": {
+        "type": "object",
+        "properties": {
+          "configKey": {
+            "type": "string",
+            "description": "配置键"
+          },
+          "configValue": {
+            "type": "string",
+            "description": "配置值"
+          },
+          "configName": {
+            "type": "string",
+            "description": "配置名称"
+          },
+          "configType": {
+            "type": "string",
+            "description": "配置类型：text文本 textarea多行文本 rich富文本 image图片",
+            "default": "text"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "configId": {
+            "type": "number",
+            "description": "配置ID"
+          }
+        },
+        "required": [
+          "configKey",
+          "configName",
+          "configId"
+        ]
+      },
+      "AboutSectionEntity": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateSectionDto": {
+        "type": "object",
+        "properties": {
+          "sectionKey": {
+            "type": "string",
+            "description": "栏目标识"
+          },
+          "sectionName": {
+            "type": "string",
+            "description": "栏目名称"
+          },
+          "sectionType": {
+            "type": "string",
+            "description": "栏目类型：richText富文本 list列表",
+            "default": "richText"
+          },
+          "content": {
+            "type": "string",
+            "description": "富文本内容"
           },
           "sortOrder": {
             "type": "number",
@@ -9431,18 +10158,125 @@
           },
           "status": {
             "type": "string",
-            "description": "状态：0正常 1停用",
-            "default": "0"
-          },
-          "focusId": {
-            "type": "number",
-            "description": "焦点图ID"
+            "description": "状态：0禁用 1启用",
+            "default": "1"
           }
         },
         "required": [
+          "sectionKey",
+          "sectionName"
+        ]
+      },
+      "UpdateSectionDto": {
+        "type": "object",
+        "properties": {
+          "sectionKey": {
+            "type": "string",
+            "description": "栏目标识"
+          },
+          "sectionName": {
+            "type": "string",
+            "description": "栏目名称"
+          },
+          "sectionType": {
+            "type": "string",
+            "description": "栏目类型：richText富文本 list列表",
+            "default": "richText"
+          },
+          "content": {
+            "type": "string",
+            "description": "富文本内容"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "状态：0禁用 1启用",
+            "default": "1"
+          },
+          "sectionId": {
+            "type": "number",
+            "description": "栏目ID"
+          }
+        },
+        "required": [
+          "sectionKey",
+          "sectionName",
+          "sectionId"
+        ]
+      },
+      "AboutArticleEntity": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateAboutArticleDto": {
+        "type": "object",
+        "properties": {
+          "sectionKey": {
+            "type": "string",
+            "description": "栏目标识"
+          },
+          "title": {
+            "type": "string",
+            "description": "文章标题"
+          },
+          "content": {
+            "type": "string",
+            "description": "文章内容"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "状态：0禁用 1启用",
+            "default": "1"
+          }
+        },
+        "required": [
+          "sectionKey",
+          "title"
+        ]
+      },
+      "UpdateAboutArticleDto": {
+        "type": "object",
+        "properties": {
+          "sectionKey": {
+            "type": "string",
+            "description": "栏目标识"
+          },
+          "title": {
+            "type": "string",
+            "description": "文章标题"
+          },
+          "content": {
+            "type": "string",
+            "description": "文章内容"
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "排序",
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "状态：0禁用 1启用",
+            "default": "1"
+          },
+          "articleId": {
+            "type": "number",
+            "description": "文章ID"
+          }
+        },
+        "required": [
+          "sectionKey",
           "title",
-          "imageUrl",
-          "focusId"
+          "articleId"
         ]
       }
     }
