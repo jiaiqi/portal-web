@@ -1,0 +1,181 @@
+version: "3.8"
+
+services:
+  # ============================================
+  # MySQL 数据库
+  # ============================================
+  mysql:
+    image: mysql:8.0
+    container_name: cms-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-12345678}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-nest_admin}
+      MYSQL_USER: ${MYSQL_USER:-nest_admin}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-12345678}
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./server/db/nest_admin_complete.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cms-network
+
+  # ============================================
+  # Redis 缓存
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: cms-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass ${REDIS_PASSWORD}}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cms-network
+
+  # ============================================
+  # Server 后端 API
+  # ============================================
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: cms-server
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      # 数据库配置（覆盖 prod.yml）
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: ${MYSQL_USER:-nest_admin}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-12345678}
+      DB_DATABASE: ${MYSQL_DATABASE:-nest_admin}
+      # Redis 配置
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      # JWT 配置
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_key}
+    ports:
+      - "8080:8080"
+    volumes:
+      - server_uploads:/app/public/upload
+      - server_logs:/app/logs
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--spider",
+          "-q",
+          "http://localhost:8080/api/captchaImage",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - cms-network
+
+  # ============================================
+  # Web Portal 门户网站 (Nuxt SSR)
+  # ============================================
+  portal:
+    build:
+      context: ./web-portal
+      dockerfile: Dockerfile
+    container_name: cms-portal
+    restart: unless-stopped
+    environment:
+      NUXT_PUBLIC_API_BASE_URL: http://server:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - cms-network
+
+  # ============================================
+  # Admin 后台管理 (Vue3 静态文件)
+  # ============================================
+  admin:
+    build:
+      context: ./admin-vue3
+      dockerfile: Dockerfile
+    container_name: cms-admin
+    restart: unless-stopped
+    ports:
+      - "8888:80"
+    depends_on:
+      - server
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - cms-network
+
+  # ============================================
+  # Nginx 反向代理（统一入口）
+  # ============================================
+  nginx:
+    image: nginx:alpine
+    container_name: cms-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - server
+      - portal
+      - admin
+    networks:
+      - cms-network
+
+# ============================================
+# 数据卷
+# ============================================
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  server_uploads:
+    driver: local
+  server_logs:
+    driver: local
+
+# ============================================
+# 网络
+# ============================================
+networks:
+  cms-network:
+    driver: bridge

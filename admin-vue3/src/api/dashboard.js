@@ -7,9 +7,25 @@ export function getStatistics() {
   })
 }
 
-export function getRecentLogs() {
+export function getRecentLogs(params) {
   return request({
     url: '/dashboard/recentLogs',
+    method: 'get',
+    params
+  })
+}
+
+export function getArticleTrend(params) {
+  return request({
+    url: '/dashboard/articleTrend',
+    method: 'get',
+    params
+  })
+}
+
+export function getSystemStatus() {
+  return request({
+    url: '/dashboard/systemStatus',
     method: 'get'
   })
 }

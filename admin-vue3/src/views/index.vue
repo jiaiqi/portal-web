@@ -1,5 +1,6 @@
 <template>
   <div class="dashboard-container">
+    <!-- 欢迎区域 -->
     <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
         <div class="welcome-card">
@@ -17,11 +18,12 @@
       </el-col>
     </el-row>
 
+    <!-- 核心数据统计 -->
     <el-row :gutter="20" class="mb20">
-      <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-        <div class="stat-card">
+      <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+        <div class="stat-card" @click="handleQuickLink('/cms/article-audit')">
           <div class="stat-icon stat-icon-blue">
-            <el-icon :size="28"><Document /></el-icon>
+            <el-icon :size="24"><Document /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.article?.total || 0 }}</div>
@@ -29,10 +31,10 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-        <div class="stat-card">
+      <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+        <div class="stat-card" @click="handleQuickLink('/cms/article-audit')">
           <div class="stat-icon stat-icon-green">
-            <el-icon :size="28"><CircleCheck /></el-icon>
+            <el-icon :size="24"><CircleCheck /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.article?.published || 0 }}</div>
@@ -40,10 +42,10 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-        <div class="stat-card">
+      <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+        <div class="stat-card" @click="handleQuickLink('/cms/article-audit')">
           <div class="stat-icon stat-icon-orange">
-            <el-icon :size="28"><EditPen /></el-icon>
+            <el-icon :size="24"><EditPen /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.article?.draft || 0 }}</div>
@@ -51,24 +53,21 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-        <div class="stat-card">
+      <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+        <div class="stat-card" @click="handleQuickLink('/cms/announcements?categoryCode=notice')">
           <div class="stat-icon stat-icon-purple">
-            <el-icon :size="28"><Bell /></el-icon>
+            <el-icon :size="24"><Bell /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.content?.notice || 0 }}</div>
-            <div class="stat-label">公告数量</div>
+            <div class="stat-label">公告</div>
           </div>
         </div>
       </el-col>
-    </el-row>
-
-    <el-row :gutter="20" class="mb20">
-      <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-        <div class="stat-card">
+      <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+        <div class="stat-card" @click="handleQuickLink('/cms/focus')">
           <div class="stat-icon stat-icon-cyan">
-            <el-icon :size="28"><Picture /></el-icon>
+            <el-icon :size="24"><Picture /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.content?.focus || 0 }}</div>
@@ -76,47 +75,119 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-        <div class="stat-card">
+      <el-col :xs="24" :sm="12" :md="8" :lg="4" :xl="4">
+        <div class="stat-card" @click="handleQuickLink('/cms/category')">
           <div class="stat-icon stat-icon-pink">
-            <el-icon :size="28"><Film /></el-icon>
-          </div>
-          <div class="stat-content">
-            <div class="stat-value">{{ statistics.content?.banner || 0 }}</div>
-            <div class="stat-label">轮播图</div>
-          </div>
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-        <div class="stat-card">
-          <div class="stat-icon stat-icon-teal">
-            <el-icon :size="28"><Folder /></el-icon>
+            <el-icon :size="24"><Folder /></el-icon>
           </div>
           <div class="stat-content">
             <div class="stat-value">{{ statistics.content?.category || 0 }}</div>
-            <div class="stat-label">分类数量</div>
-          </div>
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-        <div class="stat-card">
-          <div class="stat-icon stat-icon-indigo">
-            <el-icon :size="28"><Link /></el-icon>
-          </div>
-          <div class="stat-content">
-            <div class="stat-value">{{ statistics.content?.link || 0 }}</div>
-            <div class="stat-label">友情链接</div>
+            <div class="stat-label">分类</div>
           </div>
         </div>
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" class="mb20">
-      <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16">
+    <!-- 快捷入口 -->
+    <!-- <el-row :gutter="20" class="mb20">
+      <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+        <el-card class="quick-card" shadow="hover">
+          <template #header>
+            <div class="card-header">
+              <span class="card-title">
+                <el-icon><Grid /></el-icon>
+                快捷入口
+              </span>
+            </div>
+          </template>
+          <div class="quick-grid">
+            <div class="quick-item" @click="handleQuickLink('/cms/article-audit')">
+              <div class="quick-icon quick-icon-blue">
+                <el-icon :size="22"><Document /></el-icon>
+              </div>
+              <div class="quick-label">文章管理</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/cms/article-audit/index')">
+              <div class="quick-icon quick-icon-orange">
+                <el-icon :size="22"><Check /></el-icon>
+              </div>
+              <div class="quick-label">文章审核</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/cms/announcements?categoryCode=notice')">
+              <div class="quick-icon quick-icon-green">
+                <el-icon :size="22"><Bell /></el-icon>
+              </div>
+              <div class="quick-label">公告管理</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/cms/focus')">
+              <div class="quick-icon quick-icon-purple">
+                <el-icon :size="22"><Picture /></el-icon>
+              </div>
+              <div class="quick-label">焦点图</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/cms/category')">
+              <div class="quick-icon quick-icon-cyan">
+                <el-icon :size="22"><Folder /></el-icon>
+              </div>
+              <div class="quick-label">分类管理</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/cms/special/index')">
+              <div class="quick-icon quick-icon-indigo">
+                <el-icon :size="22"><Star /></el-icon>
+              </div>
+              <div class="quick-label">专题管理</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/cms/page/index')">
+              <div class="quick-icon quick-icon-teal">
+                <el-icon :size="22"><Files /></el-icon>
+              </div>
+              <div class="quick-label">单页管理</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/cms/link/index')">
+              <div class="quick-icon quick-icon-blue">
+                <el-icon :size="22"><Link /></el-icon>
+              </div>
+              <div class="quick-label">友情链接</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/cms/navigation/index')">
+              <div class="quick-icon quick-icon-green">
+                <el-icon :size="22"><Compass /></el-icon>
+              </div>
+              <div class="quick-label">导航管理</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/cms/siteConfig/index')">
+              <div class="quick-icon quick-icon-orange">
+                <el-icon :size="22"><Setting /></el-icon>
+              </div>
+              <div class="quick-label">站点配置</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/cms/about/index')">
+              <div class="quick-icon quick-icon-pink">
+                <el-icon :size="22"><InfoFilled /></el-icon>
+              </div>
+              <div class="quick-label">关于我们</div>
+            </div>
+            <div class="quick-item" @click="handleQuickLink('/system/user/index')">
+              <div class="quick-icon quick-icon-purple">
+                <el-icon :size="22"><User /></el-icon>
+              </div>
+              <div class="quick-label">用户管理</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row> -->
+
+    <!-- 内容区域：文章趋势 + 最近动态 -->
+    <el-row :gutter="20">
+      <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16" class="mb20">
         <el-card class="chart-card" shadow="hover">
           <template #header>
             <div class="card-header">
-              <span class="card-title">文章发布趋势</span>
+              <span class="card-title">
+                <el-icon><TrendCharts /></el-icon>
+                文章发布趋势
+              </span>
               <el-radio-group v-model="chartType" size="small">
                 <el-radio-button label="week">本周</el-radio-button>
                 <el-radio-button label="month">本月</el-radio-button>
@@ -124,69 +195,45 @@
               </el-radio-group>
             </div>
           </template>
-          <div class="chart-container">
-            <div class="chart-placeholder">
-              <el-empty description="图表数据加载中..." />
-            </div>
+          <div class="chart-container" v-loading="chartLoading">
+            <div ref="chartRef" class="chart-content"></div>
+            <el-empty v-if="!chartData.length" description="暂无数据" />
           </div>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-        <el-card class="todo-card" shadow="hover">
-          <template #header>
-            <div class="card-header">
-              <span class="card-title">待办事项</span>
-              <el-link type="primary" :underline="false" @click="handleViewAllTodo">查看全部</el-link>
-            </div>
-          </template>
-          <div class="todo-list">
-            <div v-for="item in todoList" :key="item.id" class="todo-item" @click="handleTodoClick(item)">
-              <div class="todo-icon">
-                <el-icon v-if="item.type === 'article'" color="#409EFF"><Document /></el-icon>
-                <el-icon v-else-if="item.type === 'banner'" color="#67C23A"><Film /></el-icon>
-                <el-icon v-else-if="item.type === 'notice'" color="#E6A23C"><Bell /></el-icon>
-                <el-icon v-else color="#909399"><Link /></el-icon>
-              </div>
-              <div class="todo-content">
-                <div class="todo-title">{{ item.title }}</div>
-                <div class="todo-meta">
-                  <el-tag :type="getPriorityType(item.priority)" size="small">{{ getPriorityText(item.priority) }}</el-tag>
-                </div>
-              </div>
-              <div class="todo-arrow">
-                <el-icon><ArrowRight /></el-icon>
-              </div>
-            </div>
-            <el-empty v-if="todoList.length === 0" description="暂无待办事项" :image-size="80" />
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-    <el-row :gutter="20">
-      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8" class="mb20">
         <el-card class="recent-card" shadow="hover">
           <template #header>
             <div class="card-header">
-              <span class="card-title">最近操作</span>
+              <span class="card-title">
+                <el-icon><Timer /></el-icon>
+                最近操作
+              </span>
               <el-link type="primary" :underline="false" @click="handleViewAllLogs">查看全部</el-link>
             </div>
           </template>
-          <div class="recent-list">
-            <div v-for="log in recentLogs" :key="log.id" class="recent-item">
-              <div class="recent-icon">
-                <el-icon color="#409EFF"><Document /></el-icon>
+          <div class="recent-list" v-loading="logsLoading">
+            <div v-for="log in recentLogs" :key="log.operId" class="recent-item">
+              <div class="recent-icon" :class="getLogIconClass(log.businessType)">
+                <el-icon :size="16">
+                  <Document v-if="log.businessType === '文章'" />
+                  <Bell v-else-if="log.businessType === '公告'" />
+                  <Picture v-else-if="log.businessType === '焦点图'" />
+                  <Film v-else-if="log.businessType === '轮播图'" />
+                  <User v-else-if="log.businessType === '用户'" />
+                  <Setting v-else />
+                </el-icon>
               </div>
               <div class="recent-content">
                 <div class="recent-title">{{ log.title }}</div>
                 <div class="recent-meta">
-                  <span class="recent-author">{{ log.author }}</span>
-                  <span class="recent-time">{{ formatTime(log.createTime) }}</span>
+                  <span class="recent-type">{{ log.businessType }}</span>
+                  <span class="recent-time">{{ formatTime(log.operTime) }}</span>
                 </div>
               </div>
               <div class="recent-status">
-                <el-tag :type="log.status === 'published' ? 'success' : 'info'" size="small">
-                  {{ log.status === 'published' ? '已发布' : '草稿' }}
+                <el-tag :type="log.status === '0' ? 'success' : 'danger'" size="small">
+                  {{ log.status === '0' ? '成功' : '失败' }}
                 </el-tag>
               </div>
             </div>
@@ -194,59 +241,59 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-        <el-card class="quick-card" shadow="hover">
+    </el-row>
+
+    <!-- 系统监控信息 -->
+    <el-row :gutter="20">
+      <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-card class="monitor-card" shadow="hover">
           <template #header>
-            <span class="card-title">快捷入口</span>
+            <div class="card-header">
+              <span class="card-title">
+                <el-icon><UserFilled /></el-icon>
+                在线用户
+              </span>
+              <el-link type="primary" :underline="false" @click="handleQuickLink('/monitor/online')">查看</el-link>
+            </div>
           </template>
-          <div class="quick-grid">
-            <div class="quick-item" @click="handleQuickLink('/cms/article')">
-              <div class="quick-icon quick-icon-blue">
-                <el-icon :size="20"><Document /></el-icon>
-              </div>
-              <div class="quick-label">文章管理</div>
+          <div class="monitor-content">
+            <div class="monitor-value">{{ statistics.onlineUser || 0 }}</div>
+            <div class="monitor-label">当前在线</div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-card class="monitor-card" shadow="hover">
+          <template #header>
+            <div class="card-header">
+              <span class="card-title">
+                <el-icon><Calendar /></el-icon>
+                定时任务
+              </span>
+              <el-link type="primary" :underline="false" @click="handleQuickLink('/monitor/job')">查看</el-link>
             </div>
-            <div class="quick-item" @click="handleQuickLink('/cms/notification')">
-              <div class="quick-icon quick-icon-green">
-                <el-icon :size="20"><Bell /></el-icon>
-              </div>
-              <div class="quick-label">公告管理</div>
+          </template>
+          <div class="monitor-content">
+            <div class="monitor-value">{{ statistics.jobCount || 0 }}</div>
+            <div class="monitor-label">任务数量</div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-card class="monitor-card" shadow="hover">
+          <template #header>
+            <div class="card-header">
+              <span class="card-title">
+                <el-icon><DataLine /></el-icon>
+                系统状态
+              </span>
+              <el-link type="primary" :underline="false" @click="handleQuickLink('/monitor/server')">查看</el-link>
             </div>
-            <!-- <div class="quick-item" @click="handleQuickLink('/cms/banner')">
-              <div class="quick-icon quick-icon-orange">
-                <el-icon :size="20"><Film /></el-icon>
-              </div>
-              <div class="quick-label">轮播图</div>
-            </div> -->
-            <div class="quick-item" @click="handleQuickLink('/cms/focus')">
-              <div class="quick-icon quick-icon-purple">
-                <el-icon :size="20"><Picture /></el-icon>
-              </div>
-              <div class="quick-label">焦点图</div>
-            </div>
-            <div class="quick-item" @click="handleQuickLink('/cms/category')">
-              <div class="quick-icon quick-icon-cyan">
-                <el-icon :size="20"><Folder /></el-icon>
-              </div>
-              <div class="quick-label">分类管理</div>
-            </div>
-            <div class="quick-item" @click="handleQuickLink('/cms/link')">
-              <div class="quick-icon quick-icon-pink">
-                <el-icon :size="20"><Link /></el-icon>
-              </div>
-              <div class="quick-label">友情链接</div>
-            </div>
-            <div class="quick-item" @click="handleQuickLink('/cms/page')">
-              <div class="quick-icon quick-icon-teal">
-                <el-icon :size="20"><Files /></el-icon>
-              </div>
-              <div class="quick-label">单页管理</div>
-            </div>
-            <div class="quick-item" @click="handleQuickLink('/cms/special')">
-              <div class="quick-icon quick-icon-indigo">
-                <el-icon :size="20"><Star /></el-icon>
-              </div>
-              <div class="quick-label">专题管理</div>
+          </template>
+          <div class="monitor-content">
+            <div class="monitor-status" :class="systemStatus.class">
+              <el-icon :size="24"><CircleCheck v-if="systemStatus.ok" /><Warning v-else /></el-icon>
+              <span>{{ systemStatus.text }}</span>
             </div>
           </div>
         </el-card>
@@ -256,22 +303,33 @@
 </template>
 
 <script setup name="Dashboard">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { getStatistics, getRecentLogs, getTodoList } from '@/api/dashboard'
+import * as echarts from 'echarts'
+import { getStatistics, getRecentLogs, getArticleTrend, getSystemStatus } from '@/api/dashboard'
 import useUserStore from '@/store/modules/user'
 
 const router = useRouter()
 const userStore = useUserStore()
+const chartRef = ref(null)
+let chartInstance = null
 
 const userName = computed(() => userStore.name || '管理员')
 const greeting = ref('')
 const currentTime = ref('')
 const currentDate = ref('')
 const chartType = ref('week')
-const statistics = ref({})
+const chartLoading = ref(false)
+const logsLoading = ref(false)
+const statistics = ref({
+  article: { total: 0, published: 0, draft: 0 },
+  content: { notice: 0, focus: 0, category: 0 },
+  onlineUser: 0,
+  jobCount: 0
+})
 const recentLogs = ref([])
-const todoList = ref([])
+const chartData = ref([])
+const systemStatus = ref({ ok: true, text: '运行正常', class: 'status-normal' })
 let timer = null
 
 function updateGreeting() {
@@ -299,22 +357,104 @@ function updateTime() {
   currentDate.value = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })
 }
 
-function getStatisticsData() {
-  getStatistics().then(response => {
-    statistics.value = response.data || {}
-  })
+async function getStatisticsData() {
+  try {
+    const res = await getStatistics()
+    statistics.value = { ...statistics.value, ...res.data }
+  } catch (error) {
+    console.error('获取统计数据失败:', error)
+  }
 }
 
-function getRecentLogsData() {
-  getRecentLogs().then(response => {
-    recentLogs.value = response.data || []
-  })
+async function getRecentLogsData() {
+  logsLoading.value = true
+  try {
+    const res = await getRecentLogs({ pageSize: 10 })
+    recentLogs.value = res.rows || []
+  } catch (error) {
+    console.error('获取最近操作失败:', error)
+  } finally {
+    logsLoading.value = false
+  }
 }
 
-function getTodoListData() {
-  getTodoList().then(response => {
-    todoList.value = response.data || []
-  })
+async function getArticleTrendData() {
+  chartLoading.value = true
+  try {
+    const res = await getArticleTrend({ type: chartType.value })
+    chartData.value = res.data || []
+    initChart()
+  } catch (error) {
+    console.error('获取文章趋势失败:', error)
+  } finally {
+    chartLoading.value = false
+  }
+}
+
+async function getSystemStatusData() {
+  try {
+    const res = await getSystemStatus()
+    const status = res.data
+    systemStatus.value = {
+      ok: status.cpuUsage < 80 && status.memoryUsage < 80,
+      text: status.cpuUsage < 80 && status.memoryUsage < 80 ? '运行正常' : '负载较高',
+      class: status.cpuUsage < 80 && status.memoryUsage < 80 ? 'status-normal' : 'status-warning'
+    }
+  } catch (error) {
+    console.error('获取系统状态失败:', error)
+  }
+}
+
+function initChart() {
+  if (!chartRef.value || !chartData.value.length) return
+  
+  if (chartInstance) {
+    chartInstance.dispose()
+  }
+  
+  chartInstance = echarts.init(chartRef.value)
+  const option = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'shadow' }
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: chartData.value.map(item => item.date),
+      axisLine: { lineStyle: { color: '#E4E7ED' } },
+      axisLabel: { color: '#606266' }
+    },
+    yAxis: {
+      type: 'value',
+      axisLine: { show: false },
+      axisTick: { show: false },
+      splitLine: { lineStyle: { color: '#E4E7ED', type: 'dashed' } },
+      axisLabel: { color: '#606266' }
+    },
+    series: [{
+      name: '文章数',
+      type: 'line',
+      smooth: true,
+      symbol: 'circle',
+      symbolSize: 8,
+      itemStyle: { color: '#409EFF' },
+      lineStyle: { width: 3 },
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: 'rgba(64, 158, 255, 0.3)' },
+          { offset: 1, color: 'rgba(64, 158, 255, 0.05)' }
+        ])
+      },
+      data: chartData.value.map(item => item.count)
+    }]
+  }
+  chartInstance.setOption(option)
 }
 
 function formatTime(time) {
@@ -333,39 +473,29 @@ function formatTime(time) {
   return date.toLocaleDateString('zh-CN')
 }
 
-function getPriorityType(priority) {
+function getLogIconClass(businessType) {
   const map = {
-    high: 'danger',
-    medium: 'warning',
-    low: 'info'
+    '文章': 'icon-blue',
+    '公告': 'icon-green',
+    '焦点图': 'icon-purple',
+    '轮播图': 'icon-pink',
+    '用户': 'icon-orange',
+    '系统': 'icon-cyan'
   }
-  return map[priority] || 'info'
-}
-
-function getPriorityText(priority) {
-  const map = {
-    high: '高优先级',
-    medium: '中优先级',
-    low: '低优先级'
-  }
-  return map[priority] || '普通'
+  return map[businessType] || 'icon-gray'
 }
 
 function handleQuickLink(path) {
   router.push(path)
 }
 
-function handleTodoClick(item) {
-  router.push(item.link)
-}
-
-function handleViewAllTodo() {
-  router.push('/cms/article')
-}
-
 function handleViewAllLogs() {
   router.push('/monitor/operlog')
 }
+
+watch(chartType, () => {
+  getArticleTrendData()
+})
 
 onMounted(() => {
   updateGreeting()
@@ -373,13 +503,17 @@ onMounted(() => {
   timer = setInterval(updateTime, 1000)
   getStatisticsData()
   getRecentLogsData()
-  getTodoListData()
+  getArticleTrendData()
+  getSystemStatusData()
+  
+  window.addEventListener('resize', () => {
+    chartInstance?.resize()
+  })
 })
 
 onUnmounted(() => {
-  if (timer) {
-    clearInterval(timer)
-  }
+  if (timer) clearInterval(timer)
+  if (chartInstance) chartInstance.dispose()
 })
 </script>
 
@@ -394,11 +528,13 @@ onUnmounted(() => {
   margin-bottom: 20px;
 }
 
+// 欢迎卡片
 .welcome-card {
-  background: #ffffff;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 
   .welcome-content {
     display: flex;
@@ -407,15 +543,14 @@ onUnmounted(() => {
 
     .welcome-text {
       h2 {
-        font-size: 24px;
+        font-size: 26px;
         margin: 0 0 8px 0;
         font-weight: 600;
-        color: #303133;
       }
 
       .greeting {
         font-size: 14px;
-        color: #909399;
+        opacity: 0.9;
         margin: 0;
       }
     }
@@ -424,41 +559,41 @@ onUnmounted(() => {
       text-align: right;
 
       .time {
-        font-size: 32px;
+        font-size: 36px;
         font-weight: 600;
         line-height: 1;
         margin-bottom: 4px;
-        color: #303133;
       }
 
       .date {
         font-size: 13px;
-        color: #909399;
+        opacity: 0.9;
       }
     }
   }
 }
 
+// 统计卡片
 .stat-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 20px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.3s;
   cursor: pointer;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 
   .stat-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 8px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -469,7 +604,7 @@ onUnmounted(() => {
     flex: 1;
 
     .stat-value {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 600;
       margin-bottom: 4px;
       color: #303133;
@@ -481,245 +616,215 @@ onUnmounted(() => {
     }
   }
 
-  .stat-icon-blue {
-    background: #409EFF;
-  }
+  .stat-icon-blue { background: linear-gradient(135deg, #409EFF 0%, #64b5f6 100%); }
+  .stat-icon-green { background: linear-gradient(135deg, #67C23A 0%, #81c784 100%); }
+  .stat-icon-orange { background: linear-gradient(135deg, #E6A23C 0%, #ffb74d 100%); }
+  .stat-icon-purple { background: linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%); }
+  .stat-icon-cyan { background: linear-gradient(135deg, #00BCD4 0%, #4dd0e1 100%); }
+  .stat-icon-pink { background: linear-gradient(135deg, #F56C6C 0%, #e57373 100%); }
+}
 
-  .stat-icon-green {
-    background: #67C23A;
-  }
+// 卡片通用样式
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  .stat-icon-orange {
-    background: #E6A23C;
-  }
-
-  .stat-icon-purple {
-    background: #909399;
-  }
-
-  .stat-icon-cyan {
-    background: #00B578;
-  }
-
-  .stat-icon-pink {
-    background: #F56C6C;
-  }
-
-  .stat-icon-teal {
-    background: #1890FF;
-  }
-
-  .stat-icon-indigo {
-    background: #722ED1;
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #303133;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 }
 
-.chart-card,
-.todo-card,
-.recent-card,
+// 快捷入口
 .quick-card {
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
 
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
 
-    .card-title {
-      font-size: 15px;
+    .quick-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 12px;
+      border-radius: 8px;
+      transition: all 0.3s;
+      cursor: pointer;
+
+      &:hover {
+        background: #f5f7fa;
+        transform: translateY(-3px);
+      }
+
+      .quick-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-bottom: 10px;
+        transition: all 0.3s;
+
+        &.quick-icon-blue { background: linear-gradient(135deg, #409EFF 0%, #64b5f6 100%); }
+        &.quick-icon-green { background: linear-gradient(135deg, #67C23A 0%, #81c784 100%); }
+        &.quick-icon-orange { background: linear-gradient(135deg, #E6A23C 0%, #ffb74d 100%); }
+        &.quick-icon-purple { background: linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%); }
+        &.quick-icon-pink { background: linear-gradient(135deg, #F56C6C 0%, #e57373 100%); }
+        &.quick-icon-cyan { background: linear-gradient(135deg, #00BCD4 0%, #4dd0e1 100%); }
+        &.quick-icon-teal { background: linear-gradient(135deg, #009688 0%, #4db6ac 100%); }
+        &.quick-icon-indigo { background: linear-gradient(135deg, #3f51b5 0%, #7986cb 100%); }
+      }
+
+      .quick-label {
+        font-size: 13px;
+        color: #606266;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// 图表卡片
+.chart-card {
+  border-radius: 10px;
+  overflow: hidden;
+
+  .chart-container {
+    height: 320px;
+    position: relative;
+
+    .chart-content {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+// 最近操作
+.recent-card {
+  border-radius: 10px;
+  overflow: hidden;
+
+  .recent-list {
+    max-height: 320px;
+    overflow-y: auto;
+
+    .recent-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-radius: 6px;
+      transition: all 0.3s;
+
+      &:hover {
+        background: #f5f7fa;
+      }
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .recent-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        color: white;
+
+        &.icon-blue { background: linear-gradient(135deg, #409EFF 0%, #64b5f6 100%); }
+        &.icon-green { background: linear-gradient(135deg, #67C23A 0%, #81c784 100%); }
+        &.icon-purple { background: linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%); }
+        &.icon-pink { background: linear-gradient(135deg, #F56C6C 0%, #e57373 100%); }
+        &.icon-orange { background: linear-gradient(135deg, #E6A23C 0%, #ffb74d 100%); }
+        &.icon-cyan { background: linear-gradient(135deg, #00BCD4 0%, #4dd0e1 100%); }
+        &.icon-gray { background: #909399; }
+      }
+
+      .recent-content {
+        flex: 1;
+        min-width: 0;
+
+        .recent-title {
+          font-size: 14px;
+          color: #303133;
+          margin-bottom: 4px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .recent-meta {
+          display: flex;
+          gap: 8px;
+          font-size: 12px;
+          color: #909399;
+        }
+      }
+
+      .recent-status {
+        margin-left: 8px;
+      }
+    }
+  }
+}
+
+// 监控卡片
+.monitor-card {
+  border-radius: 10px;
+  overflow: hidden;
+
+  .monitor-content {
+    padding: 20px;
+    text-align: center;
+
+    .monitor-value {
+      font-size: 36px;
       font-weight: 600;
       color: #303133;
-    }
-  }
-}
-
-.chart-container {
-  height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .chart-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-.todo-list {
-  max-height: 400px;
-  overflow-y: auto;
-
-  .todo-item {
-    display: flex;
-    align-items: center;
-    padding: 14px;
-    border-radius: 6px;
-    transition: all 0.3s;
-    cursor: pointer;
-
-    &:hover {
-      background: #f5f7fa;
-    }
-
-    &:not(:last-child) {
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .todo-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 6px;
-      background: #f0f2f5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 10px;
-    }
-
-    .todo-content {
-      flex: 1;
-
-      .todo-title {
-        font-size: 14px;
-        color: #303133;
-        margin-bottom: 4px;
-      }
-
-      .todo-meta {
-        display: flex;
-        gap: 6px;
-      }
-    }
-
-    .todo-arrow {
-      color: #c0c4cc;
-    }
-  }
-}
-
-.recent-list {
-  max-height: 400px;
-  overflow-y: auto;
-
-  .recent-item {
-    display: flex;
-    align-items: center;
-    padding: 14px;
-    border-radius: 6px;
-    transition: all 0.3s;
-
-    &:hover {
-      background: #f5f7fa;
-    }
-
-    &:not(:last-child) {
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .recent-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 6px;
-      background: #ecf5ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 10px;
-    }
-
-    .recent-content {
-      flex: 1;
-
-      .recent-title {
-        font-size: 14px;
-        color: #303133;
-        margin-bottom: 4px;
-      }
-
-      .recent-meta {
-        display: flex;
-        justify-content: space-between;
-        font-size: 12px;
-        color: #909399;
-      }
-    }
-
-    .recent-status {
-      margin-left: 10px;
-    }
-  }
-}
-
-.quick-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-
-  .quick-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 16px;
-    border-radius: 6px;
-    transition: all 0.3s;
-    cursor: pointer;
-
-    &:hover {
-      background: #f5f7fa;
-      transform: translateY(-2px);
-    }
-
-    .quick-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
       margin-bottom: 8px;
-
-      &.quick-icon-blue {
-        background: #409EFF;
-      }
-
-      &.quick-icon-green {
-        background: #67C23A;
-      }
-
-      &.quick-icon-orange {
-        background: #E6A23C;
-      }
-
-      &.quick-icon-purple {
-        background: #909399;
-      }
-
-      &.quick-icon-cyan {
-        background: #00B578;
-      }
-
-      &.quick-icon-pink {
-        background: #F56C6C;
-      }
-
-      &.quick-icon-teal {
-        background: #1890FF;
-      }
-
-      &.quick-icon-indigo {
-        background: #722ED1;
-      }
     }
 
-    .quick-label {
-      font-size: 13px;
-      color: #606266;
+    .monitor-label {
+      font-size: 14px;
+      color: #909399;
     }
+
+    .monitor-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 20px;
+      font-size: 16px;
+      font-weight: 500;
+
+      &.status-normal {
+        color: #67C23A;
+      }
+
+      &.status-warning {
+        color: #E6A23C;
+      }
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .quick-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
   }
 }
 
@@ -727,15 +832,21 @@ onUnmounted(() => {
   .welcome-content {
     flex-direction: column;
     text-align: center;
-  }
 
-  .welcome-time {
-    text-align: center !important;
-    margin-top: 16px;
+    .welcome-time {
+      text-align: center !important;
+      margin-top: 16px;
+    }
   }
 
   .quick-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .quick-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 </style>
