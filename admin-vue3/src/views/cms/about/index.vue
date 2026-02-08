@@ -86,7 +86,15 @@
       </el-row>
       <el-table v-loading="articleLoading" :data="articleList">
         <el-table-column label="ID" align="center" prop="articleId" width="80" />
-        <el-table-column label="文章标题" align="left" prop="title" />
+        <el-table-column label="文章标题" align="left" prop="title" :show-overflow-tooltip="true" />
+        <el-table-column label="作者" align="center" prop="author" width="100" />
+        <el-table-column label="来源" align="center" prop="source" width="120" :show-overflow-tooltip="true" />
+        <el-table-column label="内容类型" align="center" width="100">
+          <template #default="scope">
+            <el-tag v-if="scope.row.contentType === 'link'" type="warning">外链</el-tag>
+            <el-tag v-else type="primary">图文</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="排序" align="center" prop="sortOrder" width="80" />
         <el-table-column label="状态" align="center" prop="status" width="100">
           <template #default="scope">
@@ -94,7 +102,8 @@
             <el-tag v-else type="info">禁用</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="180">
+        <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
+        <el-table-column label="操作" align="center" width="180" fixed="right">
           <template #default="scope">
             <el-button link type="primary" icon="Edit" @click="handleUpdateArticle(scope.row)">修改</el-button>
             <el-button link type="primary" icon="Delete" @click="handleDeleteArticle(scope.row)">删除</el-button>
@@ -103,17 +112,60 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog :title="articleDialogTitle" v-model="articleDialogOpen" width="600px" append-to-body>
+    <el-dialog :title="articleDialogTitle" v-model="articleDialogOpen" width="800px" append-to-body>
       <el-form ref="articleRef" :model="articleForm" :rules="articleRules" label-width="100px">
         <el-form-item label="文章标题" prop="title">
           <el-input v-model="articleForm.title" placeholder="请输入文章标题" />
         </el-form-item>
-        <el-form-item label="文章内容" prop="content">
-          <el-input v-model="articleForm.content" type="textarea" :rows="10" placeholder="请输入文章内容" />
+        <el-form-item label="文章摘要">
+          <el-input v-model="articleForm.summary" type="textarea" :rows="3" placeholder="请输入文章摘要" />
         </el-form-item>
-        <el-form-item label="排序">
-          <el-input-number v-model="articleForm.sortOrder" :min="0" :max="999" />
+        <el-form-item label="封面图片来源">
+          <el-radio-group v-model="articleForm.coverImageSourceType">
+            <el-radio label="upload">本地上传</el-radio>
+            <el-radio label="link">外部链接</el-radio>
+          </el-radio-group>
         </el-form-item>
+        <el-form-item label="封面图">
+          <image-upload v-if="articleForm.coverImageSourceType === 'upload'" v-model="articleForm.coverImage" />
+          <el-input v-else v-model="articleForm.coverImage" placeholder="请输入封面图URL地址" />
+        </el-form-item>
+        <el-form-item label="内容类型">
+          <el-radio-group v-model="articleForm.contentType">
+            <el-radio label="editor">编辑器</el-radio>
+            <el-radio label="link">外部链接</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-if="articleForm.contentType === 'editor'" label="文章内容" prop="content">
+          <editor v-model="articleForm.content" :min-height="300" />
+        </el-form-item>
+        <el-form-item v-if="articleForm.contentType === 'link'" label="外部链接">
+          <el-input v-model="articleForm.externalLink" placeholder="请输入外部链接URL" />
+        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="作者">
+              <el-input v-model="articleForm.author" placeholder="请输入作者" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="来源">
+              <el-input v-model="articleForm.source" placeholder="请输入文章来源" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="发布时间">
+              <el-date-picker v-model="articleForm.publishTime" type="datetime" placeholder="选择发布时间" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序">
+              <el-input-number v-model="articleForm.sortOrder" :min="0" :max="999" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="状态">
           <el-radio-group v-model="articleForm.status">
             <el-radio label="1">启用</el-radio>
@@ -352,7 +404,15 @@ function resetArticleForm() {
     articleId: undefined,
     sectionKey: undefined,
     title: undefined,
+    summary: undefined,
+    coverImageSourceType: 'upload',
+    coverImage: undefined,
+    contentType: 'editor',
     content: undefined,
+    externalLink: undefined,
+    author: undefined,
+    source: undefined,
+    publishTime: undefined,
     sortOrder: 0,
     status: '1'
   }
