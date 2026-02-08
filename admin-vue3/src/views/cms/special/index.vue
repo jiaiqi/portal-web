@@ -417,9 +417,12 @@ function submitArticleForm() {
     }
     // 清理外部链接，去除反引号和多余空格
     const cleanExternalLink = articleForm.value.externalLink ? articleForm.value.externalLink.replace(/[`\s]/g, '') : undefined
+    // 使用专题分类ID（special分类的ID为6）
+    const categoryId = articleForm.value.categoryId || 6
     const articleData = {
       title: articleForm.value.title,
       summary: articleForm.value.summary,
+      categoryId: categoryId,
       coverImageSourceType: articleForm.value.coverImageSourceType || 'upload',
       coverImage: articleForm.value.coverImage,
       contentType: articleForm.value.contentType || 'editor',

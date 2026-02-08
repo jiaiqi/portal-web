@@ -16,13 +16,21 @@ export class ArticleService {
   ) {}
 
   async create(createDto: CreateArticleDto, userName: string): Promise<ResultData> {
-    const article = this.articleRepository.create({
-      ...createDto,
-      createBy: userName,
-      publishTime: createDto.publishTime || new Date(),
-    });
-    const result = await this.articleRepository.save(article);
-    return ResultData.ok(result);
+    try {
+      console.log('Creating article with DTO:', JSON.stringify(createDto, null, 2));
+      const article = this.articleRepository.create({
+        ...createDto,
+        createBy: userName,
+        publishTime: createDto.publishTime || new Date(),
+      });
+      console.log('Article entity created:', JSON.stringify(article, null, 2));
+      const result = await this.articleRepository.save(article);
+      console.log('Article saved successfully:', result.articleId);
+      return ResultData.ok(result);
+    } catch (error) {
+      console.error('Error creating article:', error);
+      throw error;
+    }
   }
 
   async update(updateDto: UpdateArticleDto, userName: string): Promise<ResultData> {
