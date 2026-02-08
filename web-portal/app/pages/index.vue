@@ -215,10 +215,49 @@ function getFullImageUrl(url: string | undefined) {
 
 const api = useApi()
 
-// 加载要闻数据
+// 子分类ID缓存
+const subCategoryIds = ref<{ important?: number; info?: number }>({})
+
+// 获取子分类ID
+async function getSubCategoryIds(): Promise<{ important?: number; info?: number }> {
+  const result: { important?: number; info?: number } = {}
+  try {
+    // 获取要闻动态分类下的子分类（category_id = 18）
+    const categoryRes = await api.get('/cms/category/children/18').catch(() => null)
+    console.log('子分类API返回:', categoryRes)
+    // 后端返回格式: { code: 200, msg: 'success', data: [...] }
+    const subCategories = categoryRes?.data || []
+    console.log('子分类列表:', subCategories)
+    subCategories.forEach((cat: any) => {
+      console.log('检查子分类:', cat.categoryCode, cat.categoryId)
+      if (cat.categoryCode === 'news_important') {
+        result.important = cat.categoryId
+        subCategoryIds.value.important = cat.categoryId
+      } else if (cat.categoryCode === 'news_info') {
+        result.info = cat.categoryId
+        subCategoryIds.value.info = cat.categoryId
+      }
+    })
+  } catch (err) {
+    console.error('获取子分类ID失败:', err)
+  }
+  return result
+}
+
+// 加载要闻数据（子分类为"要闻"）
 async function loadNewsData() {
   try {
-    const newsRes = await getArticleList({ pageNum: 1, pageSize: 6, status: '1', categoryCode: 'news' }).catch(() => null)
+    // 获取子分类ID
+    const subIds = await getSubCategoryIds()
+    console.log('加载要闻数据，子分类ID:', subIds.important)
+    const newsRes = await getArticleList({
+      pageNum: 1,
+      pageSize: 6,
+      status: '1',
+      categoryCode: 'news',
+      subCategoryId: subIds.important
+    }).catch(() => null)
+    console.log('要闻数据返回:', newsRes)
     if (newsRes?.list?.length > 0) {
       newsItems.value = newsRes.list.map((item: any) => ({
         id: item.articleId,
@@ -232,15 +271,26 @@ async function loadNewsData() {
   }
 }
 
-// 加载资讯数据
+// 加载资讯数据（子分类为"资讯"）
 async function loadInformationData() {
   try {
-    const infoRes = await getArticleList({ pageNum: 1, pageSize: 6, status: '1', categoryCode: 'information' }).catch(() => null)
+    // 获取子分类ID
+    const subIds = await getSubCategoryIds()
+    console.log('加载资讯数据，子分类ID:', subIds.info)
+    const infoRes = await getArticleList({
+      pageNum: 1,
+      pageSize: 6,
+      status: '1',
+      categoryCode: 'news',
+      subCategoryId: subIds.info
+    }).catch(() => null)
+    console.log('资讯数据返回:', infoRes)
     if (infoRes?.list?.length > 0) {
       informationItems.value = infoRes.list.map((item: any) => ({
         id: item.articleId,
         title: item.title,
-        date: item.publishTime
+        date: item.publishTime,
+        image: getFullImageUrl(item.coverImage) || ''
       }))
     }
   } catch (err) {
@@ -261,11 +311,15 @@ function handleTabChange(tab: 'news' | 'information') {
 
 onMounted(async () => {
   try {
+    // 首先获取子分类ID
+    const subIds = await getSubCategoryIds()
+    console.log('获取到的子分类ID:', subIds)
+
     // 并行获取所有数据
     const [focusRes, articleRes, infoRes, noticeRes] = await Promise.all([
       api.get('/cms/focus/all').catch(() => null),
-      getArticleList({ pageNum: 1, pageSize: 6, status: '1', categoryCode: 'news' }).catch(() => null),
-      getArticleList({ pageNum: 1, pageSize: 6, status: '1', categoryCode: 'information' }).catch(() => null),
+      getArticleList({ pageNum: 1, pageSize: 6, status: '1', categoryCode: 'news', subCategoryId: subIds.important }).catch(() => null),
+      getArticleList({ pageNum: 1, pageSize: 6, status: '1', categoryCode: 'news', subCategoryId: subIds.info }).catch(() => null),
       getNoticeList({ pageNum: 1, pageSize: 5, status: '0' }).catch(() => null)
     ])
 
@@ -282,7 +336,7 @@ onMounted(async () => {
       focusList.value = defaultFocusList
     }
 
-    // 处理文章数据（要闻）
+    // 处理文章数据（要闻 - 子分类为"要闻"）
     if (articleRes?.list?.length > 0) {
       newsItems.value = articleRes.list.map((item: any) => ({
         id: item.articleId,
@@ -292,12 +346,13 @@ onMounted(async () => {
       }))
     }
 
-    // 处理资讯数据
+    // 处理资讯数据（子分类为"资讯"）
     if (infoRes?.list?.length > 0) {
       informationItems.value = infoRes.list.map((item: any) => ({
         id: item.articleId,
         title: item.title,
-        date: item.publishTime
+        date: item.publishTime,
+        image: getFullImageUrl(item.coverImage) || ''
       }))
     }
 
@@ -413,7 +468,10 @@ onMounted(async () => {
             <template v-else>
               <NuxtLink v-for="item in informationItems" :key="item.id" :to="`/news/${item.id}`"
                 class="flex gap-4 pb-6 border-b border-gray-100 last:border-0">
-                <div class="w-[180px] h-[110px] flex-shrink-0 bg-gray-100"></div>
+                <div v-if="item.image" class="w-[180px] h-[110px] flex-shrink-0 focus-img-box">
+                  <img :src="item.image" class="w-full h-full object-cover" />
+                </div>
+                <div v-else class="w-[180px] h-[110px] flex-shrink-0 bg-gray-100"></div>
                 <div class="flex-1 flex flex-col justify-between py-1">
                   <h3 class="text-base font-medium text-gray-800 leading-snug hover:text-[#c31f3a] cursor-pointer line-clamp-2">
                     {{ item.title }}

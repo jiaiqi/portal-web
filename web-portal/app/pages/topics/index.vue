@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useCategory } from '~/composables/useCategory'
+import { useImage } from '~/composables/useImage'
 
 const { getArticlesByCategory, getCategoryChildren } = useCategory()
+const { getFullImageUrl } = useImage()
 
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -127,7 +129,7 @@ onMounted(() => {
               class="article-item"
             >
               <div v-if="article.coverImage" class="article-image">
-                <img :src="article.coverImage" :alt="article.title" />
+                <img :src="getFullImageUrl(article.coverImage)" :alt="article.title" />
               </div>
               <div class="article-content">
                 <h3 class="article-title">{{ article.title }}</h3>

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useCategory } from '~/composables/useCategory'
+import { useImage } from '~/composables/useImage'
 
 const { getArticlesByCategory } = useCategory()
+const { getFullImageUrl } = useImage()
 
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -19,7 +21,7 @@ const breadcrumbs = [
 async function loadData() {
   loading.value = true
   try {
-    const response = await getArticlesByCategory('honor', pageNum.value, pageSize.value)
+    const response = await getArticlesByCategory('awards', pageNum.value, pageSize.value)
     articles.value = response.list
     total.value = response.total
   } catch (err) {
@@ -71,7 +73,7 @@ onMounted(() => {
               class="article-item"
             >
               <div v-if="article.coverImage" class="article-image">
-                <img :src="article.coverImage" :alt="article.title" />
+                <img :src="getFullImageUrl(article.coverImage)" :alt="article.title" />
               </div>
               <div class="article-content">
                 <h3 class="article-title">{{ article.title }}</h3>

@@ -2,9 +2,11 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCategory } from '~/composables/useCategory'
+import { useImage } from '~/composables/useImage'
 
 const route = useRoute()
 const { getArticleById, getCategoryChildren } = useCategory()
+const { getFullImageUrl } = useImage()
 
 const articleId = computed(() => Number(route.params.id))
 const loading = ref(false)
@@ -93,7 +95,7 @@ onMounted(() => {
             </div>
 
             <div v-if="article?.coverImage" class="article-cover">
-              <img :src="article.coverImage" :alt="article.title" />
+              <img :src="getFullImageUrl(article.coverImage)" :alt="article.title" />
             </div>
 
             <div v-if="article?.content" class="article-content rich-text" v-html="article.content"></div>

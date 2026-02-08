@@ -2,9 +2,11 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCategory } from '~/composables/useCategory'
+import { useImage } from '~/composables/useImage'
 
 const route = useRoute()
 const { getCategoryByCode, getArticlesByCategory, getChildCategories } = useCategory()
+const { getFullImageUrl } = useImage()
 
 const categoryCode = computed(() => route.params.code as string)
 
@@ -88,11 +90,11 @@ function handlePageChange(page: number) {
             <li :class="{ active: categoryCode === 'party' }">
               <NuxtLink to="/category/party" class="menu-link">党建工作</NuxtLink>
             </li>
-            <li :class="{ active: categoryCode === 'activity' }">
-              <NuxtLink to="/category/activity" class="menu-link">品牌活动</NuxtLink>
+            <li :class="{ active: categoryCode === 'activities' }">
+              <NuxtLink to="/category/activities" class="menu-link">品牌活动</NuxtLink>
             </li>
-            <li :class="{ active: categoryCode === 'honor' }">
-              <NuxtLink to="/category/honor" class="menu-link">表彰激励</NuxtLink>
+            <li :class="{ active: categoryCode === 'awards' }">
+              <NuxtLink to="/category/awards" class="menu-link">表彰激励</NuxtLink>
             </li>
             <li :class="{ active: categoryCode === 'notice' }">
               <NuxtLink to="/category/notice" class="menu-link">公告公示</NuxtLink>
@@ -144,7 +146,7 @@ function handlePageChange(page: number) {
               class="article-item"
             >
               <div v-if="article.coverImage" class="article-image">
-                <img :src="article.coverImage" :alt="article.title" />
+                <img :src="getFullImageUrl(article.coverImage)" :alt="article.title" />
               </div>
               <div class="article-content">
                 <h3 class="article-title">{{ article.title }}</h3>

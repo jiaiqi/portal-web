@@ -54,10 +54,11 @@ export class ArticleService {
   }
 
   async findList(query: ArticleListDto): Promise<ResultData> {
-    const { pageNum = 1, pageSize = 10, categoryId, categoryCode, title, status } = query;
+    const { pageNum = 1, pageSize = 10, categoryId, categoryCode, subCategoryId, title, status } = query;
 
     const where: any = { delFlag: '0' };
     if (categoryId) where.categoryId = categoryId;
+    if (subCategoryId) where.subCategoryId = subCategoryId;
     if (title) where.title = Like(`%${title}%`);
     if (status) where.status = status;
 

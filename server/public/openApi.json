@@ -4441,6 +4441,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "subCategoryId",
+            "required": false,
+            "in": "query",
+            "description": "子分类ID",
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
@@ -10465,6 +10474,10 @@
             "type": "number",
             "description": "分类ID"
           },
+          "subCategoryId": {
+            "type": "number",
+            "description": "子分类ID"
+          },
           "summary": {
             "type": "string",
             "description": "文章摘要"
@@ -10538,6 +10551,10 @@
           "categoryId": {
             "type": "number",
             "description": "分类ID"
+          },
+          "subCategoryId": {
+            "type": "number",
+            "description": "子分类ID"
           },
           "summary": {
             "type": "string",

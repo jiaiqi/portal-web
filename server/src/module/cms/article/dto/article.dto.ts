@@ -13,6 +13,12 @@ export class CreateArticleDto {
   @IsNumber()
   categoryId: number;
 
+  @ApiPropertyOptional({ description: '子分类ID' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  subCategoryId?: number;
+
   @ApiPropertyOptional({ description: '文章摘要' })
   @IsOptional()
   @IsString()
@@ -127,6 +133,12 @@ export class ArticleListDto {
   @IsOptional()
   @IsString()
   categoryCode?: string;
+
+  @ApiPropertyOptional({ description: '子分类ID' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  subCategoryId?: number;
 }
 
 export class ArticleStatusDto {

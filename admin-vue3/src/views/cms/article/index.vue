@@ -72,14 +72,21 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="文章分类" prop="categoryId">
               <el-select v-model="form.categoryId" placeholder="请选择分类" style="width: 100%" disabled>
                 <el-option v-for="item in categoryList" :key="item.categoryId" :label="item.categoryName" :value="item.categoryId" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
+            <el-form-item label="子分类" prop="subCategoryId">
+              <el-select v-model="form.subCategoryId" placeholder="请选择子分类" style="width: 100%">
+                <el-option v-for="item in subCategoryList" :key="item.categoryId" :label="item.categoryName" :value="item.categoryId" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="状态" prop="status">
               <el-radio-group v-model="form.status">
                 <el-radio label="0">草稿</el-radio>
@@ -158,7 +165,7 @@
 
 <script setup name="Article">
 import { listArticle, getArticle, delArticle, addArticle, updateArticle } from '@/api/cms/article'
-import { listAllCategory } from '@/api/cms/category'
+import { listAllCategory, listSubCategory } from '@/api/cms/category'
 import { useRoute } from 'vue-router'
 
 const { proxy } = getCurrentInstance()
@@ -182,6 +189,7 @@ const currentCategory = ref(null)
 
 const articleList = ref([])
 const categoryList = ref([])
+const subCategoryList = ref([])
 const open = ref(false)
 const loading = ref(true)
 const showSearch = ref(true)
@@ -199,6 +207,7 @@ const queryParams = ref({
   title: undefined,
   categoryId: undefined,
   categoryCode: categoryCode || undefined, // 从路由参数获取分类代码
+  subCategoryId: undefined,
   status: undefined,
 })
 
@@ -235,10 +244,19 @@ function getCategoryList() {
       currentCategory.value = getCategoryByCode(categoryCode)
       if (currentCategory.value) {
         queryParams.value.categoryId = currentCategory.value.categoryId
+        // 获取子分类列表
+        getSubCategoryList(currentCategory.value.categoryId)
       }
     }
     // 然后获取文章列表
     getList()
+  })
+}
+
+function getSubCategoryList(parentId) {
+  if (!parentId) return
+  listSubCategory(parentId).then(response => {
+    subCategoryList.value = response.data || response.list || []
   })
 }
 
@@ -316,10 +334,13 @@ function cancel() {
 }
 
 function reset() {
+  // 获取默认子分类ID（第一个子分类，通常是"要闻"）
+  const defaultSubCategoryId = subCategoryList.value.length > 0 ? subCategoryList.value[0].categoryId : undefined
   form.value = {
     articleId: undefined,
     title: undefined,
     categoryId: currentCategory.value?.categoryId, // 默认设置为当前分类
+    subCategoryId: defaultSubCategoryId, // 默认设置为第一个子分类（要闻）
     coverImage: undefined,
     coverImageSourceType: 'upload',
     summary: undefined,

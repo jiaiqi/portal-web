@@ -17,6 +17,14 @@ export function listAllCategory() {
   })
 }
 
+// 根据父分类ID查询子分类
+export function listSubCategory(parentId) {
+  return request({
+    url: '/cms/category/children/' + parentId,
+    method: 'get'
+  })
+}
+
 // 查询分类详细
 export function getCategory(categoryId) {
   return request({

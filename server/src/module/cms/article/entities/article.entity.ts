@@ -24,6 +24,9 @@ export class ArticleEntity {
   @JoinColumn({ name: 'category_id' })
   category: CategoryEntity;
 
+  @Column({ name: 'sub_category_id', nullable: true, comment: '子分类ID' })
+  subCategoryId: number;
+
   @Column({ name: 'summary', length: 500, nullable: true, comment: '文章摘要' })
   summary: string;
 

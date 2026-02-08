@@ -25,6 +25,7 @@ export const useArticle = () => {
     pageSize?: number
     categoryId?: number
     categoryCode?: string
+    subCategoryId?: number
     status?: string
     title?: string
   }): Promise<ArticleListResponse> => {
@@ -33,6 +34,7 @@ export const useArticle = () => {
     if (params?.pageSize) queryParams.append('pageSize', String(params.pageSize))
     if (params?.categoryId) queryParams.append('categoryId', String(params.categoryId))
     if (params?.categoryCode) queryParams.append('categoryCode', params.categoryCode)
+    if (params?.subCategoryId) queryParams.append('subCategoryId', String(params.subCategoryId))
     if (params?.status) queryParams.append('status', params.status)
     if (params?.title) queryParams.append('title', params.title)
 
