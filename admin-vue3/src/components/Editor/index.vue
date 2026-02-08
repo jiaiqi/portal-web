@@ -53,6 +53,34 @@ const toolbarConfig = {
   ]
 }
 
+// 提取相对路径（去掉域名和接口前缀）
+const getRelativePath = (url) => {
+  if (!url) return ''
+  // 如果已经是相对路径，直接返回
+  if (url.startsWith('/')) return url
+  // 如果是完整URL，提取路径部分
+  if (url.startsWith('http')) {
+    try {
+      const urlObj = new URL(url)
+      return urlObj.pathname
+    } catch (e) {
+      // 如果URL格式不正确，尝试手动提取
+      const match = url.match(/https?:\/\/[^/]+(.+)/)
+      return match ? match[1] : url
+    }
+  }
+  // 如果以 localhost 开头（后端配置问题）
+  if (url.includes('localhost:')) {
+    const parts = url.split('/')
+    const publicIndex = parts.indexOf('public')
+    if (publicIndex !== -1) {
+      return '/' + parts.slice(publicIndex).join('/')
+    }
+    return '/' + url
+  }
+  return url
+}
+
 const uploadFile = async (file, insertFn) => {
   const formData = new FormData()
   formData.append('file', file)
@@ -71,18 +99,19 @@ const uploadFile = async (file, insertFn) => {
 
     if (response.data.code === 200) {
       const data = response.data.data || response.data
-      // 构建完整的图片URL
-      let url = data.url || data.fileName
-      if (!url) {
+      // 获取原始URL
+      const rawUrl = data.url || data.fileName
+      if (!rawUrl) {
         ElMessage.error('上传成功但未获取到图片地址')
         return
       }
-      if (!url.startsWith('http')) {
-        url = import.meta.env.VITE_APP_BASE_API + url
-      }
+      // 转换为相对路径保存
+      const relativeUrl = getRelativePath(rawUrl)
       const name = data.fileName || data.newFileName || file.name
       // insertFn 参数: url, alt, href
-      insertFn(url, name, url)
+      // 这里传入完整URL用于预览，但实际保存时会处理
+      const previewUrl = import.meta.env.VITE_APP_BASE_API + relativeUrl
+      insertFn(previewUrl, name, previewUrl)
     } else {
       ElMessage.error(response.data.msg || '上传失败')
     }
@@ -116,14 +145,43 @@ const editorConfig = {
   }
 }
 
+// 处理HTML内容，将完整URL转换为相对路径
+const processHtml = (html) => {
+  if (!html) return html
+  const baseUrl = import.meta.env.VITE_APP_BASE_API
+  // 替换图片src
+  html = html.replace(new RegExp(`src="${baseUrl}([^"]+)"`, 'g'), 'src="$1"')
+  html = html.replace(new RegExp(`src='${baseUrl}([^']+)'`, 'g'), "src='$1'")
+  // 替换链接href
+  html = html.replace(new RegExp(`href="${baseUrl}([^"]+)"`, 'g'), 'href="$1"')
+  html = html.replace(new RegExp(`href='${baseUrl}([^']+)'`, 'g'), "href='$1'")
+  return html
+}
+
+// 处理HTML内容，将相对路径转换为完整URL（用于显示）
+const restoreHtml = (html) => {
+  if (!html) return html
+  const baseUrl = import.meta.env.VITE_APP_BASE_API
+  // 替换图片src - 只替换以/开头的路径
+  html = html.replace(/src="(\/[^"]+)"/g, `src="${baseUrl}$1"`)
+  html = html.replace(/src='(\/[^']+)'/g, `src="${baseUrl}$1"`)
+  // 替换链接href
+  html = html.replace(/href="(\/[^"]+)"/g, `href="${baseUrl}$1"`)
+  html = html.replace(/href='(\/[^']+)'/g, `href="${baseUrl}$1"`)
+  return html
+}
+
 watch(() => props.modelValue, (val) => {
   if (val !== valueHtml.value) {
-    valueHtml.value = val
+    // 将相对路径转换为完整URL用于显示
+    valueHtml.value = restoreHtml(val)
   }
 }, { immediate: true })
 
 watch(valueHtml, (val) => {
-  emit('update:modelValue', val)
+  // 将完整URL转换为相对路径保存
+  const processedHtml = processHtml(val)
+  emit('update:modelValue', processedHtml)
 })
 
 const handleCreated = (editor) => {
@@ -131,7 +189,10 @@ const handleCreated = (editor) => {
 }
 
 const handleChange = (editor) => {
-  emit('update:modelValue', editor.getHtml())
+  const html = editor.getHtml()
+  // 将完整URL转换为相对路径保存
+  const processedHtml = processHtml(html)
+  emit('update:modelValue', processedHtml)
 }
 
 onBeforeUnmount(() => {
