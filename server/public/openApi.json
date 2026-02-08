@@ -4428,7 +4428,16 @@
             "name": "status",
             "required": false,
             "in": "query",
-            "description": "状态：0草稿 1已发布",
+            "description": "状态：0草稿 1已发布 2待审核 3审核通过 4审核不通过",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "auditStatus",
+            "required": false,
+            "in": "query",
+            "description": "审核状态：0待审核 1审核通过 2审核不通过",
             "schema": {
               "type": "string"
             }
@@ -4712,6 +4721,114 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ArticleStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-文章管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/article/audit": {
+      "put": {
+        "operationId": "ArticleController_audit",
+        "summary": "文章审核",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticleAuditDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "boolean",
+                              "default": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CMS-文章管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cms/article/publish": {
+      "put": {
+        "operationId": "ArticleController_publish",
+        "summary": "文章发布",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticlePublishDto"
               }
             }
           }
@@ -10757,6 +10874,45 @@
         "required": [
           "articleId",
           "status"
+        ]
+      },
+      "ArticleAuditDto": {
+        "type": "object",
+        "properties": {
+          "articleIds": {
+            "description": "文章ID列表",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "auditStatus": {
+            "type": "string",
+            "description": "审核状态：1审核通过 2审核不通过"
+          },
+          "auditReason": {
+            "type": "string",
+            "description": "审核原因"
+          }
+        },
+        "required": [
+          "articleIds",
+          "auditStatus"
+        ]
+      },
+      "ArticlePublishDto": {
+        "type": "object",
+        "properties": {
+          "articleIds": {
+            "description": "文章ID列表",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "articleIds"
         ]
       },
       "CategoryEntity": {

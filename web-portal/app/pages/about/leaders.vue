@@ -66,13 +66,13 @@ const leaders = [
         
         <!-- 右侧内容区域 -->
         <div class="content">
-          <div class="ant-tabs">
+          <!-- <div class="ant-tabs">
             <div class="ant-tabs-nav">
               <div class="ant-tabs-tab active">
                 <div class="ant-tabs-tab-btn">协会领导</div>
               </div>
             </div>
-          </div>
+          </div> -->
           
           <div class="page-content">
             <div class="content-body">

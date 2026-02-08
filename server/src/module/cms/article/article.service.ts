@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, In } from 'typeorm';
 import { ArticleEntity } from './entities/article.entity';
 import { CategoryEntity } from '../category/entities/category.entity';
-import { CreateArticleDto, UpdateArticleDto, ArticleListDto } from './dto/article.dto';
+import { CreateArticleDto, UpdateArticleDto, ArticleListDto, ArticleAuditDto, ArticlePublishDto } from './dto/article.dto';
 import { ResultData } from 'src/common/utils/result';
 
 @Injectable()
@@ -62,13 +62,14 @@ export class ArticleService {
   }
 
   async findList(query: ArticleListDto): Promise<ResultData> {
-    const { pageNum = 1, pageSize = 10, categoryId, categoryCode, subCategoryId, title, status } = query;
+    const { pageNum = 1, pageSize = 10, categoryId, categoryCode, subCategoryId, title, status, auditStatus } = query;
 
     const where: any = { delFlag: '0' };
     if (categoryId) where.categoryId = categoryId;
     if (subCategoryId) where.subCategoryId = subCategoryId;
     if (title) where.title = Like(`%${title}%`);
     if (status) where.status = status;
+    if (auditStatus) where.auditStatus = auditStatus;
 
     // 如果提供了分类编码，先查询分类ID
     if (categoryCode) {
@@ -89,6 +90,53 @@ export class ArticleService {
     });
 
     return ResultData.ok({ list, total, pageNum, pageSize });
+  }
+
+  async audit(dto: ArticleAuditDto, userName: string): Promise<ResultData> {
+    const { articleIds, auditStatus, auditReason } = dto;
+
+    // 审核不通过时必须填写原因
+    if (auditStatus === '2' && !auditReason) {
+      throw new Error('审核不通过时必须填写原因');
+    }
+
+    // 更新文章审核状态
+    await this.articleRepository.update(
+      { articleId: In(articleIds) },
+      {
+        auditStatus,
+        auditReason: auditStatus === '1' ? null : auditReason,
+        auditTime: new Date(),
+        auditBy: userName,
+        // 审核通过时状态变为审核通过(3)，不通过时状态变为审核不通过(4)
+        status: auditStatus === '1' ? '3' : '4',
+      },
+    );
+
+    return ResultData.ok();
+  }
+
+  async publish(dto: ArticlePublishDto, userName: string): Promise<ResultData> {
+    const { articleIds } = dto;
+
+    // 只能发布审核通过的文章
+    const articles = await this.articleRepository.findBy({ articleId: In(articleIds) });
+    const notApproved = articles.filter(a => a.auditStatus !== '1');
+    if (notApproved.length > 0) {
+      throw new Error(`文章ID ${notApproved.map(a => a.articleId).join(', ')} 未审核通过，无法发布`);
+    }
+
+    // 更新文章状态为已发布
+    await this.articleRepository.update(
+      { articleId: In(articleIds) },
+      {
+        status: '1',
+        publishTime: new Date(),
+        updateBy: userName,
+      },
+    );
+
+    return ResultData.ok();
   }
 
   async updateStatus(articleId: number, status: string, userName: string): Promise<ResultData> {

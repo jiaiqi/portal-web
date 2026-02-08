@@ -135,10 +135,15 @@ export class ArticleListDto {
   @IsString()
   title?: string;
 
-  @ApiPropertyOptional({ description: '状态：0草稿 1已发布' })
+  @ApiPropertyOptional({ description: '状态：0草稿 1已发布 2待审核 3审核通过 4审核不通过' })
   @IsOptional()
-  @IsIn(['0', '1'])
+  @IsIn(['0', '1', '2', '3', '4'])
   status?: string;
+
+  @ApiPropertyOptional({ description: '审核状态：0待审核 1审核通过 2审核不通过' })
+  @IsOptional()
+  @IsIn(['0', '1', '2'])
+  auditStatus?: string;
 
   @ApiPropertyOptional({ description: '分类编码' })
   @IsOptional()
@@ -161,4 +166,28 @@ export class ArticleStatusDto {
   @ApiProperty({ description: '状态：0草稿 1已发布' })
   @IsIn(['0', '1'])
   status: string;
+}
+
+export class ArticleAuditDto {
+  @ApiProperty({ description: '文章ID列表' })
+  @Type(() => Number)
+  @IsNumber({}, { each: true })
+  articleIds: number[];
+
+  @ApiProperty({ description: '审核状态：1审核通过 2审核不通过' })
+  @IsIn(['1', '2'])
+  auditStatus: string;
+
+  @ApiPropertyOptional({ description: '审核原因' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  auditReason?: string;
+}
+
+export class ArticlePublishDto {
+  @ApiProperty({ description: '文章ID列表' })
+  @Type(() => Number)
+  @IsNumber({}, { each: true })
+  articleIds: number[];
 }

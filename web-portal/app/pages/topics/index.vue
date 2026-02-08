@@ -101,7 +101,7 @@ onMounted(() => {
         
         <!-- 右侧内容区域 -->
         <div class="content">
-          <div class="ant-tabs">
+          <!-- <div class="ant-tabs">
             <div class="ant-tabs-nav">
               <div class="ant-tabs-tab active">
                 <div class="ant-tabs-tab-btn">
@@ -109,7 +109,7 @@ onMounted(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div v-if="loading" class="flex justify-center items-center py-20">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c31f1f]"></div>

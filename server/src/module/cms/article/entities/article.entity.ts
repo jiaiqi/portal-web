@@ -54,8 +54,20 @@ export class ArticleEntity {
   @Column({ name: 'publish_time', type: 'datetime', nullable: true, comment: '发布时间' })
   publishTime: Date;
 
-  @Column({ name: 'status', length: 1, default: '0', comment: '状态：0草稿 1已发布' })
+  @Column({ name: 'status', length: 1, default: '0', comment: '状态：0草稿 1已发布 2待审核 3审核通过 4审核不通过' })
   status: string;
+
+  @Column({ name: 'audit_status', length: 1, nullable: true, comment: '审核状态：0待审核 1审核通过 2审核不通过' })
+  auditStatus: string;
+
+  @Column({ name: 'audit_reason', length: 500, nullable: true, comment: '审核原因' })
+  auditReason: string;
+
+  @Column({ name: 'audit_time', type: 'datetime', nullable: true, comment: '审核时间' })
+  auditTime: Date;
+
+  @Column({ name: 'audit_by', length: 64, nullable: true, comment: '审核人' })
+  auditBy: string;
 
   @Column({ name: 'is_top', length: 1, default: '0', comment: '是否置顶：0否 1是' })
   isTop: string;

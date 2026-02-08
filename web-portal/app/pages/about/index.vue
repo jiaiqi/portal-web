@@ -49,13 +49,13 @@ onMounted(async () => {
 
         <!-- 右侧内容区域 -->
         <div class="content">
-          <div class="ant-tabs">
+          <!-- <div class="ant-tabs">
             <div class="ant-tabs-nav">
               <div class="ant-tabs-tab active">
                 <div class="ant-tabs-tab-btn">协会概况</div>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <!-- 加载状态 -->
           <div v-if="loading" class="flex justify-center items-center py-20">

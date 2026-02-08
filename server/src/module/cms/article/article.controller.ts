@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ArticleService } from './article.service';
-import { CreateArticleDto, UpdateArticleDto, ArticleListDto, ArticleStatusDto } from './dto/article.dto';
+import { CreateArticleDto, UpdateArticleDto, ArticleListDto, ArticleStatusDto, ArticleAuditDto, ArticlePublishDto } from './dto/article.dto';
 import { ApiDataResponse } from 'src/common/decorators/apiDataResponse.decorator';
 import { ArticleEntity } from './entities/article.entity';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -69,5 +69,19 @@ export class ArticleController {
       statusDto.status,
       req.user?.userName || 'admin',
     );
+  }
+
+  @ApiOperation({ summary: '文章审核' })
+  @ApiDataResponse()
+  @Put('/audit')
+  audit(@Body() auditDto: ArticleAuditDto, @Request() req) {
+    return this.articleService.audit(auditDto, req.user?.userName || 'admin');
+  }
+
+  @ApiOperation({ summary: '文章发布' })
+  @ApiDataResponse()
+  @Put('/publish')
+  publish(@Body() publishDto: ArticlePublishDto, @Request() req) {
+    return this.articleService.publish(publishDto, req.user?.userName || 'admin');
   }
 }

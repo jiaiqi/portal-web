@@ -55,3 +55,21 @@ export function changeArticleStatus(articleId, status) {
     data: data
   })
 }
+
+// 文章审核
+export function auditArticle(data) {
+  return request({
+    url: '/cms/article/audit',
+    method: 'put',
+    data: data
+  })
+}
+
+// 文章发布
+export function publishArticle(data) {
+  return request({
+    url: '/cms/article/publish',
+    method: 'put',
+    data: data
+  })
+}
