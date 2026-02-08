@@ -6,12 +6,13 @@ import { mw as requestIpMw } from 'request-ip';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'src/app.module';
 import { HttpExceptionsFilter } from 'src/common/filters/http-exceptions-filter';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import path from 'path';
 import { writeFileSync } from 'fs';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true, // 开启跨域访问
   });
@@ -89,6 +90,9 @@ async function bootstrap() {
   const port = config.get<number>('app.port') || 8080;
   await app.listen(port);
 
-  console.log(`CMS 后台管理系统服务启动成功`, '\n', '服务地址', `http://localhost:${port}${prefix}/`, '\n', 'swagger 文档地址', `http://localhost:${port}${prefix}/swagger-ui/`);
+  logger.log(`CMS 后台管理系统服务启动成功`);
+  logger.log(`服务地址: http://localhost:${port}${prefix}/`);
+  logger.log(`Swagger 文档地址: http://localhost:${port}${prefix}/swagger-ui/`);
 }
 bootstrap();
+

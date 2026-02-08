@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
@@ -10,6 +10,8 @@ import { Cacheable, CacheEvict } from 'src/common/decorators/redis.decorator';
 
 @Injectable()
 export class DeptService {
+  private readonly logger = new Logger(DeptService.name);
+
   constructor(
     @InjectRepository(SysDeptEntity)
     private readonly sysDeptEntityRep: Repository<SysDeptEntity>,
@@ -90,7 +92,7 @@ export class DeptService {
       // 将查询结果映射为部门ID数组后返回
       return list.map((item) => item.deptId);
     } catch (error) {
-      console.error('Failed to query department IDs:', error);
+      this.logger.error('Failed to query department IDs:', error);
       throw new Error('Querying department IDs failed');
     }
   }

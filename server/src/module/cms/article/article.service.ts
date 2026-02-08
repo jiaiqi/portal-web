@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, In } from 'typeorm';
 import { ArticleEntity } from './entities/article.entity';
@@ -8,6 +8,8 @@ import { ResultData } from 'src/common/utils/result';
 
 @Injectable()
 export class ArticleService {
+  private readonly logger = new Logger(ArticleService.name);
+
   constructor(
     @InjectRepository(ArticleEntity)
     private articleRepository: Repository<ArticleEntity>,
@@ -17,18 +19,17 @@ export class ArticleService {
 
   async create(createDto: CreateArticleDto, userName: string): Promise<ResultData> {
     try {
-      console.log('Creating article with DTO:', JSON.stringify(createDto, null, 2));
+      this.logger.debug(`Creating article with title: ${createDto.title}`);
       const article = this.articleRepository.create({
         ...createDto,
         createBy: userName,
         publishTime: createDto.publishTime || new Date(),
       });
-      console.log('Article entity created:', JSON.stringify(article, null, 2));
       const result = await this.articleRepository.save(article);
-      console.log('Article saved successfully:', result.articleId);
+      this.logger.log(`Article created successfully: ${result.articleId}`);
       return ResultData.ok(result);
     } catch (error) {
-      console.error('Error creating article:', error);
+      this.logger.error(`Error creating article: ${error.message}`, error.stack);
       throw error;
     }
   }
