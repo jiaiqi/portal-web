@@ -3,6 +3,9 @@ import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCategory } from '~/composables/useCategory'
 import { useImage } from '~/composables/useImage'
+import { useDateFormat } from '~/composables/useDateFormat'
+
+const { formatDateTime } = useDateFormat()
 
 const route = useRoute()
 const { getCategoryByCode, getArticlesByCategory, getChildCategories } = useCategory()
@@ -151,7 +154,7 @@ function handlePageChange(page: number) {
               <div class="article-content">
                 <h3 class="article-title">{{ article.title }}</h3>
                 <p class="article-summary">{{ article.summary }}</p>
-                <p class="article-date">{{ article.publishTime || article.createTime }}</p>
+                <p class="article-date">{{ formatDateTime(article.publishTime || article.createTime) }}</p>
               </div>
             </NuxtLink>
             

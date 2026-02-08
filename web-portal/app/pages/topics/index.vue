@@ -2,6 +2,9 @@
 import { ref, onMounted } from 'vue'
 import { useSpecial } from '~/composables/useSpecial'
 import { useImage } from '~/composables/useImage'
+import { useDateFormat } from '~/composables/useDateFormat'
+
+const { formatDateTime } = useDateFormat()
 
 const { getSpecialList, getSpecialArticles } = useSpecial()
 const { getFullImageUrl } = useImage()
@@ -133,7 +136,7 @@ onMounted(() => {
               <div class="article-content">
                 <h3 class="article-title">{{ article.title }}</h3>
                 <p class="article-summary">{{ article.summary }}</p>
-                <p class="article-date">{{ article.publishTime || article.createTime }}</p>
+                <p class="article-date">{{ formatDateTime(article.publishTime || article.createTime) }}</p>
               </div>
             </NuxtLink>
             

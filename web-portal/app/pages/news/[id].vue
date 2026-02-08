@@ -2,11 +2,13 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCategory } from '~/composables/useCategory'
+import { useDateFormat } from '~/composables/useDateFormat'
 import { useImage } from '~/composables/useImage'
 import { useRichText } from '~/composables/useRichText'
 
 const route = useRoute()
 const { getArticleById } = useCategory()
+const { formatDateTime } = useDateFormat()
 const { getFullImageUrl } = useImage()
 const { processHtml } = useRichText()
 
@@ -56,7 +58,7 @@ onMounted(() => {
               <span v-if="article?.author">作者：{{ article.author }}</span>
               <span v-if="article?.source">来源：{{ article.source }}</span>
               <span v-if="article?.publishTime || article?.createTime">
-                发布时间：{{ article?.publishTime || article?.createTime }}
+                发布时间：{{ formatDateTime(article?.publishTime || article?.createTime) }}
               </span>
               <span v-if="article?.viewCount">浏览量：{{ article.viewCount }}</span>
             </div>

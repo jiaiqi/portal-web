@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useAbout } from '~/composables/useAbout'
+import { useDateFormat } from '~/composables/useDateFormat'
+
+const { formatDateTime } = useDateFormat()
 
 const { getSectionByKey, getArticlesBySectionKey } = useAbout()
 
@@ -79,7 +82,7 @@ onMounted(async () => {
             >
               <div class="article-content">
                 <h3 class="article-title">{{ article.title }}</h3>
-                <p class="article-date">{{ article.createTime }}</p>
+                <p class="article-date">{{ formatDateTime(article.createTime) }}</p>
               </div>
             </NuxtLink>
             <div v-if="articles.length === 0" class="text-gray-500 text-center py-10">

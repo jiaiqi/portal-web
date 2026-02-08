@@ -5,6 +5,8 @@ import { useNotice } from '~/composables/useNotice'
 import { usePageTracking } from '~/composables/usePageTracking'
 import { useImage } from '~/composables/useImage'
 import { useRichText } from '~/composables/useRichText'
+import { useDateFormat } from '~/composables/useDateFormat'
+const { formatDateTime } = useDateFormat()
 
 const { processHtml } = useRichText()
 
@@ -65,7 +67,7 @@ onMounted(() => {
               <span v-if="article?.author">作者：{{ article.author }}</span>
               <span v-if="article?.source">来源：{{ article.source }}</span>
               <span v-if="article?.publishTime || article?.createTime">
-                发布时间：{{ article?.publishTime || article?.createTime }}
+                发布时间：{{ formatDateTime(article?.publishTime || article?.createTime) }}
               </span>
               <span v-if="article?.viewCount">浏览量：{{ article.viewCount }}</span>
             </div>

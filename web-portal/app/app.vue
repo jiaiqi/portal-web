@@ -20,6 +20,7 @@ body,
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  font-family: 'ui-sans-serif', sans-serif;
 }
 
 html.dark {
