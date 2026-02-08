@@ -16,9 +16,13 @@
 /* 左侧栏目导航 */
 .second-menu {
   width: 20%;
-  padding: 10px;
+  padding: 0 10px;
   margin: 20px 0 0;
   flex-shrink: 0;
+}
+.second-menu .menu-link {
+  display: inline-block;
+  width: 100%;
 }
 
 .second-menu h1 {

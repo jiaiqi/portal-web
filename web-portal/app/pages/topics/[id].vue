@@ -62,7 +62,7 @@ onMounted(() => {
       <div class="list">
         <!-- 左侧栏目导航 -->
         <div class="second-menu">
-          <h1 class="menu-title">栏目导航</h1>
+          <h1 class="menu-title">协会概况</h1>
           <ul class="menu-list">
             <li
               :class="{ active: activeCategoryId === 6 }"
