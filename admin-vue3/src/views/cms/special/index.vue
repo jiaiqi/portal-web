@@ -132,14 +132,52 @@
     </el-dialog>
 
     <!-- 添加文章对话框 -->
-    <el-dialog title="添加文章" v-model="articleDialogOpen" width="700px" append-to-body>
-      <el-form ref="articleRef" :model="articleForm" :rules="articleRules" label-width="100px">
-        <el-form-item label="选择文章" prop="articleId">
-          <el-select v-model="articleForm.articleId" filterable remote :remote-method="searchArticles" placeholder="请输入文章标题搜索" style="width: 100%">
-            <el-option v-for="item in articleOptions" :key="item.articleId" :label="item.title" :value="item.articleId" />
-          </el-select>
+    <el-dialog title="添加文章" v-model="articleDialogOpen" width="800px" append-to-body>
+      <el-form ref="articleRef" :model="articleForm" label-width="100px">
+        <!-- 文章来源选择 -->
+        <el-form-item label="文章来源">
+          <el-radio-group v-model="articleForm.sourceType">
+            <el-radio label="existing">从文章库选择</el-radio>
+            <el-radio label="new">新建文章</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="选择栏目">
+
+        <!-- 从文章库选择 -->
+        <template v-if="articleForm.sourceType === 'existing'">
+          <el-form-item label="选择文章">
+            <el-select v-model="articleForm.articleId" filterable remote :remote-method="searchArticles" placeholder="请输入文章标题搜索" style="width: 100%">
+              <el-option v-for="item in articleOptions" :key="item.articleId" :label="item.title" :value="item.articleId" />
+            </el-select>
+          </el-form-item>
+        </template>
+
+        <!-- 新建文章 -->
+        <template v-if="articleForm.sourceType === 'new'">
+          <el-form-item label="文章标题">
+            <el-input v-model="articleForm.title" placeholder="请输入文章标题" />
+          </el-form-item>
+          <el-form-item label="文章摘要">
+            <el-input v-model="articleForm.summary" type="textarea" :rows="3" placeholder="请输入文章摘要" />
+          </el-form-item>
+          <el-form-item label="封面图">
+            <el-input v-model="articleForm.coverImage" placeholder="请输入封面图URL" />
+          </el-form-item>
+          <el-form-item label="内容类型">
+            <el-radio-group v-model="articleForm.contentType">
+              <el-radio label="editor">编辑器</el-radio>
+              <el-radio label="link">外部链接</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item v-if="articleForm.contentType === 'editor'" label="文章内容">
+            <el-input v-model="articleForm.content" type="textarea" :rows="10" placeholder="请输入文章内容" />
+          </el-form-item>
+          <el-form-item v-if="articleForm.contentType === 'link'" label="外部链接">
+            <el-input v-model="articleForm.externalLink" placeholder="请输入外部链接URL" />
+          </el-form-item>
+        </template>
+
+        <!-- 公共字段 -->
+        <el-form-item label="所属栏目">
           <el-select v-model="articleForm.categoryId" placeholder="请选择栏目（可选）" style="width: 100%">
             <el-option v-for="item in categoryList" :key="item.categoryId" :label="item.categoryName" :value="item.categoryId" />
           </el-select>
@@ -161,7 +199,7 @@
 <script setup>
 import { listSpecial, getSpecial, addSpecial, updateSpecial, delSpecial, listSpecialArticles, addSpecialArticle, delSpecialArticle } from '@/api/cms/special'
 import { listSpecialCategory, getSpecialCategory, addSpecialCategory, updateSpecialCategory, delSpecialCategory } from '@/api/cms/specialCategory'
-import { listArticle } from '@/api/cms/article'
+import { listArticle, addArticle } from '@/api/cms/article'
 const { proxy } = getCurrentInstance()
 const specialList = ref([])
 const categoryList = ref([])
@@ -197,12 +235,11 @@ const articleLoading = ref(false)
 const articleList = ref([])
 const articleOptions = ref([])
 const articleData = reactive({
-  form: {},
-  rules: {
-    articleId: [{ required: true, message: '请选择文章', trigger: 'change' }]
+  form: {
+    sourceType: 'existing' // 默认从文章库选择
   }
 })
-const { form: articleForm, rules: articleRules } = toRefs(articleData)
+const { form: articleForm } = toRefs(articleData)
 
 function getSpecialList() {
   loading.value = true
@@ -333,31 +370,80 @@ function searchArticles(query) {
 }
 
 function submitArticleForm() {
-  proxy.$refs['articleRef'].validate(valid => {
-    if (valid) {
-      const data = {
-        specialId: currentSpecialId.value,
-        articleId: articleForm.value.articleId,
-        categoryId: articleForm.value.categoryId,
-        sortOrder: articleForm.value.sortOrder || 0
-      }
-      addSpecialArticle(data).then(() => {
-        proxy.$modal.msgSuccess('添加成功')
-        articleDialogOpen.value = false
-        getArticleList(currentSpecialId.value)
-      })
+  // 根据来源类型设置验证规则
+  if (articleForm.value.sourceType === 'existing') {
+    if (!articleForm.value.articleId) {
+      proxy.$modal.msgError('请选择文章')
+      return
     }
-  })
+    // 从文章库选择
+    const data = {
+      specialId: currentSpecialId.value,
+      articleId: articleForm.value.articleId,
+      categoryId: articleForm.value.categoryId,
+      sortOrder: articleForm.value.sortOrder || 0
+    }
+    addSpecialArticle(data).then(() => {
+      proxy.$modal.msgSuccess('添加成功')
+      articleDialogOpen.value = false
+      getArticleList(currentSpecialId.value)
+    })
+  } else {
+    // 新建文章 - 验证必填项
+    if (!articleForm.value.title) {
+      proxy.$modal.msgError('请输入文章标题')
+      return
+    }
+    // 根据内容类型验证
+    if (articleForm.value.contentType === 'link' && !articleForm.value.externalLink) {
+      proxy.$modal.msgError('请输入外部链接')
+      return
+    }
+    // 清理外部链接，去除反引号和多余空格
+    const cleanExternalLink = articleForm.value.externalLink ? articleForm.value.externalLink.replace(/[`\s]/g, '') : undefined
+    const articleData = {
+      title: articleForm.value.title,
+      summary: articleForm.value.summary,
+      coverImage: articleForm.value.coverImage,
+      contentType: articleForm.value.contentType || 'editor',
+      content: articleForm.value.content,
+      externalLink: cleanExternalLink,
+      status: '1'
+    }
+    addArticle(articleData).then(res => {
+      const articleId = res.data?.articleId || res.articleId
+      if (articleId) {
+        // 再将文章添加到专题
+        const specialArticleData = {
+          specialId: currentSpecialId.value,
+          articleId: articleId,
+          categoryId: articleForm.value.categoryId,
+          sortOrder: articleForm.value.sortOrder || 0
+        }
+        return addSpecialArticle(specialArticleData)
+      }
+    }).then(() => {
+      proxy.$modal.msgSuccess('新建文章并添加到专题成功')
+      articleDialogOpen.value = false
+      getArticleList(currentSpecialId.value)
+    })
+  }
 }
 
 function resetArticleForm() {
   articleForm.value = {
+    sourceType: 'existing',
     articleId: undefined,
+    title: undefined,
+    summary: undefined,
+    coverImage: undefined,
+    contentType: 'editor',
+    content: undefined,
+    externalLink: undefined,
     categoryId: undefined,
     sortOrder: 0
   }
   articleOptions.value = []
-  proxy.resetForm('articleRef')
 }
 
 function submitCategoryForm() {

@@ -122,8 +122,25 @@
         </el-row>
         <el-row>
           <el-col :span="24">
+            <el-form-item label="内容类型" prop="contentType">
+              <el-radio-group v-model="form.contentType">
+                <el-radio label="editor">编辑器</el-radio>
+                <el-radio label="link">外部链接</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="form.contentType === 'editor'">
+          <el-col :span="24">
             <el-form-item label="文章内容" prop="content">
               <editor v-model="form.content" :min-height="300" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="form.contentType === 'link'">
+          <el-col :span="24">
+            <el-form-item label="外部链接" prop="externalLink">
+              <el-input v-model="form.externalLink" placeholder="请输入外部链接URL" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -311,6 +328,10 @@ function handleDelete(row) {
 function submitForm() {
   articleRef.value.validate(valid => {
     if (valid) {
+      // 清理外部链接，去除反引号和多余空格
+      if (form.value.contentType === 'link' && form.value.externalLink) {
+        form.value.externalLink = form.value.externalLink.replace(/[`\s]/g, '')
+      }
       if (form.value.articleId != undefined) {
         updateArticle(form.value).then(response => {
           proxy.$modal.msgSuccess('修改成功')
@@ -344,7 +365,9 @@ function reset() {
     coverImage: undefined,
     coverImageSourceType: 'upload',
     summary: undefined,
+    contentType: 'editor', // 默认内容类型为编辑器
     content: undefined,
+    externalLink: undefined,
     source: undefined,
     author: undefined,
     publishTime: undefined,

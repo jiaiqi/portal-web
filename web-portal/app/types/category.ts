@@ -17,7 +17,9 @@ export interface Article {
   categoryId: number
   summary?: string
   coverImage?: string
+  contentType?: string
   content?: string
+  externalLink?: string
   source?: string
   author?: string
   publishTime?: string

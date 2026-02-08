@@ -3,10 +3,13 @@ import { ref, onMounted, computed } from 'vue'
 import { useArticle } from '~/composables/useArticle'
 import { useNotice } from '~/composables/useNotice'
 import { usePageTracking } from '~/composables/usePageTracking'
+import { useArticleLink } from '~/composables/useArticleLink'
+import dayjs from 'dayjs'
 
 const { getArticleList } = useArticle()
 const { getNoticeList } = useNotice()
 const { trackPageVisit } = usePageTracking()
+const { getArticleLink } = useArticleLink()
 
 // 追踪首页访问
 trackPageVisit('home')
@@ -262,8 +265,10 @@ async function loadNewsData() {
       newsItems.value = newsRes.list.map((item: any) => ({
         id: item.articleId,
         title: item.title,
-        date: item.publishTime,
-        image: getFullImageUrl(item.coverImage) || ''
+        date: item.publishTime ? dayjs(item.publishTime).format('YYYY-MM-DD HH:mm') : '',
+        image: getFullImageUrl(item.coverImage) || '',
+        contentType: item.contentType,
+        externalLink: item.externalLink,
       }))
     }
   } catch (err) {
@@ -289,8 +294,10 @@ async function loadInformationData() {
       informationItems.value = infoRes.list.map((item: any) => ({
         id: item.articleId,
         title: item.title,
-        date: item.publishTime,
-        image: getFullImageUrl(item.coverImage) || ''
+        date: item.publishTime ? dayjs(item.publishTime).format('YYYY-MM-DD HH:mm') : '',
+        image: getFullImageUrl(item.coverImage) || '',
+        contentType: item.contentType,
+        externalLink: item.externalLink,
       }))
     }
   } catch (err) {
@@ -341,8 +348,10 @@ onMounted(async () => {
       newsItems.value = articleRes.list.map((item: any) => ({
         id: item.articleId,
         title: item.title,
-        date: item.publishTime,
-        image: getFullImageUrl(item.coverImage) || ''
+        date: item.publishTime ? dayjs(item.publishTime).format('YYYY-MM-DD HH:mm') : '',
+        image: getFullImageUrl(item.coverImage) || '',
+        contentType: item.contentType,
+        externalLink: item.externalLink,
       }))
     }
 
@@ -351,15 +360,17 @@ onMounted(async () => {
       informationItems.value = infoRes.list.map((item: any) => ({
         id: item.articleId,
         title: item.title,
-        date: item.publishTime,
-        image: getFullImageUrl(item.coverImage) || ''
+        date: item.publishTime ? dayjs(item.publishTime).format('YYYY-MM-DD HH:mm') : '',
+        image: getFullImageUrl(item.coverImage) || '',
+        contentType: item.contentType,
+        externalLink: item.externalLink,
       }))
     }
 
     // 处理公告数据
     if (noticeRes?.list?.length > 0) {
       noticeList.value = noticeRes.list.map((item: any) => ({
-        id: item.articleId,
+        id: item.noticeId,
         title: item.title
       }))
     }
@@ -450,7 +461,9 @@ onMounted(async () => {
           <!-- 新闻列表 -->
           <div class="space-y-6">
             <template v-if="activeTab === 'news'">
-              <NuxtLink v-for="item in newsItems" :key="item.id" :to="`/news/${item.id}`"
+              <NuxtLink v-for="item in newsItems" :key="item.id"
+                :to="getArticleLink(item, '/news').href"
+                :target="getArticleLink(item, '/news').target"
                 class="flex gap-4 pb-6 border-b border-gray-100 last:border-0">
                 <div v-if="item.image" class="w-[180px] h-[110px] flex-shrink-0 focus-img-box">
                   <img :src="getFullImageUrl(item.image)" class="w-full h-full object-cover" />
@@ -466,7 +479,9 @@ onMounted(async () => {
             </template>
 
             <template v-else>
-              <NuxtLink v-for="item in informationItems" :key="item.id" :to="`/news/${item.id}`"
+              <NuxtLink v-for="item in informationItems" :key="item.id"
+                :to="getArticleLink(item, '/news').href"
+                :target="getArticleLink(item, '/news').target"
                 class="flex gap-4 pb-6 border-b border-gray-100 last:border-0">
                 <div v-if="item.image" class="w-[180px] h-[110px] flex-shrink-0 focus-img-box">
                   <img :src="item.image" class="w-full h-full object-cover" />

@@ -36,10 +36,21 @@ export class CreateArticleDto {
   @IsIn(['upload', 'link'])
   coverImageSourceType?: string;
 
+  @ApiPropertyOptional({ description: '内容类型：editor编辑器 link外部链接', default: 'editor' })
+  @IsOptional()
+  @IsIn(['editor', 'link'])
+  contentType?: string;
+
   @ApiPropertyOptional({ description: '文章内容' })
   @IsOptional()
   @IsString()
   content?: string;
+
+  @ApiPropertyOptional({ description: '外部链接' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  externalLink?: string;
 
   @ApiPropertyOptional({ description: '文章来源' })
   @IsOptional()

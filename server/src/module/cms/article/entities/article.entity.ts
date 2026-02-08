@@ -36,8 +36,14 @@ export class ArticleEntity {
   @Column({ name: 'cover_image_source_type', length: 20, default: 'upload', comment: '封面图片来源类型：upload上传 link链接' })
   coverImageSourceType: string;
 
+  @Column({ name: 'content_type', length: 20, default: 'editor', comment: '内容类型：editor编辑器 link外部链接' })
+  contentType: string;
+
   @Column({ name: 'content', type: 'longtext', nullable: true, comment: '文章内容' })
   content: string;
+
+  @Column({ name: 'external_link', length: 500, nullable: true, comment: '外部链接' })
+  externalLink: string;
 
   @Column({ name: 'source', length: 100, nullable: true, comment: '文章来源' })
   source: string;

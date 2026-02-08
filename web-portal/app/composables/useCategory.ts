@@ -35,6 +35,12 @@ export function useCategory() {
   async function getArticlesByCategory(categoryCode: string, pageNum = 1, pageSize = 10): Promise<{ list: Article[], total: number }> {
     try {
       const res = await api.get<ApiResponse<{ list: Article[], total: number }>>(`/cms/article/list?categoryCode=${categoryCode}&pageNum=${pageNum}&pageSize=${pageSize}&status=1`)
+      // eslint-disable-next-line no-console
+      console.warn('Articles API response:', res.data)
+      if (res.data?.list && res.data.list.length > 0) {
+        // eslint-disable-next-line no-console
+        console.warn('First article:', res.data.list[0])
+      }
       return res.data || { list: [], total: 0 }
     } catch (error) {
       console.error('获取文章列表失败:', error)
