@@ -31,3 +31,5 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - esbuild
   - unrs-resolver
+catalog:
+  dayjs: ^1.11.19

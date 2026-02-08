@@ -103,7 +103,7 @@ function handleLogin() {
       userStore
         .login(loginForm.model)
         .then(() => {
-          router.push({ path: redirect.value || '/' })
+          router.push({ path: redirect.value || '/index' })
         })
         .catch(() => {
           // 重新获取验证码

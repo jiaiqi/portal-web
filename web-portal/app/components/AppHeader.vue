@@ -55,10 +55,10 @@ watch(
               </div>
               <div class="flex flex-col">
                 <h1 class="text-2xl text-gray-900 tracking-wider font-bold">
-                  中国文艺志愿者
+                  武汉市江夏区文艺志愿者协会
                 </h1>
                 <p class="text-xs text-gray-500 tracking-widest mt-1">
-                  CHINA LITERARY AND ART VOLUNTEERS
+                  Wuhan Jiangxia District Arts Volunteer Association
                 </p>
               </div>
 
