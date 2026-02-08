@@ -540,13 +540,13 @@ onMounted(async () => {
               </p>
             </div>
             <div class="flex flex-wrap gap-2 text-sm text-gray-500 justify-center mb-4">
-              <a href="/about" class="hover:text-[#c31f1f]">协会简介</a>
+              <NuxtLink to="/about" class="hover:text-[#c31f1f]">协会简介</NuxtLink>
               <span class="text-gray-300">|</span>
-              <a href="/about" class="hover:text-[#c31f1f]">组织机构</a>
+              <NuxtLink to="/about/leadership" class="hover:text-[#c31f1f]">组织机构</NuxtLink>
               <span class="text-gray-300">|</span>
-              <a href="/about" class="hover:text-[#c31f1f]">理事会</a>
+              <NuxtLink to="/about/council" class="hover:text-[#c31f1f]">理事会</NuxtLink>
               <span class="text-gray-300">|</span>
-              <a href="/about" class="hover:text-[#c31f1f]">制度建设</a>
+              <NuxtLink to="/about/charter" class="hover:text-[#c31f1f]">制度建设</NuxtLink>
             </div>
             <div class="text-center">
               <button class="text-white px-6 py-1.5 rounded text-sm cursor-pointer"

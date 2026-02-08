@@ -74,7 +74,10 @@ onMounted(async () => {
     const linksRes = await api.get<ApiResponse<LinkItem[]>>('/cms/link/all').catch(() => null)
     if (linksRes?.data && Array.isArray(linksRes.data) && linksRes.data.length > 0) {
       links.value = linksRes.data
+    } else if (Array.isArray(linksRes)) {
+      links.value = linksRes
     }
+
 
     // 从后台获取网站配置
     const response = await api.get<ApiResponse<SiteConfig>>('/cms/site-config/all').catch(() => null)
@@ -142,7 +145,6 @@ onMounted(async () => {
               <a href="#">{{ config.siteMember }}</a>
               <span>|</span>
               <a href="#">{{ config.siteOrganization }}</a>
-              <span>|</span>
             </p>
             <p class="icp-info">
               <a id="beian" target="_blank" href="https://beian.miit.gov.cn/">
